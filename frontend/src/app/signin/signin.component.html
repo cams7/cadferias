@@ -1,15 +1,23 @@
-<form class="form-signin">
+<form class="form-signin needs-validation" novalidate [formGroup]="form" (ngSubmit)="signIn()">
     <img class="mb-4" src="./assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <h1 class="h3 mb-3 font-weight-normal">Por favor, faça o login</h1>
+    <label for="email" class="sr-only">E-mail</label>
+    <input formControlName="email" [ngClass]="classError('email')" type="email" id="email" class="form-control" placeholder="E-mail" autofocus>
+    <div class="invalid-feedback" *ngIf="hasFieldError('email', 'required')" >
+        Por favor, informe um e-mail.
+    </div>
+    <div class="invalid-feedback" *ngIf="hasFieldError('email', 'email')" >
+        Por favor, informe um e-mail válido.
+    </div>
+    <label for="password" class="sr-only">Senha</label>
+    <input formControlName="password" [ngClass]="classError('password')" type="password" id="password" class="form-control" placeholder="Senha">
+    <div class="invalid-feedback" *ngIf="hasFieldError('password', 'required')" >
+        Por favor, informe uma senha.
+    </div>
     <div class="checkbox mb-3">
       <label>
-        <input type="checkbox" value="remember-me"> Remember me
+        <input formControlName="rememberMe" type="checkbox" value="remember-me"> Lembre-me
       </label>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Enviar</button>
   </form>

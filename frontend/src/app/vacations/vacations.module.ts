@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '../shared/shared.module';
 import { VacationsRoutingModule } from './vacations-routing.module';
@@ -13,6 +14,7 @@ import { VacationFormComponent } from './vacation-form/vacation-form.component';
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     SharedModule,
     VacationsRoutingModule
   ]
