@@ -19,6 +19,13 @@ export class AuthService {
     private http: HttpClient,
     private tokenStorage: TokenStorageService
   ) { }
+  
+  loadTokenData() {
+    if(this.tokenStorage.token) {
+      const loggedUser = <User>JSON.parse(this.tokenStorage.token);
+      this._loggedUser$ = of(loggedUser); 
+    } 
+  }
 
   signIn$(user: User) {
     let params = new HttpParams();

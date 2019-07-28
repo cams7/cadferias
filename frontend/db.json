@@ -2,33 +2,981 @@
   "users": [
     {
       "id": 1,
-      "email": "user1@teste.com",
+      "email": "jorge78@teste.com",
       "password": "12345",
-      "token":"{\"id\": 1,\"email\": \"user1@teste.com\"}"
+      "token":"{\"id\": 1,\"email\": \"jorge78@teste.com\"}"
     },
     {
       "id": 2,
-      "email": "user2@teste.com",
+      "email": "diego68@teste.com",
       "password": "12345",
-      "token":"{\"id\": 2,\"email\": \"user2@teste.com\"}"
+      "token":"{\"id\": 2,\"email\": \"diego68@teste.com\"}"
     },
     {
       "id": 3,
-      "email": "user3@teste.com",
+      "email": "carolina77@teste.com",
       "password": "12345",
-      "token":"{\"id\": 3,\"email\": \"user3@teste.com\"}"
+      "token":"{\"id\": 3,\"email\": \"carolina77@teste.com\"}"
     },
     {
       "id": 4,
-      "email": "user4@teste.com",
+      "email": "leticia84@teste.com",
       "password": "12345",
-      "token":"{\"id\": 4,\"email\": \"user4@teste.com\"}"
+      "token":"{\"id\": 4,\"email\": \"leticia84@teste.com\"}"
     },
     {
       "id": 5,
-      "email": "user5@teste.com",
+      "email": "jessica74@teste.com",
       "password": "12345",
-      "token":"{\"id\": 5,\"email\": \"user5@teste.com\"}"
+      "token":"{\"id\": 5,\"email\": \"jessica74@teste.com\"}"
+    },
+    {
+      "id": 6,
+      "email": "gael86@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 6,\"email\": \"gael86@teste.com\"}"
+    },
+    {
+      "id": 7,
+      "email": "jennifer80@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 7,\"email\": \"jennifer80@teste.com\"}"
+    },
+    {
+      "id": 8,
+      "email": "julio84@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 8,\"email\": \"julio84@teste.com\"}"
+    },
+    {
+      "id": 9,
+      "email": "allana92@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 9,\"email\": \"allana92@teste.com\"}"
+    },
+    {
+      "id": 10,
+      "email": "bernado86@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 10,\"email\": \"bernado86@teste.com\"}"
+    },
+    {
+      "id": 11,
+      "email": "allana80@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 11,\"email\": \"allana80@teste.com\"}"
+    },
+    {
+      "id": 12,
+      "email": "lavinia91@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 12,\"email\": \"lavinia91@teste.com\"}"
+    },
+    {
+      "id": 13,
+      "email": "marcos84@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 13,\"email\": \"marcos84@teste.com\"}"
+    },
+    {
+      "id": 14,
+      "email": "liz82@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 14,\"email\": \"liz82@teste.com\"}"
+    },
+    {
+      "id": 15,
+      "email": "jaqueline73@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 15,\"email\": \"jaqueline73@teste.com\"}"
+    },
+    {
+      "id": 16,
+      "email": "theo83@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 16,\"email\": \"theo83@teste.com\"}"
+    },
+    {
+      "id": 17,
+      "email": "benicio93@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 17,\"email\": \"benicio93@teste.com\"}"
+    },
+    {
+      "id": 18,
+      "email": "jaqueline84@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 18,\"email\": \"jaqueline84@teste.com\"}"
+    },
+    {
+      "id": 19,
+      "email": "regina69@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 19,\"email\": \"regina69@teste.com\"}"
+    },
+    {
+      "id": 20,
+      "email": "sebastiao81@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 20,\"email\": \"sebastiao81@teste.com\"}"
+    },
+    {
+      "id": 21,
+      "email": "andreia93@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 21,\"email\": \"andreia93@teste.com\"}"
+    },
+    {
+      "id": 22,
+      "email": "bernardo75@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 22,\"email\": \"bernardp75@teste.com\"}"
+    },
+    {
+      "id": 23,
+      "email": "oliver67@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 23,\"email\": \"oliver67@teste.com\"}"
+    },
+    {
+      "id": 24,
+      "email": "fabiana81@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 24,\"email\": \"fabiana81@teste.com\"}"
+    },
+    {
+      "id": 25,
+      "email": "igor68@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 25,\"email\": \"igor68@teste.com\"}"
+    },
+    {
+      "id": 26,
+      "email": "igor95@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 26,\"email\": \"igor95@teste.com\"}"
+    },
+    {
+      "id": 27,
+      "email": "luana76@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 27,\"email\": \"luana76@teste.com\"}"
+    },
+    {
+      "id": 28,
+      "email": "betina77@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 28,\"email\": \"betina77@teste.com\"}"
+    },
+    {
+      "id": 29,
+      "email": "pietro78@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 29,\"email\": \"pietro78@teste.com\"}"
+    },
+    {
+      "id": 30,
+      "email": "davi83@teste.com",
+      "password": "12345",
+      "token":"{\"id\": 30,\"email\": \"davi83@teste.com\"}"
+    }
+  ],
+  "staffs": [
+    {
+      "id": 1,
+      "name": "Equipe 1"
+    },
+    {
+      "id": 2,
+      "name": "Equipe 2"
+    },
+    {
+      "id": 3,
+      "name": "Equipe 3"
+    },
+    {
+      "id": 4,
+      "name": "Equipe 4"
+    },
+    {
+      "id": 5,
+      "name": "Equipe 5"
+    },
+    {
+      "id": 6,
+      "name": "Equipe 6"
+    },
+    {
+      "id": 7,
+      "name": "Equipe 7"
+    },
+    {
+      "id": 8,
+      "name": "Equipe 8"
+    },
+    {
+      "id": 9,
+      "name": "Equipe 9"
+    },
+    {
+      "id": 10,
+      "name": "Equipe 10"
+    },
+    {
+      "id": 11,
+      "name": "Equipe 11"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "hiringDate": "2016-05-01",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010001",
+      "user": {
+        "id": 1
+      },
+      "staff": {
+        "id": 1
+      },
+      "name": "Jorge Marcelo Viana",		
+      "birthDate": "1978-02-02",
+      "address": {
+        "street": "Travessa Melancia",
+        "houseNumber": 896,
+        "neighborhood": "Montanhês",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68983377124"
+    },
+    {
+      "id": 2,
+      "hiringDate": "2014-07-01",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010002",
+      "user": {
+        "id": 2
+      },
+      "staff": {
+        "id": 2
+      },
+      "name": "Diego Edson Enrico Lima",		
+      "birthDate": "1968-05-07",	
+      "address": {
+        "street": "Rua Guariúba",
+        "houseNumber": 427,
+        "neighborhood": "Loteamento Novo Horizonte",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68999764219"
+    },
+    {
+      "id": 3,
+      "hiringDate": "2018-02-11",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010003",
+      "user": {
+        "id": 3
+      },
+      "staff": {
+        "id": 3
+      },
+      "name": "Carolina Esther Duarte",		
+      "birthDate": "1977-11-06",
+      "address": {
+        "street": "Rua Pernambuco",
+        "houseNumber": 629,
+        "neighborhood": "Bosque",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68982351667"
+    },
+    {
+      "id": 4,
+      "hiringDate": "2010-09-21",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010004",
+      "user": {
+        "id": 4
+      },
+      "staff": {
+        "id": 4
+      },
+      "name": "Letícia Nina Silveira",		
+      "birthDate": "1984-02-26",
+      "address": {
+        "street": "Rua São Jorge",
+        "houseNumber": 769,
+        "neighborhood": "São Geraldo",
+        "city": "Ariquemes",
+        "state": "RO"
+      },
+      "phoneNumber": "69984541610"
+    },
+    {
+      "id": 5,
+      "hiringDate": "2005-11-10",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010005",
+      "user": {
+        "id": 5
+      },
+      "staff": {
+        "id": 5
+      },
+      "name": "Jéssica Isabelle da Costa",		
+      "birthDate": "1974-06-11",
+      "address": {
+        "street": "Rua Alfredo Zaire",
+        "houseNumber": 496,
+        "neighborhood": "Conjunto Bela Vista",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68988571317"
+    },
+    {
+      "id": 6,
+      "hiringDate": "2009-04-01",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010006",
+      "user": {
+        "id": 6
+      },
+      "staff": {
+        "id": 6
+      },
+      "name": "Gael Felipe Miguel Peixoto",
+      "birthDate": "1986-10-20",
+      "address": {
+        "street": "Rua Coronel Favorino",
+        "houseNumber": 142,
+        "neighborhood": "Getúlio Vargas",
+        "city": "Bagé",
+        "state": "RS"
+      },
+      "phoneNumber": "53985863230"
+    },
+    {
+      "id": 7,
+      "hiringDate": "2018-02-10",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010007",
+      "user": {
+        "id": 7
+      },
+      "staff": {
+        "id": 7
+      },
+      "name": "Jennifer Jéssica Ferreira",
+      "birthDate": "1980-07-27",
+      "address": {
+        "street": "Rua José Alberice",
+        "houseNumber": 936,
+        "neighborhood": "José Bonifácio",
+        "city": "Erechim",
+        "state": "RS"
+      },
+      "phoneNumber": "54981060076"
+    },
+    {
+      "id": 8,
+      "hiringDate": "2017-09-08",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010008",
+      "user": {
+        "id": 8
+      },
+      "staff": {
+        "id": 8
+      },
+      "name": "Julio Pedro Henrique Nogueira",
+      "birthDate": "1984-02-25",
+      "address": {
+        "street": "Rua Halley Mestrinho",
+        "houseNumber": 478,
+        "neighborhood": "Ponta Negra",
+        "city": "Natal",
+        "state": "RN"
+      },
+      "phoneNumber": "84997570827"
+    },
+    {
+      "id": 9,
+      "hiringDate": "2011-03-05",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010009",
+      "user": {
+        "id": 9
+      },
+      "staff": {
+        "id": 9
+      },
+      "name": "Allana Amanda Gonçalves",
+      "birthDate": "1992-11-23",
+      "address": {
+        "street": "Rua Pedro Leandro Vitorino",
+        "houseNumber": 300,
+        "neighborhood": "Mina do Mato",
+        "city": "Criciúma",
+        "state": "SC"
+      },
+      "phoneNumber": "48994331876"
+    },
+    {
+      "id": 10,
+      "hiringDate": "2008-06-12",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010010",
+      "user": {
+        "id": 10
+      },
+      "staff": {
+        "id": 10
+      },
+      "name": "Bernardo Iago Fernandes",
+      "birthDate": "1986-05-05",
+      "address": {
+        "street": "Rua Martelo",
+        "houseNumber": 989,
+        "neighborhood": "Ayrton Sena",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68996129206"
+    },
+    {
+      "id": 11,
+      "hiringDate": "2007-04-19",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010011",
+      "user": {
+        "id": 11
+      },
+      "staff": {
+        "id": 11
+      },
+      "name": "Allana Emilly Milena Figueiredo",
+      "birthDate": "1980-08-23",
+      "address": {
+        "street": "Rua Bartolomeu Bueno",
+        "houseNumber": 412,
+        "neighborhood": "Bosque",
+        "city": "Rio Branco",
+        "state": "AC"
+      },
+      "phoneNumber": "68981803745"
+    },
+    {
+      "id": 12,
+      "hiringDate": "2006-07-10",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010012",
+      "user": {
+        "id": 12
+      },
+      "staff": {
+        "id": 10
+      },
+      "name": "Lavínia Eloá Bernardes",
+      "birthDate": "1991-09-07",
+      "address": {
+        "street": "Rua Honduras",
+        "houseNumber": 500,
+        "neighborhood": "Setor 10",
+        "city": "Ariquemes",
+        "state": "RO"
+      },
+      "phoneNumber": "69988599725"
+    },
+    {
+      "id": 13,
+      "hiringDate": "2005-12-11",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010013",
+      "user": {
+        "id": 13
+      },
+      "staff": {
+        "id": 5
+      },
+      "name": "Marcos Paulo Gonçalves",
+      "birthDate": "1984-10-10",
+      "address": {
+        "street": "Travessa Dois A",
+        "houseNumber": 331,
+        "neighborhood": "Lamarão",
+        "city": "Aracaju",
+        "state": "SE"
+      },
+      "phoneNumber": "79987663712"
+    },
+    {
+      "id": 14,
+      "hiringDate": "2006-07-21",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010014",
+      "user": {
+        "id": 14
+      },
+      "staff": {
+        "id": 3
+      },
+      "name": "Liz Marlene Barbosa",
+      "birthDate": "1982-01-08",
+      "address": {
+        "street": "Rua Adão Jose Pinto de Almeida",
+        "houseNumber": 178,
+        "neighborhood": "Loteamento Quitéria Teruel Lopes",
+        "city": "Rondonópolis",
+        "state": "MT"
+      },
+      "phoneNumber": "66998257668"
+    },
+    {
+      "id": 15,
+      "hiringDate": "2004-08-25",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010015",
+      "user": {
+        "id": 15
+      },
+      "staff": {
+        "id": 10
+      },
+      "name": "Jaqueline Vanessa Rezende",
+      "birthDate": "1973-12-15",
+      "address": {
+        "street": "Passagem Independência",
+        "houseNumber": 617,
+        "neighborhood": "Umarizal",
+        "city": "Belém",
+        "state": "PA"
+      },
+      "phoneNumber": "91993386638"
+    },
+    {
+      "id": 16,
+      "hiringDate": "2008-11-02",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010016",
+      "user": {
+        "id": 16
+      },
+      "staff": {
+        "id": 1
+      },
+      "name": "Theo Thiago Sérgio da Luz",
+      "birthDate": "1983-07-23",
+      "address": {
+        "street": "Rua das Árvores",
+        "houseNumber": 434,
+        "neighborhood": "Nova Marabá",
+        "city": "Marabá",
+        "state": "PA"
+      },
+      "phoneNumber": "94983638974"
+    },
+    {
+      "id": 17,
+      "hiringDate": "2006-08-10",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010017",
+      "user": {
+        "id": 17
+      },
+      "staff": {
+        "id": 2
+      },
+      "name": "Benício Rafael Francisco Drumond",
+      "birthDate": "1993-08-24",
+      "address": {
+        "street": "Rua Tonga",
+        "houseNumber": 460,
+        "neighborhood": "Cidade Continental-Setor Oceania",
+        "city": "Serra",
+        "state": "ES"
+      },
+      "phoneNumber": "27997959392"
+    },
+    {
+      "id": 18,
+      "hiringDate": "2006-06-14",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010018",
+      "user": {
+        "id": 18
+      },
+      "staff": {
+        "id": 7
+      },
+      "name": "Jaqueline Betina Isabel Peixoto",
+      "birthDate": "1984-05-14",
+      "address": {
+        "street": "Rua Itahaem",
+        "houseNumber": 996,
+        "neighborhood": "Piratininga (Venda Nova)",
+        "city": "Belo Horizonte",
+        "state": "MG"
+      },
+      "phoneNumber": "31989691579"
+    },
+    {
+      "id": 19,
+      "hiringDate": "2006-05-22",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010019",
+      "user": {
+        "id": 19
+      },
+      "staff": {
+        "id": 2
+      },
+      "name": "Regina Andreia Antônia Viana",
+      "birthDate": "1969-12-20",
+      "address": {
+        "street": "Rua Governador Aquilino Mota Duarte",
+        "houseNumber": 527,
+        "neighborhood": "São Francisco",
+        "city": "Boa Vista",
+        "state": "RR"
+      },
+      "phoneNumber": "95993811968"
+    },
+    {
+      "id": 20,
+      "hiringDate": "2001-04-10",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010020",
+      "user": {
+        "id": 20
+      },
+      "staff": {
+        "id": 3
+      },
+      "name": "Sebastião Rafael Filipe da Conceição",
+      "birthDate": "1981-12-26",
+      "address": {
+        "street": "Rua 8",
+        "houseNumber": 136,
+        "neighborhood": "Pedras",
+        "city": "Fortaleza",
+        "state": "CE"
+      },
+      "phoneNumber": "85989282058"
+    },
+    {
+      "id": 21,
+      "hiringDate": "2005-05-21",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010021",
+      "user": {
+        "id": 21
+      },
+      "staff": {
+        "id": 4
+      },
+      "name": "Andrea Caroline Pietra Rocha",
+      "birthDate": "1993-06-19",
+      "address": {
+        "street": "Rua Dois",
+        "houseNumber": 374,
+        "neighborhood": "Milionários (Barreiro)",
+        "city": "Belo Horizonte",
+        "state": "MG"
+      },
+      "phoneNumber": "31981061691"
+    },
+    {
+      "id": 22,
+      "hiringDate": "2004-09-22",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010022",
+      "user": {
+        "id": 22
+      },
+      "staff": {
+        "id": 5
+      },
+      "name": "Bernardo Cláudio Silva",
+      "birthDate": "1975-02-20",
+      "address": {
+        "street": "Rua Vigário Luiz Azevedo",
+        "houseNumber": 866,
+        "neighborhood": "Parque do Itatiaia",
+        "city": "Gravataí",
+        "state": "RS"
+      },
+      "phoneNumber": "51985390557"
+    },
+    {
+      "id": 23,
+      "hiringDate": "2001-11-22",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010023",
+      "user": {
+        "id": 23
+      },
+      "staff": {
+        "id": 4
+      },
+      "name": "Oliver Manuel Corte Real",
+      "birthDate": "1967-05-13",
+      "address": {
+        "street": "Rua Nélio Abreu",
+        "houseNumber": 380,
+        "neighborhood": "Vila Nova",
+        "city": "Blumenau",
+        "state": "SC"
+      },
+      "phoneNumber": "47999830217"
+    },
+    {
+      "id": 24,
+      "hiringDate": "2007-08-20",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010024",
+      "user": {
+        "id": 24
+      },
+      "staff": {
+        "id": 5
+      },
+      "name": "Fabiana Melissa Pietra da Luz",
+      "birthDate": "1981-04-05",
+      "address": {
+        "street": "Rua Gameleira",
+        "houseNumber": 766,
+        "neighborhood": "Nova Parnamirim",
+        "city": "Parnamirim",
+        "state": "RN"
+      },
+      "phoneNumber": "84991643194"
+    },
+    {
+      "id": 25,
+      "hiringDate": "2007-08-20",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010025",
+      "user": {
+        "id": 25
+      },
+      "staff": {
+        "id": 6
+      },
+      "name": "Igor Levi Cavalcanti",
+      "birthDate": "1968-09-14",
+      "address": {
+        "street": "Rua Juriti",
+        "houseNumber": 197,
+        "neighborhood": "Monte Castelo",
+        "city": "Campo Grande",
+        "state": "MS"
+      },
+      "phoneNumber": "67989504086"
+    },
+    {
+      "id": 26,
+      "hiringDate": "2001-06-22",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010026",
+      "user": {
+        "id": 26
+      },
+      "staff": {
+        "id": 4
+      },
+      "name": "Igor Manuel Gomes",
+      "birthDate": "1995-01-14",
+      "address": {
+        "street": "Avenida Aeroporto",
+        "houseNumber": 737,
+        "neighborhood": "Vila São José",
+        "city": "Rondonópolis",
+        "state": "MT"
+      },
+      "phoneNumber": "66996697028"
+    },
+    {
+      "id": 27,
+      "hiringDate": "2002-07-20",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010027",
+      "user": {
+        "id": 27
+      },
+      "staff": {
+        "id": 3
+      },
+      "name": "Luana Mirella Duarte",
+      "birthDate": "1976-10-25",
+      "address": {
+        "street": "Rua Hugo Herrmann Filho",
+        "houseNumber": 199,
+        "neighborhood": "Jardim Lindóia",
+        "city": "Porto Alegre",
+        "state": "RS"
+      },
+      "phoneNumber": "51987304446"
+    },
+    {
+      "id": 28,
+      "hiringDate": "2009-04-20",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010028",
+      "user": {
+        "id": 28
+      },
+      "staff": {
+        "id": 8
+      },
+      "name": "Betina Tatiane Giovanna Jesus",
+      "birthDate": "1977-10-02",
+      "address": {
+        "street": "Rua Doutor Júlio Drumond 55",
+        "houseNumber": 636,
+        "neighborhood": "Celeste",
+        "city": "Ferros",
+        "state": "MG"
+      },
+      "phoneNumber": "31993788335"
+    },
+    {
+      "id": 29,
+      "hiringDate": "2002-04-24",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010029",
+      "user": {
+        "id": 29
+      },
+      "staff": {
+        "id": 9
+      },
+      "name": "Pietro Alexandre Jesus",
+      "birthDate": "1978-07-19",
+      "address": {
+        "street": "Rua Antônio Vaz",
+        "houseNumber": 194,
+        "neighborhood": "Areias",
+        "city": "Recife",
+        "state": "PE"
+      },
+      "phoneNumber": "81985868991"
+    },
+    {
+      "id": 30,
+      "hiringDate": "2003-05-15",
+      "employeePhoto": null,
+      "employeeRegistration":"1000100010030",
+      "user": {
+        "id": 30
+      },
+      "staff": {
+        "id": 6
+      },
+      "name": "Davi Marcos Vinicius Alexandre Duarte",
+      "birthDate": "1983-01-08",
+      "address": {
+        "street": "Rua Promotora Terezinha Lopes de Moura",
+        "houseNumber": 350,
+        "neighborhood": "Estação Velha",
+        "city": "Campina Grande",
+        "state": "PB"
+      },
+      "phoneNumber": "83981048078"
+    }
+  ],
+  "vacations": [
+    {
+      "id": 1,
+      "vacationStartDate": "2019-08-20",
+      "vacationEndDate":"2019-09-10",
+      "employee": {
+        "id": 1
+      }
+    },
+    {
+      "id": 2,
+      "vacationStartDate": "2019-09-21",
+      "vacationEndDate":"2019-10-15",
+      "employee": {
+        "id": 2
+      }
+    },
+    {
+      "id": 3,
+      "vacationStartDate": "2019-09-30",
+      "vacationEndDate":"2019-10-28",
+      "employee": {
+        "id": 3
+      }
+    },
+    {
+      "id": 4,
+      "vacationStartDate": "2020-01-02",
+      "vacationEndDate":"2020-01-29",
+      "employee": {
+        "id": 7
+      }
+    },
+    {
+      "id": 5,
+      "vacationStartDate": "2020-01-10",
+      "vacationEndDate":"2020-02-05",
+      "employee": {
+        "id": 8
+      }
+    },
+    {
+      "id": 6,
+      "vacationStartDate": "2020-01-20",
+      "vacationEndDate":"2020-02-15",
+      "employee": {
+        "id": 11
+      }
+    },
+    {
+      "id": 7,
+      "vacationStartDate": "2020-01-28",
+      "vacationEndDate":"2020-02-25",
+      "employee": {
+        "id": 16
+      }
+    },
+    {
+      "id": 8,
+      "vacationStartDate": "2020-02-05",
+      "vacationEndDate":"2020-02-25",
+      "employee": {
+        "id": 19
+      }
+    },
+    {
+      "id": 9,
+      "vacationStartDate": "2020-02-03",
+      "vacationEndDate":"2020-02-28",
+      "employee": {
+        "id": 25
+      }
+    },
+    {
+      "id": 10,
+      "vacationStartDate": "2020-02-10",
+      "vacationEndDate":"2020-03-05",
+      "employee": {
+        "id": 26
+      }
+    },
+    {
+      "id": 11,
+      "vacationStartDate": "2020-02-15",
+      "vacationEndDate":"2020-03-10",
+      "employee": {
+        "id": 29
+      }
     }
   ]
 }

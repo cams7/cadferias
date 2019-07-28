@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BaseList } from 'src/app/shared/common/base-list';
+import { Observable } from 'rxjs';
 
+import { BaseList } from 'src/app/shared/common/base-list';
 import { EmployeesService } from '../employees.service';
+import { Employee } from './../../shared/model/employee';
 
 @Component({
   selector: 'app-employee-list',
@@ -9,6 +11,8 @@ import { EmployeesService } from '../employees.service';
   styleUrls: ['./employee-list.component.scss']
 })
 export class EmployeeListComponent extends BaseList implements OnInit, OnDestroy {
+
+  private _employees$: Observable<Employee[]>;
   
   constructor(
     private employeesService: EmployeesService
@@ -17,9 +21,14 @@ export class EmployeeListComponent extends BaseList implements OnInit, OnDestroy
   }
 
   ngOnInit() {
+    this._employees$ = this.employeesService.getAll();
   }
 
   ngOnDestroy() {
+  }
+
+  get employees$() {
+    return this._employees$;
   }
 
 }
