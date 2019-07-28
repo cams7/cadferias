@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { AuthGuard } from './shared/guards/auth.guard';
+import { SignoutGuard } from './shared/guards/signout.guard';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { HomeComponent } from './home/home.component';
 import { SigninComponent } from './signin/signin.component';
-import { AuthGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +14,8 @@ const routes: Routes = [
   },
   {
     path: 'signin',
-    component: SigninComponent
+    component: SigninComponent,
+    canActivate: [SignoutGuard]
   },
   {
     path: 'employees', 

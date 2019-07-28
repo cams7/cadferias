@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
@@ -13,7 +14,8 @@ import { User } from './../shared/model/user';
 })
 export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
    
-  constructor(    
+  constructor(
+    private router: Router,    
     private fb: FormBuilder,
     private authService: AuthService
   ) { 
@@ -34,7 +36,15 @@ export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
   submit() {
     const user = <User>this.form.value;
 
-    console.log('User: ', user);
+    this.authService.signIn$(user).subscribe(
+      user => console.log(`O usuário "${user.email}" foi autenticado com sucesso!!!`)
+    );
+
+    this.authService.loggedIn$.pipe(
+      filter(loggedIn => loggedIn)
+    ).subscribe(_ => {
+      this.router.navigate(['/home']);
+    });
   }  
 
 }
