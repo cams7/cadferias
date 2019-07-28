@@ -13,7 +13,7 @@ export class EmployeeListComponent extends BaseList implements OnInit, OnDestroy
   constructor(
     private employeesService: EmployeesService
   ) { 
-    super()
+    super();
   }
 
   ngOnInit() {

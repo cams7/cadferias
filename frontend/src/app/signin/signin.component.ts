@@ -4,14 +4,15 @@ import { Observable, of } from 'rxjs';
 
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
+import { User } from './../shared/model/user';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent extends BaseForm implements OnInit, OnDestroy {  
-  
+export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
+   
   constructor(    
     private fb: FormBuilder,
     private authService: AuthService
@@ -20,7 +21,7 @@ export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
+    super.form = this.fb.group({
       email: [undefined, [Validators.required, Validators.email]], 
       password: [undefined, Validators.required],
       rememberMe: [false, Validators.required]
@@ -28,19 +29,12 @@ export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-  }
+  }    
 
-  unchangedData(): Observable<boolean> {
-    return of(true);
-  }
+  submit() {
+    const user = <User>this.form.value;
 
-  signIn() {
-    this._submitted = true;
-
-    if (this.form.invalid)
-      return;
-
-    console.log("user: ", this.form.value);
-  } 
+    console.log('User: ', user);
+  }  
 
 }

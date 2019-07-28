@@ -23,8 +23,7 @@ export class StaffFormComponent extends BaseForm implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  unchangedData(): Observable<boolean> {
-    return of(true);
+  submit() {
   }
 
 }

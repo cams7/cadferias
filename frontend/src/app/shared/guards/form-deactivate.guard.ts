@@ -16,7 +16,7 @@ export class FormDeactivateGuard implements CanDeactivate<BaseForm> {
     if(unchangedData)
       return unchangedData.pipe(
         tap(changed => {
-          console.log(`Os dados do formulário foi alterado: ${changed}`);
+          console.log(`Os dados do formulário ${changed? 'não ': ''}foi alterado`);
         })
       );
 

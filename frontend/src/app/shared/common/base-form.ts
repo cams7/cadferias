@@ -1,5 +1,5 @@
 import { Base } from './base';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 export abstract class BaseForm extends Base {
@@ -11,10 +11,31 @@ export abstract class BaseForm extends Base {
         super();
     }
 
-    abstract unchangedData(): Observable<boolean>;
+    abstract submit(): void;
+
+    onSubmit() {        
+        this._submitted = true;
+    
+        if (this.form.invalid)
+          return;
+    
+        this.submit();
+    } 
+
+    unchangedData(): Observable<boolean> {
+        return of(true);
+    }
 
     classError(fieldName: string) {
         return { 'is-invalid': this._submitted && this.hasError(fieldName)};
+    }
+
+    hasRequiredError(fieldName: string) {
+        return this.hasFieldError(fieldName, 'required');
+    }
+
+    hasEmailError(fieldName: string) {
+        return this.hasFieldError(fieldName, 'email');
     }
 
     hasFieldError(fieldName: string, typeError: string) {

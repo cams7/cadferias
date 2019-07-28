@@ -10,11 +10,11 @@ import { EmployeesService } from '../employees.service';
   styleUrls: ['./employee-form.component.scss']
 })
 export class EmployeeFormComponent extends BaseForm implements OnInit, OnDestroy {
-  
+    
   constructor(
     private employeesService: EmployeesService
   ) { 
-    super()
+    super();
   }
 
   ngOnInit() {
@@ -23,8 +23,7 @@ export class EmployeeFormComponent extends BaseForm implements OnInit, OnDestroy
   ngOnDestroy() {
   }
 
-  unchangedData(): Observable<boolean> {
-    return of(true);
+  submit() {
   }
 
 }
