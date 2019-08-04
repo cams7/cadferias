@@ -1,19 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { BaseList } from 'src/app/shared/common/base-list';
 import { StaffsService } from '../staffs.service';
+import { Staff } from './../../shared/model/staff';
 
 @Component({
   selector: 'app-staff-list',
   templateUrl: './staff-list.component.html',
   styleUrls: ['./staff-list.component.scss']
 })
-export class StaffListComponent extends BaseList implements OnInit, OnDestroy {
+export class StaffListComponent extends BaseList<Staff> implements OnInit, OnDestroy {
 
   constructor(
+    protected renderer: Renderer2,
+    protected router: Router,
+    private route: ActivatedRoute,
     private staffsService: StaffsService
   ) { 
-    super();
+    super(renderer, router, staffsService);
   }
 
   ngOnInit() {

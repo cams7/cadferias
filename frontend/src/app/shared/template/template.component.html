@@ -23,7 +23,7 @@
         <a class="nav-link" routerLinkActive="active" [routerLink]="['/staffs']" *ngIf="isLoggedIn$ | async">Equipes</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" [routerLink]="['/employees']" *ngIf="isLoggedIn$ | async">Funcionários</a>
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/employees']" [queryParams]="queryParams" *ngIf="isLoggedIn$ | async">Funcionários</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLinkActive="active" [routerLink]="['/vacations']" *ngIf="isLoggedIn$ | async">Férias</a>
