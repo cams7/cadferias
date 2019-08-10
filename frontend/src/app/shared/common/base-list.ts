@@ -1,14 +1,15 @@
-import { ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { ViewChild, ElementRef, Renderer2, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable } from 'rxjs';
-import { filter, delay, concatMap, flatMap, shareReplay,takeWhile, last, delayWhen, map } from 'rxjs/operators';
+import { filter, delay, concatMap, flatMap, shareReplay,takeWhile, last, delayWhen, map, finalize, distinctUntilChanged, take, tap } from 'rxjs/operators';
 
 import { Base } from './base';
 import { BaseService, Page } from './base-service';
 import { PaginationVO } from './../model/vo/pagination-vo';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
-export abstract class BaseList<T> extends Base {    
-               
+export abstract class BaseList<T> extends Base implements OnInit {
+                   
     readonly previousText = '&lsaquo;';
     readonly nextText = '&rsaquo;'; 
     readonly firstText = '&laquo;'; 
@@ -24,28 +25,79 @@ export abstract class BaseList<T> extends Base {
     private _totalItems: number;
     private _totalItemsPerPage: number;
     private _page = <Page>{};
+    private isAfterChangeEvent = false;
 
-    private _pagination$: Observable<PaginationVO<T>>;
+    private pagination$: Observable<PaginationVO<T>>;
     
     @ViewChild('pagination', { read: ElementRef, static:true }) pagination: ElementRef;
+
+    public form: FormGroup;
  
     constructor(
         protected renderer: Renderer2,
         protected route: ActivatedRoute,
         protected router: Router,
+        protected fb: FormBuilder,
         private service: BaseService<T>
     ) { 
         super();
     }
+
+    ngOnInit() {
+        this.form = this.fb.group({
+            itemsPerPage: [],
+            search: []
+        });
+
+        this.form.get('itemsPerPage').valueChanges.pipe(
+            filter(itemsPerPage => !!itemsPerPage),
+            map(itemsPerPage => this.getNumber(itemsPerPage)),
+            distinctUntilChanged(),
+            filter(itemsPerPage => this._page.itemsPerPage && itemsPerPage != this._page.itemsPerPage)
+        ).subscribe(itemsPerPage => {
+            const page = <Page>{page: this._page.page, itemsPerPage: itemsPerPage};           
+            this.router.navigate([this.service.shortApiUrl], { queryParams: page });
+            this.isAfterChangeEvent = true;
+        });
+
+        this.pagination$ = this.route.queryParams.pipe(
+            filter(params => !!params['page'] || !!params['itemsPerPage']),
+            flatMap(params => {
+                const page = params['page'];
+                const itemsPerPage = params['itemsPerPage'];
+        
+                if(!super.isNumberOrNull(page) || !super.isNumberOrNull(itemsPerPage))
+                    return EMPTY;
+                
+                if(page < 1 || itemsPerPage < 1)
+                    return EMPTY; 
+                
+                return of(<Page>{page: super.getNumber(page), itemsPerPage: super.getNumber(itemsPerPage)});
+            }),
+            flatMap(page => {
+                if(!this.isPageChange(page))
+                    return EMPTY;  
+                                    
+                return forkJoin(of(page), this.service.getAll(page));
+            }),
+            flatMap(([page, pagination])=> {
+                this._totalItems = pagination.totalItems;
+                this._totalItemsPerPage = pagination.items.length;                
+                this.page = page;
+                return of(pagination);
+            }),
+            shareReplay()
+        );
+    }    
 
     get totalItems() {
         return this._totalItems;
     }
 
     set pageChanged(pageChanged: Page) {
-        if(this.isPageChanged(pageChanged)) {
-            this._page = pageChanged;
+        if(this.isPageChange(pageChanged)) {     
             this.router.navigate([this.service.shortApiUrl], { queryParams: pageChanged });
+            this.isAfterChangeEvent = true;
         }
     }
 
@@ -54,12 +106,18 @@ export abstract class BaseList<T> extends Base {
     }
     
     set page(page: Page) {
-        this._page.itemsPerPage = page.itemsPerPage;
-
         const MILLIS_VALUE = 50;
         const PAGELINK_CLASS = 'li.pagination-page>a.page-link';
 
-        if(this._totalItemsPerPage > 0 && this.isMultiplePages(page) &&  this.isPageChanged(page)) {
+        this.isAfterChangeEvent = false;
+        this._page.itemsPerPage = page.itemsPerPage;
+
+        if(this.allItemsPerPage.some(value => value == page.itemsPerPage))
+            this.form.get('itemsPerPage').setValue(page.itemsPerPage);
+        else
+            this.form.get('itemsPerPage').setValue(undefined);   
+      
+        if(this._totalItemsPerPage > 0 && this.isMultiplePages(page) &&  this.isPageChange(page)) {
             combineLatest(
                 of(page),
                 interval(MILLIS_VALUE).pipe(
@@ -75,9 +133,8 @@ export abstract class BaseList<T> extends Base {
                     return of(page).pipe(
                         delay(MILLIS_VALUE)
                     )
-                })  
+                })
             ).subscribe(page => {
-                this._page.page = page.page;
                 const ACTIVE_CLASS = 'active';
                 const nodes: NodeList = this.pagination.nativeElement.querySelectorAll(PAGELINK_CLASS);
                 for(let i = 0; i < nodes.length; i++) {
@@ -98,10 +155,9 @@ export abstract class BaseList<T> extends Base {
             });            
         } else {
             of(page).pipe(
-                filter(page => this.isPageChanged(page)),
                 delayWhen(_ => timer(MILLIS_VALUE))
             ).subscribe(page =>{
-                this._page.page = page.page;                
+                this._page.page = page.page;             
             });            
         }  
     }
@@ -111,40 +167,9 @@ export abstract class BaseList<T> extends Base {
         return multiplePages;
     }
 
-    private isPageChanged(page: Page) {
-        const pageChanged = this._page.page != page.page || this.page.itemsPerPage != page.itemsPerPage;
+    private isPageChange(page: Page) {
+        const pageChanged = this.isAfterChangeEvent || this._page.page != page.page || this.page.itemsPerPage != page.itemsPerPage;
         return pageChanged;
-    }
-
-    private get pagination$() {
-        if(!this._pagination$) {
-            this._pagination$ = this.route.queryParams.pipe(
-                filter(params => !!params['page'] || !!params['itemsPerPage']),
-                flatMap(params => {
-                const page = params['page'];
-                const itemsPerPage = params['itemsPerPage'];
-        
-                if(!super.isNumberOrNull(page) || !super.isNumberOrNull(itemsPerPage))
-                    return EMPTY;
-                
-                if(page < 1 || itemsPerPage < 1)
-                    return EMPTY; 
-                
-                return of(<Page>{page: super.getNumber(page), itemsPerPage: super.getNumber(itemsPerPage)});
-                }),
-                flatMap(page => {                      
-                return forkJoin(of(page), this.service.getAll(page));
-                }),
-                flatMap(([page, pagination])=> {
-                    this._totalItems = pagination.totalItems;
-                    this._totalItemsPerPage = pagination.items.length;
-                    this.page = page;
-                    return of(pagination);
-                }),
-                shareReplay()
-            );
-        }
-        return this._pagination$;
     }
 
     get items$() {
@@ -162,7 +187,7 @@ export abstract class BaseList<T> extends Base {
             })
         );    
     }
-    
+
     get isLoadedItems$() {
         return this.pagination$.pipe(
           map(pagination => {
@@ -171,5 +196,8 @@ export abstract class BaseList<T> extends Base {
         );
     }
 
+    get allItemsPerPage() {
+        return [5, 10, 25, 50, 100];
+    }
 
 }

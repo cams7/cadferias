@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
 
 import { BaseList } from 'src/app/shared/common/base-list';
 import { VacationsService } from './../vacations.service';
@@ -16,9 +17,10 @@ export class VacationListComponent extends BaseList<Vacation> implements OnInit,
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
     protected router: Router,
+    protected fb: FormBuilder,
     private vacationsService: VacationsService
   ) { 
-    super(renderer, route, router, vacationsService);
+    super(renderer, route, router, fb, vacationsService);
   }
   
   ngOnInit() {

@@ -1,8 +1,8 @@
 import { NgModule  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { FormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -19,6 +19,7 @@ import { TemplateComponent } from './template/template.component';
     CommonModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     PaginationModule.forRoot()
   ],
   entryComponents: [
@@ -26,6 +27,7 @@ import { TemplateComponent } from './template/template.component';
   ],
   exports: [
     FormsModule,
+    ReactiveFormsModule,
     PaginationModule,
     TemplateComponent
   ]
