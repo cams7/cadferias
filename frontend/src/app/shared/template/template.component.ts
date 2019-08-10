@@ -13,7 +13,7 @@ import { Page } from '../common/base-service';
 })
 export class TemplateComponent implements OnInit, OnDestroy {
 
-  readonly queryParams = <Page>{page: 5, itemsPerPage: 5};
+  readonly queryParams = <Page>{page: 20, itemsPerPage: 20};
 
   private _url$: Observable<string>;
 

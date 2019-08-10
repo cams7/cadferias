@@ -14,11 +14,11 @@ export class StaffListComponent extends BaseList<Staff> implements OnInit, OnDes
 
   constructor(
     protected renderer: Renderer2,
+    protected route: ActivatedRoute,
     protected router: Router,
-    private route: ActivatedRoute,
     private staffsService: StaffsService
   ) { 
-    super(renderer, router, staffsService);
+    super(renderer, route, router, staffsService);
   }
 
   ngOnInit() {

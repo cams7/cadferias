@@ -14,11 +14,11 @@ export class VacationListComponent extends BaseList<Vacation> implements OnInit,
 
   constructor(
     protected renderer: Renderer2,
+    protected route: ActivatedRoute,
     protected router: Router,
-    private route: ActivatedRoute,
     private vacationsService: VacationsService
   ) { 
-    super(renderer, router, vacationsService);
+    super(renderer, route, router, vacationsService);
   }
   
   ngOnInit() {

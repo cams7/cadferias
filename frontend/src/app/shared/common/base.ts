@@ -7,4 +7,11 @@ export abstract class Base {
     protected isNumberOrNull(value: string | number) {
         return !value || this.isNumber(value);
     }
+
+    protected getNumber(value: string | number) {
+        if(!value)
+            return null;
+        
+        return Number(value);
+    }
 }
