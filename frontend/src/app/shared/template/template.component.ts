@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { take, map, shareReplay, tap, filter } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
@@ -13,7 +13,7 @@ import { Page } from '../common/base-service';
 })
 export class TemplateComponent implements OnInit, OnDestroy {
 
-  readonly queryParams = <Page>{page: 20, itemsPerPage: 20};
+  readonly queryParams = <Page>{page: 1, itemsPerPage: 10};
 
   private _url$: Observable<string>;
 
@@ -31,7 +31,7 @@ export class TemplateComponent implements OnInit, OnDestroy {
       map(events => (<NavigationStart>events).url),
       filter(url => !!url),
       map(url => url.trim().replace(/\?[\w\=\&]+/,'')),      
-      tap(url => console.log('url: ', url)),
+      tap(url => console.log(`URL: ${url}`)),
       shareReplay()
     )
   }
@@ -42,6 +42,15 @@ export class TemplateComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.signOut();
     this.router.navigate(['/home']);
+  }
+
+  isLinkActive$(routeLink: string) {
+    return forkJoin(
+      of(routeLink),
+      this.url$
+    ).pipe(
+      map(([routeLink, url]) => routeLink == url)
+    );
   }
   
   get isLoggedIn$() {

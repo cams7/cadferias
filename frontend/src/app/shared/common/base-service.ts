@@ -14,12 +14,15 @@ export abstract class BaseService<T> extends Base {
         super();
     }
 
-    getAll(page?: Page): Observable<PaginationVO<T>> {
+    getAll$(page?: Page, search?: string): Observable<PaginationVO<T>> {
         let params = new HttpParams();
+        if(search && search.trim().length > 0)
+            params = params.append('q', search);
         if(page && page.page)
             params = params.append('_page', <any>page.page);
         if(page && page.itemsPerPage)
             params = params.append('_limit', <any>page.itemsPerPage);
+        
         return this.http.get<T[]>(this.API_URL, { params: params, observe: 'response' }).pipe(
             map(response => <PaginationVO<T>>{
                 totalItems: <any>response.headers.get('X-Total-Count'), 
@@ -28,26 +31,26 @@ export abstract class BaseService<T> extends Base {
         );
     }
     
-    getById(id: number) {
+    getById$(id: number) {
         return this.http.get<T>(`${this.API_URL}/${id}`);
     }
 
-    protected create(record: T) {
+    protected create$(record: T) {
         return this.http.post<T>(this.API_URL, record);
     }
 
-    protected update(record: T) {
+    protected update$(record: T) {
         return this.http.put<T>(`${this.API_URL}/${record["id"]}`, record);
     }
 
-    save(record: T) {
+    save$(record: T) {
         if (record["id"])
-            return this.update(record);
+            return this.update$(record);
 
-        return this.create(record);
+        return this.create$(record);
     }
 
-    remove(id: number) {
+    remove$(id: number) {
         return this.http.delete<void>(`${this.API_URL}/${id}`);
     }
 
