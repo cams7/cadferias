@@ -13,7 +13,7 @@ import { Staff } from './../../shared/model/staff';
   styleUrls: ['./staff-list.component.scss']
 })
 export class StaffListComponent extends BaseList<Staff> {
-
+    
   constructor(
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
@@ -25,12 +25,20 @@ export class StaffListComponent extends BaseList<Staff> {
     super(renderer, route, router, fb, eventsService, staffsService);
   }
 
-  protected addSearch(search: string) {
-    this.eventsService.addStaffSearch(search);
+  protected addModelSearch(staff: Staff) {
+    this.eventsService.addStaffSearch(staff);
   }  
 
   protected getSearchType() {
     return SearchType.STAFF;
+  }
+
+  protected getModelBySearch(search: string): Staff {
+    return undefined;
+  }
+
+  protected getSearchByModel(staff: Staff): string {
+    return undefined;
   }
 
 }

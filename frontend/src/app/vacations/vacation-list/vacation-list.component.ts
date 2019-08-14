@@ -13,7 +13,7 @@ import { Vacation } from './../../shared/model/vacation';
   styleUrls: ['./vacation-list.component.scss']
 })
 export class VacationListComponent extends BaseList<Vacation> {
-
+  
   constructor(
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
@@ -25,12 +25,20 @@ export class VacationListComponent extends BaseList<Vacation> {
     super(renderer, route, router, fb, eventsService, vacationsService);
   }
   
-  protected addSearch(search: string) {
-    this.eventsService.addVacationSearch(search);
+  protected addModelSearch(vacation: Vacation) {
+    this.eventsService.addVacationSearch(vacation);
   } 
   
   protected getSearchType() {
     return SearchType.VACATION;
+  }
+
+  protected getModelBySearch(search: string): Vacation {
+    return undefined;
+  }
+
+  protected getSearchByModel(vacation: Vacation): string {
+    return undefined;
   }
 
 }

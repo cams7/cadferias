@@ -21,6 +21,23 @@ export abstract class Base implements OnDestroy {
         return Number(value);
     }
 
+    protected buildMap(value: any, key?: string): Map<string, any> {
+        if(!value)
+            return new Map<string, any>();
+
+        return Object.keys(value).reduce((map, k) => {
+            const v = value[k];
+
+            if(typeof v === 'function')
+                return map;
+
+            if(typeof v === 'object')
+                return new Map([...Array.from(map.entries()), ...Array.from(this.buildMap(v, k).entries())])
+            
+            return map.set(!!key ? `${key}.${k}` : k, v);
+        }, new Map<string, any>());
+    }
+
     ngOnDestroy() {
         this.endSubject.next(true);
         this.endSubject.complete();

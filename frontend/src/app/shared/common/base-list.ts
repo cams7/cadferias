@@ -55,10 +55,11 @@ export abstract class BaseList<T> extends Base implements OnInit {
             search: []
         });
 
-        this.eventsService.getSearch$(this.getSearchType()).pipe( 
+        this.eventsService.getModelSearch$(this.getSearchType()).pipe( 
             take(1),           
-            filter(search => !!search)
-        ).subscribe(search => {
+            filter(modelSearch => !!modelSearch)
+        ).subscribe(modelSearch => {
+            const search = this.getSearchByModel(modelSearch);
             this.form.get(SEARCH_FIELD).setValue(search);    
         });
 
@@ -78,12 +79,13 @@ export abstract class BaseList<T> extends Base implements OnInit {
             debounceTime(1000),
             distinctUntilChanged(),
             takeUntil(super.end$)
-        ).subscribe(search => {
-            this.addSearch(search);
+        ).subscribe((search: string) => {
+            const modelSearch = this.getModelBySearch(search);
+            this.addModelSearch(modelSearch);         
         });
 
         this.pagination$ = combineLatest(
-            this.eventsService.getSearch$(this.getSearchType()),
+            this.eventsService.getModelSearch$(this.getSearchType()),
             this.route.queryParams.pipe(
                 filter(params => !!params[PAGE_PARAM] || !!params[ITEMS_PER_PAGE_PARAM]),
                 flatMap(params => { 
@@ -103,7 +105,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
                 })
             )
         ).pipe(
-            switchMap(([search, page]) => forkJoin(of(page), this.service.getAll$(page, search))),
+            switchMap(([modelSearch, page]) => forkJoin(of(page), this.service.getAll$(page, super.buildMap(modelSearch)))),
             flatMap(([page, pagination])=> {
                 this._totalItems = pagination.totalItems;
                 this._totalItemsPerPage = pagination.items.length;                
@@ -115,8 +117,10 @@ export abstract class BaseList<T> extends Base implements OnInit {
         );
     }  
         
-    protected abstract addSearch(search: string): void;
+    protected abstract addModelSearch(modelSearch: T): void;
     protected abstract getSearchType(): SearchType;
+    protected abstract getModelBySearch(search: string): T;
+    protected abstract getSearchByModel(modelSearch: T): string;
 
     get totalItems() {
         return this._totalItems;
@@ -185,7 +189,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
             of(page).pipe(
                 delayWhen(_ => timer(MILLIS_VALUE))
             ).subscribe(page =>{
-                this._page.page = page.page;          
+                this._page.page = page.page;           
             });            
         }  
     }

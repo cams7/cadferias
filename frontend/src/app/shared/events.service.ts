@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, BehaviorSubject } from 'rxjs';
-import { filter, shareReplay, map, tap, last, distinctUntilKeyChanged, defaultIfEmpty, share } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { Employee } from './model/employee';
+import { Vacation } from './model/vacation';
+import { Staff } from './model/staff';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
 
-  private searchSubject = new Map<SearchType, BehaviorSubject<string>>();
+  private searchSubject = new Map<SearchType, BehaviorSubject<any>>();
 
   constructor() { 
     this.initSearchSubject();
@@ -15,27 +17,27 @@ export class EventsService {
 
   private initSearchSubject() {
     Object.keys(SearchType).filter(key => isNaN(Number(key))).map(key => SearchType[key]).forEach(searchType => {
-      this.searchSubject.set(searchType, new BehaviorSubject<string>(undefined));  
+      this.searchSubject.set(searchType, new BehaviorSubject<any>(undefined));  
     });
   }
 
-  addEmployeeSearch(search?: string) {
-    this.addSearch(SearchType.EMPLOYEE, search);
+  addEmployeeSearch(employee?: Employee) {
+    this.addModelSearch(SearchType.EMPLOYEE, employee);
   }
 
-  addVacationSearch(search?: string) {
-    this.addSearch(SearchType.VACATION, search);
+  addVacationSearch(vacation?: Vacation) {
+    this.addModelSearch(SearchType.VACATION, vacation);
   }
 
-  addStaffSearch(search?: string) {
-    this.addSearch(SearchType.STAFF, search);
+  addStaffSearch(staff?: Staff) {
+    this.addModelSearch(SearchType.STAFF, staff);
   }
 
-  private addSearch(searchType: SearchType, search: string) {
-    this.searchSubject.get(searchType).next(search);
+  private addModelSearch(searchType: SearchType, modelSearch: any) {
+    this.searchSubject.get(searchType).next(modelSearch);
   }
 
-  getSearch$(searchType: SearchType) {
+  getModelSearch$(searchType: SearchType) {
     return this.searchSubject.get(searchType).asObservable();
   }
 

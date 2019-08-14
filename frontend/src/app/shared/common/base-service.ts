@@ -14,14 +14,19 @@ export abstract class BaseService<T> extends Base {
         super();
     }
 
-    getAll$(page?: Page, search?: string): Observable<PaginationVO<T>> {
-        let params = new HttpParams();
-        if(search && search.trim().length > 0)
-            params = params.append('q', search);
+    getAll$(page?: Page, searchParams?:  Map<string, any>): Observable<PaginationVO<T>> {
+        let params = new HttpParams();   
+
         if(page && page.page)
             params = params.append('_page', <any>page.page);
+
         if(page && page.itemsPerPage)
             params = params.append('_limit', <any>page.itemsPerPage);
+        
+        if(searchParams && searchParams.size > 0)
+            params = Array.from(searchParams.keys()).reduce((params, key)=>{
+                return params.append(`${key}_like`, searchParams.get(key));
+            }, params);
         
         return this.http.get<T[]>(this.API_URL, { params: params, observe: 'response' }).pipe(
             map(response => <PaginationVO<T>>{
