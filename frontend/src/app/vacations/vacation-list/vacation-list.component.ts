@@ -7,6 +7,7 @@ import { EventsService, SearchType } from 'src/app/shared/events.service';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
+import { Employee } from 'src/app/shared/model/employee';
 
 @Component({
   selector: 'app-vacation-list',
@@ -35,14 +36,21 @@ export class VacationListComponent extends BaseList<Vacation> {
   }
 
   protected getModelBySearch(search: string): Vacation {
-    return undefined;
+    const vacation = <Vacation>{};
+    vacation.employee = <Employee>{};
+    if(this.isNumber(search))
+      vacation.employee.id = Number(search);
+    return vacation;
   }
 
   protected getSearchByModel(vacation: Vacation): string {
-    return undefined;
+    return super.buildMap(vacation).get('employee.id');
   }
 
   protected setSortFields(sortFields: Map<string, SortOrder>) {
+    sortFields.set('vacationStartDate', undefined);
+    sortFields.set('vacationEndDate', undefined);
+    sortFields.set('employee.id', undefined);
   }
 
 }

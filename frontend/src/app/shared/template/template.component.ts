@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
-import { Observable, of, forkJoin } from 'rxjs';
-import { take, map, shareReplay, tap, filter } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../auth/auth.service';
 import { PageAndSort } from './../common/base-service';
@@ -20,26 +18,13 @@ export class TemplateComponent implements OnInit, OnDestroy {
     sort: 'id',
     order: SortOrder.ASC
   };
-
-  private _url$: Observable<string>;
-
-  test$ = of('/employees');
  
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this._url$ = this.router.events.pipe(
-      take(1),
-      map(events => (<NavigationStart>events).url),
-      filter(url => !!url),
-      map(url => url.trim().replace(/\?[\w\=\&]+/,'')),      
-      tap(url => console.log(`URL: ${url}`)),
-      shareReplay()
-    )
   }
 
   ngOnDestroy() {
@@ -50,21 +35,18 @@ export class TemplateComponent implements OnInit, OnDestroy {
     this.router.navigate(['/home']);
   }
 
-  isLinkActive$(routeLink: string) {
-    return forkJoin(
-      of(routeLink),
-      this.url$
-    ).pipe(
-      map(([routeLink, url]) => routeLink == url)
-    );
-  }
-  
   get isLoggedIn$() {
     return this.authService.loggedIn$;
   }
 
-  get url$() {
-    return this._url$;
-  }
+  isLinkActive(url: string) {
+    const queryParamsIndex = this.router.url.indexOf('?');
+    const baseUrl = queryParamsIndex === -1 ? this.router.url : this.router.url.slice(0, queryParamsIndex);
 
+    if(url.length > 1){ // if url != '/'
+      return baseUrl.startsWith(url);
+    }
+
+    return baseUrl === url;
+  }
 }

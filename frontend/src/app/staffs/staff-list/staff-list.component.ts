@@ -35,14 +35,17 @@ export class StaffListComponent extends BaseList<Staff> {
   }
 
   protected getModelBySearch(search: string): Staff {
-    return undefined;
+    const staff = <Staff>{};
+    staff.name = search;
+    return staff;
   }
 
   protected getSearchByModel(staff: Staff): string {
-    return undefined;
+    return super.buildMap(staff).get('name');
   }
 
   protected setSortFields(sortFields: Map<string, SortOrder>) {
+    sortFields.set('name', undefined);
   }
 
 }

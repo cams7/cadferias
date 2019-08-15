@@ -1,5 +1,4 @@
 <app-template>
-    <!--div class="card-body" *ngIf="(employees$ | async) as employees; else loading"-->
     <div class="card-body">
         <form [formGroup]="form">
             <div class="form-row">
@@ -45,7 +44,7 @@
                 </div>
                 <ng-template #notFounded>
                     <div class="content-wrapper alert alert-warning" role="alert">
-                        Empregados não encontrados!
+                        Empregado não encontrado!
                     </div>
                 </ng-template>
                 <pagination 

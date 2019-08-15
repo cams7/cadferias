@@ -1,3 +1,56 @@
 <app-template>
-    <p>vacation-list works!</p>
+    <div class="card-body">
+        <form [formGroup]="form">
+            <div class="form-row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="input-group input-group-md">
+                        <label for="itemsPerPage">Show <select id="itemsPerPage" formControlName="itemsPerPage" class="custom-select custom-select-sm form-control form-control-sm" class="form-control" placeholder="Items per page">
+                            <option *ngFor="let itemsPerPage of allItemsPerPage" [value]="itemsPerPage">{{ itemsPerPage }}</option>
+                        </select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="input-group input-group-md">
+                        <label for="search">Search:<input id="search" formControlName="search" type="search" class="form-control form-control-sm" class="form-control" placeholder="Search" autofocus></label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-xs-12 col-12">
+                <div class="content-wrapper" *ngIf="isLoadedItems$ | async; else notFounded">
+                    <table class="table table-striped table-bordered table-sortable" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th [sortField]="getSortField('id')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
+                                <th [sortField]="getSortField('vacationStartDate')" (sortFieldChanged)="sortFieldChanged = $event">Data inicial</th>
+                                <th [sortField]="getSortField('vacationEndDate')" (sortFieldChanged)="sortFieldChanged = $event">Data final</th>                        
+                                <th [sortField]="getSortField('employee.id')" (sortFieldChanged)="sortFieldChanged = $event">Funcionário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let vacation of items$ | async">
+                                <td>{{ vacation.id }}</td>
+                                <td>{{ vacation.vacationStartDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ vacation.vacationEndDate | date: 'dd/MM/yyyy' }}</td>
+                                <td>{{ vacation.employee.id }}</td>
+                            </tr>                                
+                        </tbody>                
+                    </table>
+                </div>
+                <ng-template #notFounded>
+                    <div class="content-wrapper alert alert-warning" role="alert">
+                        Férias não encontrada!
+                    </div>
+                </ng-template>
+                <pagination 
+                    [previousText]="previousText" [nextText]="nextText" [firstText]="firstText" [lastText]="lastText" 
+                    [directionLinks]="showDirectionLinks" [boundaryLinks]="showBoundaryLinks" [maxSize]="maxSize" [rotate]="rotate"
+                    [totalItems]="totalItems" [itemsPerPage]="page.itemsPerPage"
+                    [(ngModel)]="page.page" (pageChanged)="pageChanged = $event" (numPages)="numPages = $event" #pagination>
+                </pagination>
+            </div>
+        </div>
+    </div>    
 </app-template>
+
