@@ -8,12 +8,14 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { TemplateComponent } from './template/template.component';
+import { SortFieldDirective } from './common/sort-field.directive';
 
 @NgModule({
   declarations: [
     PageNotFoundComponent, 
     ConfirmModalComponent, 
-    TemplateComponent
+    TemplateComponent, 
+    SortFieldDirective
   ],
   imports: [
     CommonModule,
@@ -29,7 +31,8 @@ import { TemplateComponent } from './template/template.component';
     FormsModule,
     ReactiveFormsModule,
     PaginationModule,
-    TemplateComponent
+    TemplateComponent,
+    SortFieldDirective
   ]
 })
 export class SharedModule {

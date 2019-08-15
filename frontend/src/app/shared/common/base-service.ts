@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Base } from './base';
-import { tap, map } from 'rxjs/operators';
 import { PaginationVO } from '../model/vo/pagination-vo';
-import { Observable } from 'rxjs';
+import { SortOrder } from 'src/app/shared/common/sort-field.directive';
 
 export abstract class BaseService<T> extends Base {
 
@@ -14,14 +15,21 @@ export abstract class BaseService<T> extends Base {
         super();
     }
 
-    getAll$(page?: Page, searchParams?:  Map<string, any>): Observable<PaginationVO<T>> {
+    getAll$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PaginationVO<T>> {
         let params = new HttpParams();   
 
-        if(page && page.page)
-            params = params.append('_page', <any>page.page);
+        if(pageAndSort) {
+            if(pageAndSort.page)
+                params = params.append('_page', <any>pageAndSort.page);
 
-        if(page && page.itemsPerPage)
-            params = params.append('_limit', <any>page.itemsPerPage);
+            if(pageAndSort.itemsPerPage)
+                params = params.append('_limit', <any>pageAndSort.itemsPerPage);
+
+            if(pageAndSort.sort && pageAndSort.order) {
+                params = params.append('_sort', pageAndSort.sort);
+                params = params.append('_order', pageAndSort.order);    
+            }
+        }
         
         if(searchParams && searchParams.size > 0)
             params = Array.from(searchParams.keys()).reduce((params, key)=>{
@@ -66,5 +74,10 @@ export abstract class BaseService<T> extends Base {
 
 export interface Page {
     page: number; 
-    itemsPerPage: number    
+    itemsPerPage: number;   
+}
+
+export interface PageAndSort extends Page  {
+    sort: string;
+    order: SortOrder    
 }

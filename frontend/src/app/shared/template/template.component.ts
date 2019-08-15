@@ -4,7 +4,8 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { take, map, shareReplay, tap, filter } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
-import { Page } from '../common/base-service';
+import { PageAndSort } from './../common/base-service';
+import { SortOrder } from '../common/sort-field.directive';
 
 @Component({
   selector: 'app-template',
@@ -13,7 +14,12 @@ import { Page } from '../common/base-service';
 })
 export class TemplateComponent implements OnInit, OnDestroy {
 
-  readonly queryParams = <Page>{page: 1, itemsPerPage: 10};
+  readonly queryParams = <PageAndSort>{
+    page: 1, 
+    itemsPerPage: 10,
+    sort: 'id',
+    order: SortOrder.ASC
+  };
 
   private _url$: Observable<string>;
 

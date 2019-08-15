@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 
+import { SortOrder } from 'src/app/shared/common/sort-field.directive';
 import { EventsService, SearchType } from 'src/app/shared/events.service';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { VacationsService } from './../vacations.service';
@@ -39,6 +40,9 @@ export class VacationListComponent extends BaseList<Vacation> {
 
   protected getSearchByModel(vacation: Vacation): string {
     return undefined;
+  }
+
+  protected setSortFields(sortFields: Map<string, SortOrder>) {
   }
 
 }

@@ -6,11 +6,14 @@ import { filter, delay, concatMap, flatMap, shareReplay, delayWhen, map, distinc
 
 import { EventsService, SearchType } from '../events.service';
 import { Base } from './base';
-import { BaseService, Page } from './base-service';
+import { BaseService, Page, PageAndSort } from './base-service';
 import { PaginationVO } from './../model/vo/pagination-vo';
+import { SortField, SortOrder } from './sort-field.directive';
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
+const SORT_PARAM = 'sort';
+const ORDER_PARAM = 'order';
 const ITEMS_PER_PAGE_FIELD = 'itemsPerPage';
 const SEARCH_FIELD = 'search';
 export abstract class BaseList<T> extends Base implements OnInit {
@@ -37,6 +40,9 @@ export abstract class BaseList<T> extends Base implements OnInit {
     @ViewChild('pagination', { read: ElementRef, static:true }) pagination: ElementRef;
 
     public form: FormGroup;
+
+    private _sortField = <SortField>{fieldName: 'id', order: SortOrder.ASC};
+    private sortFields = new Map<string, SortOrder>();
   
     constructor(
         protected renderer: Renderer2,
@@ -49,7 +55,9 @@ export abstract class BaseList<T> extends Base implements OnInit {
         super();
     }
 
-    ngOnInit() {
+    ngOnInit() {     
+        this.initSortFields();       
+        
         this.form = this.fb.group({
             itemsPerPage: [],
             search: []
@@ -70,8 +78,13 @@ export abstract class BaseList<T> extends Base implements OnInit {
             filter(itemsPerPage => this._page.itemsPerPage && itemsPerPage != this._page.itemsPerPage),
             takeUntil(super.end$)
         ).subscribe(itemsPerPage => {
-            const page = <Page>{page: this._page.page, itemsPerPage: itemsPerPage};           
-            this.router.navigate([this.service.shortApiUrl], { queryParams: page });
+            const pageAndSort = <PageAndSort>{
+                page: this._page.page, 
+                itemsPerPage: itemsPerPage,
+                sort: this._sortField.fieldName,
+                order: this._sortField.order
+            };           
+            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
         });
 
@@ -87,29 +100,47 @@ export abstract class BaseList<T> extends Base implements OnInit {
         this.pagination$ = combineLatest(
             this.eventsService.getModelSearch$(this.getSearchType()),
             this.route.queryParams.pipe(
-                filter(params => !!params[PAGE_PARAM] || !!params[ITEMS_PER_PAGE_PARAM]),
+                filter(params => params[PAGE_PARAM] && params[SORT_PARAM] && params[ORDER_PARAM]),
                 flatMap(params => { 
                     const page = params[PAGE_PARAM];
                     const itemsPerPage = params[ITEMS_PER_PAGE_PARAM];
+                    const sort = params[SORT_PARAM];
+                    const order = params[ORDER_PARAM];
                             
-                    if(!super.isNumberOrNull(page) || !super.isNumberOrNull(itemsPerPage))
+                    if(!super.isNumber(page) || !super.isNumberOrNull(itemsPerPage))
                         return EMPTY;
                     
                     if(page < 1 || itemsPerPage < 1)
-                        return EMPTY; 
+                        return EMPTY;
                     
-                    return of(<Page>{
+                    if(!Array.from(this.sortFields.keys()).some(fieldName => fieldName == sort)) 
+                        return EMPTY;
+
+                    if(order != SortOrder.ASC && order != SortOrder.DESC)
+                        return EMPTY;
+                    
+                    return of(<PageAndSort>{
                         page: super.getNumber(page), 
-                        itemsPerPage: super.getNumber(itemsPerPage)
+                        itemsPerPage: super.getNumber(itemsPerPage),
+                        sort: sort,
+                        order: order
                     });
                 })
             )
         ).pipe(
-            switchMap(([modelSearch, page]) => forkJoin(of(page), this.service.getAll$(page, super.buildMap(modelSearch)))),
-            flatMap(([page, pagination])=> {
+            switchMap(([modelSearch, pageAndSort]) => {
+                return forkJoin(of(pageAndSort), this.service.getAll$(pageAndSort, super.buildMap(modelSearch)))
+            }),
+            flatMap(([pageAndSort, pagination])=> {
                 this._totalItems = pagination.totalItems;
                 this._totalItemsPerPage = pagination.items.length;                
-                this.page = page;                
+                this.page = pageAndSort;
+                
+                const sortField = <SortField> {
+                    fieldName: pageAndSort.sort,
+                    order: pageAndSort.order
+                }
+                this.sortField = sortField;
                 return of(pagination);
             }),
             takeUntil(super.end$),
@@ -121,14 +152,21 @@ export abstract class BaseList<T> extends Base implements OnInit {
     protected abstract getSearchType(): SearchType;
     protected abstract getModelBySearch(search: string): T;
     protected abstract getSearchByModel(modelSearch: T): string;
+    protected abstract setSortFields(sortFields: Map<string, SortOrder>): void;
 
     get totalItems() {
         return this._totalItems;
     }
 
-    set pageChanged(pageChanged: Page) {
-        if(this.isPageChange(pageChanged)) {   
-            this.router.navigate([this.service.shortApiUrl], { queryParams: pageChanged });
+    set pageChanged(page: Page) {
+        if(this.isPageChange(page)) {
+            const pageAndSort = <PageAndSort>{
+                page: page.page, 
+                itemsPerPage: page.itemsPerPage,
+                sort: this._sortField.fieldName,
+                order: this._sortField.order
+            };   
+            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
         }
     }
@@ -203,7 +241,11 @@ export abstract class BaseList<T> extends Base implements OnInit {
     }
 
     private isPageChange(page: Page) {
-        return this.isAfterChangeEvent || this._page.page != page.page || this.page.itemsPerPage != page.itemsPerPage;
+        return this.isAfterChangeEvent || this._page.page != page.page || this._page.itemsPerPage != page.itemsPerPage;
+    }
+
+    private isSortFiedChange(sortField: SortField) {
+        return this._sortField.fieldName != sortField.fieldName || this._sortField.order != sortField.order;
     }
 
     get items$() {
@@ -232,6 +274,41 @@ export abstract class BaseList<T> extends Base implements OnInit {
 
     get allItemsPerPage() {
         return [5, 10, 25, 50, 100];
+    }
+
+    private initSortFields() {
+        this.sortFields.set(this._sortField.fieldName, this._sortField.order);
+        this.setSortFields(this.sortFields);
+    }
+
+    getSortField(fieldName: string) {
+        const sortField = <SortField>{
+            fieldName: fieldName, 
+            order: this.sortFields.get(fieldName)
+        };  
+        return sortField;
+    }
+
+    set sortFieldChanged(sortField: SortField) {
+        if(this.isSortFiedChange(sortField)) {
+            const pageAndSort = <PageAndSort>{
+                page: this._page.page, 
+                itemsPerPage: this._page.itemsPerPage,
+                sort: sortField.fieldName,
+                order: sortField.order
+            };   
+            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
+        }    
+    }
+
+    private set sortField(sortField: SortField) {
+        if(this.isSortFiedChange(sortField)) {
+            Array.from(this.sortFields.keys()).filter(fieldName => fieldName != sortField.fieldName).forEach(fieldName => 
+                this.sortFields.set(fieldName, undefined)
+            );
+            this.sortFields.set(sortField.fieldName, sortField.order);
+            this._sortField = sortField;
+        }
     }
 
 }

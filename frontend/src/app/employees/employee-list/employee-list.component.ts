@@ -2,10 +2,11 @@ import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
+import { SortOrder } from 'src/app/shared/common/sort-field.directive';
 import { EventsService, SearchType } from 'src/app/shared/events.service';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { EmployeesService } from '../employees.service';
-import { Employee, Address } from './../../shared/model/employee';
+import { Employee } from './../../shared/model/employee';
 
 @Component({
   selector: 'app-employee-list',
@@ -13,7 +14,7 @@ import { Employee, Address } from './../../shared/model/employee';
   styleUrls: ['./employee-list.component.scss']
 })
 export class EmployeeListComponent extends BaseList<Employee> {
-        
+          
   constructor(
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
@@ -50,6 +51,14 @@ export class EmployeeListComponent extends BaseList<Employee> {
 
   protected getSearchByModel(employee: Employee): string {
     return super.buildMap(employee).get('name');
+  }
+
+  protected setSortFields(sortFields: Map<string, SortOrder>) {    
+    sortFields.set('name', undefined);
+    sortFields.set('birthDate', undefined);
+    sortFields.set('hiringDate', undefined);
+    sortFields.set('employeeRegistration', undefined);
+    sortFields.set('staff.id', undefined);
   }
 
 }
