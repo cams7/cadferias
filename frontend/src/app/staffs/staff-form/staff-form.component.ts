@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component } from '@angular/core';
 
 import { BaseForm } from 'src/app/shared/common/base-form';
 import { StaffsService } from '../staffs.service';
@@ -9,7 +8,7 @@ import { StaffsService } from '../staffs.service';
   templateUrl: './staff-form.component.html',
   styleUrls: ['./staff-form.component.scss']
 })
-export class StaffFormComponent extends BaseForm implements OnInit, OnDestroy {
+export class StaffFormComponent extends BaseForm {
 
   constructor(
     private staffsService: StaffsService
@@ -18,9 +17,7 @@ export class StaffFormComponent extends BaseForm implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-  }
-
-  ngOnDestroy() {
+    super.ngOnInit();
   }
 
   submit() {

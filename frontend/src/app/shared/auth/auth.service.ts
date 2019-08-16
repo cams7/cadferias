@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 import { TokenStorageService } from './token-storage.service';
 import { User } from './../model/user';
+import { UsersService } from 'src/app/users/users.service';
 
 
 @Injectable({
@@ -16,8 +15,8 @@ export class AuthService {
   private _loggedUser$: Observable<User> = of(undefined);
 
   constructor(
-    private http: HttpClient,
-    private tokenStorage: TokenStorageService
+    private tokenStorage: TokenStorageService,
+    private usersService: UsersService
   ) { }
   
   loadTokenData() {
@@ -28,12 +27,7 @@ export class AuthService {
   }
 
   signIn$(user: User) {
-    let params = new HttpParams();
-    params = params.append('email', user.email);
-    params = params.append('password', user.password);
-    
-    this._loggedUser$ = this.http.get(`${environment.API}users`, { params: params }).pipe(
-      map((data: any) => data.length == 1 ? data[0].token : undefined),
+    this._loggedUser$ = this.usersService.getToken$(user).pipe(
       map(token => {
         if(!token) 
           return undefined;

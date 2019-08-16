@@ -12,9 +12,9 @@ export class FormDeactivateGuard implements CanDeactivate<BaseForm> {
   constructor() { }
 
   canDeactivate(component: BaseForm, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> {
-    const unchangedData = component.unchangedData();
-    if(unchangedData)
-      return unchangedData.pipe(
+    const unchangedData$ = component.unchangedData$();
+    if(!!unchangedData$)
+      return unchangedData$.pipe(
         tap(changed => {
           console.log(`Os dados do formulário ${changed? 'não ': ''}foi alterado`);
         })

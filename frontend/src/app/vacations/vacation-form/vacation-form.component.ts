@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component } from '@angular/core';
 
 import { BaseForm } from 'src/app/shared/common/base-form';
 import { VacationsService } from './../vacations.service';
@@ -9,7 +8,7 @@ import { VacationsService } from './../vacations.service';
   templateUrl: './vacation-form.component.html',
   styleUrls: ['./vacation-form.component.scss']
 })
-export class VacationFormComponent extends BaseForm implements OnInit, OnDestroy {
+export class VacationFormComponent extends BaseForm {
 
   constructor(
     private vacationsService: VacationsService
@@ -18,9 +17,7 @@ export class VacationFormComponent extends BaseForm implements OnInit, OnDestroy
   }
 
   ngOnInit() {
-  }
-
-  ngOnDestroy() {
+    super.ngOnInit();
   }
 
   submit() {

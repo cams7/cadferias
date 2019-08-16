@@ -3,7 +3,9 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/r
 import { Observable, of } from 'rxjs';
 
 import { EmployeesService } from '../employees.service';
-import { Employee } from 'src/app/shared/model/employee';
+import { Employee, Address } from './../../shared/model/employee';
+import { User } from './../../shared/model/user';
+import { Staff } from './../../shared/model/staff';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +17,16 @@ export class EmployeeResolverGuard implements Resolve<Employee> {
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Employee> {
-    if (route.params && route.params['id']) 
-      return of(<Employee>{}); 
+    if (route.params && route.params['id']) {
+      const id: number = route.params['id'];
+      return this.employeesService.getById$(id); 
+    }
 
-    return of(<Employee>{});
+    const employee = <Employee>{};
+    employee.address = <Address>{};
+    employee.user = <User>{};
+    employee.staff = <Staff>{};
+
+    return of(employee);
   }
 }

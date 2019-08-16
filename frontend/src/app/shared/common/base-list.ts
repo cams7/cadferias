@@ -41,7 +41,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
 
     public form: FormGroup;
 
-    private _sortField = <SortField>{fieldName: 'id', order: SortOrder.ASC};
+    private _sortField = <SortField>{fieldName: 'id', order: SortOrder.DESC};
     private sortFields = new Map<string, SortOrder>();
   
     constructor(
@@ -84,7 +84,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
                 sort: this._sortField.fieldName,
                 order: this._sortField.order
             };           
-            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
+            this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
         });
 
@@ -166,7 +166,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
                 sort: this._sortField.fieldName,
                 order: this._sortField.order
             };   
-            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
+            this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
         }
     }
@@ -297,7 +297,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
                 sort: sortField.fieldName,
                 order: sortField.order
             };   
-            this.router.navigate([this.service.shortApiUrl], { queryParams: pageAndSort });
+            this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
         }    
     }
 
@@ -309,6 +309,10 @@ export abstract class BaseList<T> extends Base implements OnInit {
             this.sortFields.set(sortField.fieldName, sortField.order);
             this._sortField = sortField;
         }
+    }
+
+    onEdit(id: number) {
+        this.router.navigate([id], { relativeTo: this.route });
     }
 
 }

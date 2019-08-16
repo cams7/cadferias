@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { User } from './../shared/model/user';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
+export class SigninComponent extends BaseForm {
    
   constructor(
     private router: Router,    
@@ -25,15 +25,14 @@ export class SigninComponent extends BaseForm implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     super.form = this.fb.group({
       email: [undefined, [Validators.required, Validators.email]], 
       password: [undefined, Validators.required],
       rememberMe: [false, Validators.required]
     });
   }
-
-  ngOnDestroy() {
-  }    
 
   submit() {
     const user = <User>this.form.value;

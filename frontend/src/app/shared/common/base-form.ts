@@ -1,14 +1,19 @@
+import { OnInit } from '@angular/core';
 import { Base } from './base';
 import { Observable, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
-export abstract class BaseForm extends Base {
+
+export abstract class BaseForm extends Base implements OnInit {    
 
     public form: FormGroup;
     protected _submitted = false;
 
     constructor() { 
         super();
+    }
+
+    ngOnInit() {
     }
 
     abstract submit(): void;
@@ -22,7 +27,7 @@ export abstract class BaseForm extends Base {
         this.submit();
     } 
 
-    unchangedData(): Observable<boolean> {
+    unchangedData$(): Observable<boolean> {
         return of(true);
     }
 

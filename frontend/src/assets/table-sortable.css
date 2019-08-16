@@ -58,6 +58,15 @@
 }
 /* !Descending */
 
+.table-sortable > thead > tr > th.without-order {
+  cursor: none;
+  position: relative;
+}
+
+.table-sortable > thead > tr > th.without-order:after {
+    border: transparent;
+}
+
 /* Heading styles */
 h2.page-header {
   margin-top: 0px;

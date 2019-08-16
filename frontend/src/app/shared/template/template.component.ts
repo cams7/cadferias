@@ -16,7 +16,7 @@ export class TemplateComponent implements OnInit, OnDestroy {
     page: 1, 
     itemsPerPage: 10,
     sort: 'id',
-    order: SortOrder.ASC
+    order: SortOrder.DESC
   };
  
   constructor(
