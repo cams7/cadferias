@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="birthDate" class="control-label">Data de nascimento</label>
-                    <input id="birthDate" type="text" class="form-control" formControlName="birthDate" [ngClass]="classError('birthDate')">
+                    <input id="birthDate" type="text" class="form-control" formControlName="birthDate" [ngClass]="classError('birthDate')" bsDatepicker [bsConfig]="bsConfig">
                     <div class="invalid-feedback" *ngIf="hasRequiredError('birthDate')">
                         Por favor, informe a data de nascimento.
                     </div>          
@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="hiringDate" class="col-form-label">Data de contratação</label>
-                    <input id="hiringDate" type="date" readonly class="form-control-plaintext form-control-lg"  formControlName="hiringDate">
+                    <input id="hiringDate" type="text" readonly class="form-control-plaintext form-control-lg"  formControlName="hiringDate">
                 </div>            
             </div>
         </fieldset>

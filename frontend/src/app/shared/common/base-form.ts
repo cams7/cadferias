@@ -1,5 +1,5 @@
 import { OnInit } from '@angular/core';
-import { Base } from './base';
+import { Base, BR_DATE_FORMAT } from './base';
 import { Observable, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
@@ -53,5 +53,14 @@ export abstract class BaseForm extends Base implements OnInit {
 
     get submitted() {
         return this._submitted;
+    }
+
+    get bsConfig() {
+        return { 
+            dateInputFormat: BR_DATE_FORMAT.toUpperCase(),
+            isAnimated: true,
+            adaptivePosition: true,
+            containerClass: 'theme-dark-blue' 
+        }
     }
 }

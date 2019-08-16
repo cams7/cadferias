@@ -1,9 +1,10 @@
 import { NgModule  } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
@@ -18,11 +19,12 @@ import { SortFieldDirective } from './common/sort-field.directive';
     SortFieldDirective
   ],
   imports: [
-    CommonModule,
-    RouterModule,
+    CommonModule, 
     FormsModule,
-    ReactiveFormsModule,
-    PaginationModule.forRoot()
+    ReactiveFormsModule,    
+    RouterModule,
+    PaginationModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   entryComponents: [
     ConfirmModalComponent
@@ -31,6 +33,7 @@ import { SortFieldDirective } from './common/sort-field.directive';
     FormsModule,
     ReactiveFormsModule,
     PaginationModule,
+    BsDatepickerModule,
     TemplateComponent,
     SortFieldDirective
   ]
