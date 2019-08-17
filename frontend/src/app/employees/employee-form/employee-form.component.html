@@ -42,7 +42,8 @@
                 </div>            
                 <div class="col-md-4 mb-3">
                     <label for="phoneNumber" class="control-label">Telefone</label>
-                    <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" [ngClass]="classError('phoneNumber')">
+                    <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" [ngClass]="classError('phoneNumber')"
+                        telefone [textMask]="{mask: brazilMasks.telefone.textMaskFunction}">
                     <div class="invalid-feedback" *ngIf="hasRequiredError('phoneNumber')">
                         Por favor, informe o telefone.
                     </div>          

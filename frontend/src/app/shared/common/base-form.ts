@@ -1,10 +1,14 @@
 import { OnInit } from '@angular/core';
-import { Base, BR_DATE_FORMAT } from './base';
-import { Observable, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
 
+import { MASKS } from 'ng-brazil';
 
-export abstract class BaseForm extends Base implements OnInit {    
+import { Base, BR_DATE_FORMAT } from './base';
+
+export abstract class BaseForm extends Base implements OnInit {   
+    
+    private _brazilMasks = MASKS;
 
     public form: FormGroup;
     protected _submitted = false;
@@ -62,5 +66,9 @@ export abstract class BaseForm extends Base implements OnInit {
             adaptivePosition: true,
             containerClass: 'theme-dark-blue' 
         }
+    }
+
+    get brazilMasks() {
+        return this._brazilMasks;
     }
 }

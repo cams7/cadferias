@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, merge, of } from 'rxjs';
 import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay } from 'rxjs/operators';
 
+import { NgBrazilValidators } from 'ng-brazil';
+
 import { CityVO } from './../../shared/model/vo/city-vo';
 import { StateVO } from './../../shared/model/vo/state-vo';
 import { BaseForm } from 'src/app/shared/common/base-form';
@@ -41,7 +43,7 @@ export class EmployeeFormComponent extends BaseForm {
       employeeRegistration: [this._employee.employeeRegistration],
       name: [this._employee.name, Validators.required],
       birthDate: [super.getDate(<any>this._employee.birthDate), Validators.required],
-      phoneNumber: [this._employee.phoneNumber, Validators.required],
+      phoneNumber: [this._employee.phoneNumber, [Validators.required, NgBrazilValidators.telefone]],
       address: this.fb.group({
         street: [this._employee.address.street, [Validators.required]],
         houseNumber: [this._employee.address.houseNumber, [Validators.required]],
@@ -97,6 +99,7 @@ export class EmployeeFormComponent extends BaseForm {
     employee.id = this._employee.id;
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
     employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
+    employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
     employee.user.email = undefined;
     employee.staff.name = undefined;
     employee.user.id = this._employee.user.id;

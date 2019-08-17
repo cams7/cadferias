@@ -59,10 +59,10 @@ export abstract class Base implements OnDestroy {
     }
 
     private _getDate(date: string, regex: any, format: string) {
-        if(!date || !regex || !format || typeof date !== 'string' || typeof format !== 'string' || !date.match(regex))
+        if(!date || !regex || !format || typeof date !== 'string' || typeof format !== 'string' || !date.trim().match(regex))
             return date;
        
-        const dateMap = this.getDateMap(date, format);
+        const dateMap = this.getDateMap(date.trim(), format);
         if(!dateMap)
             return date;
         
@@ -193,7 +193,15 @@ export abstract class Base implements OnDestroy {
         format = format.replace(/\\(.)/g, "$1");
     
         return format;
-    };    
+    };
+    
+    getFormattedDatePhoneNumber(phoneNumber: string) {
+        const REGEX = /^\((\d{2})\)\s(\d{4,5})\-(\d{4})$/g;
+        if(!phoneNumber || typeof phoneNumber !== 'string' || !phoneNumber.trim().match(REGEX)) 
+            return phoneNumber;
+         
+        return phoneNumber.trim().replace(REGEX, '$1$2$3');
+    }
 
     protected get end$() {
         return this.endSubject.pipe(
