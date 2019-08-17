@@ -36,11 +36,11 @@ export class EmployeeFormComponent extends BaseForm {
     this._employee = this.route.snapshot.data['employee'];    
 
     super.form = this.fb.group({
-      hiringDate: [super.getBrDateOrNull(<any>this._employee.hiringDate), [Validators.required]], 
+      hiringDate: [super.getDate(<any>this._employee.hiringDate), [Validators.required]], 
       //employeePhoto: [undefined, Validators.required],
       employeeRegistration: [this._employee.employeeRegistration],
       name: [this._employee.name, Validators.required],
-      birthDate: [super.getBrDateOrNull(<any>this._employee.birthDate), Validators.required],
+      birthDate: [super.getDate(<any>this._employee.birthDate), Validators.required],
       phoneNumber: [this._employee.phoneNumber, Validators.required],
       address: this.fb.group({
         street: [this._employee.address.street, [Validators.required]],
@@ -95,8 +95,8 @@ export class EmployeeFormComponent extends BaseForm {
   submit() {
     const employee = <Employee>this.form.value;
     employee.id = this._employee.id;
-    employee.birthDate = <any>super.getDateOrNull(<any>employee.birthDate);
-    employee.hiringDate = <any>super.getDateOrNull(<any>employee.hiringDate);
+    employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
+    employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
     employee.user.email = undefined;
     employee.staff.name = undefined;
     employee.user.id = this._employee.user.id;

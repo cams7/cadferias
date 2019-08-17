@@ -2,11 +2,25 @@ import { OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-export const DATE_FORMAT = 'yyyy-MM-dd';
-export const BR_DATE_FORMAT = 'dd/MM/yyyy';
+const YEAR_FORMAT = 'yyyy';
+const MONTH_FORMAT = 'MM';
+const DAY_FORMAT = 'dd';
+const HOUR_FORMAT = 'HH';
+const MINUTE_FORMAT = 'mm';
+const SECONDS_FORMAT = 'ss';
+const MILLIS_FORMAT = 'SSS';
+
+export const DATE_FORMAT = `${YEAR_FORMAT}-${MONTH_FORMAT}-${DAY_FORMAT}`;
+export const BR_DATE_FORMAT = `${DAY_FORMAT}/${MONTH_FORMAT}/${YEAR_FORMAT}`;
+
 export abstract class Base implements OnDestroy {     
     
     private endSubject = new Subject<boolean>();
+
+    ngOnDestroy() {
+        this.endSubject.next(true);
+        this.endSubject.complete();
+    }
 
     protected isNumber(value: string | number) {
         return (value && !isNaN(Number(value)));
@@ -40,46 +54,59 @@ export abstract class Base implements OnDestroy {
         }, new Map<string, any>());
     }
 
-    protected getDate(date: string | Date) {
-        return this.getFormattedDate(date, /^(\d{2})\/(\d{2})\/(\d{4})$/g, DATE_FORMAT);
+    protected getDate(date: string) {
+        return this._getDate(date, /^(\d{4})\-(\d{2})\-(\d{2})$/g, DATE_FORMAT);
     }
 
-    protected getDateOrNull(date: string) {
-        if(!date)
-            return null;
+    private _getDate(date: string, regex: any, format: string) {
+        if(!date || !regex || !format || typeof date !== 'string' || typeof format !== 'string' || !date.match(regex))
+            return date;
+       
+        const dateMap = this.getDateMap(date, format);
+        if(!dateMap)
+            return date;
         
-        return this.getDate(date);
+        return new Date(
+            dateMap.get(YEAR_FORMAT), 
+            dateMap.get(MONTH_FORMAT) - 1, 
+            dateMap.get(DAY_FORMAT), 
+            dateMap.get(HOUR_FORMAT), 
+            dateMap.get(MINUTE_FORMAT), 
+            dateMap.get(SECONDS_FORMAT), 
+            dateMap.get(MILLIS_FORMAT)
+        );
     }
 
-    protected getBrDate(date: string) {
-        return this.getFormattedDate(date, /^(\d{4})\-(\d{2})\-(\d{2})$/g, BR_DATE_FORMAT);
-    }
+    private getDateMap(date: string, format: string) {
+        if(!date || !format || typeof date !== 'string' || typeof format !== 'string')
+            return undefined;
 
-    protected getBrDateOrNull(date: string) {
-        if(!date)
-            return null;
-        
-        return this.getBrDate(date);
-    }
+        let dateMap = new Map<string, number>();
+        dateMap.set(YEAR_FORMAT, 0);
+        dateMap.set(MONTH_FORMAT, 0);
+        dateMap.set(DAY_FORMAT, 0);
+        dateMap.set(HOUR_FORMAT, 0);
+        dateMap.set(MINUTE_FORMAT, 0);
+        dateMap.set(SECONDS_FORMAT, 0);
+        dateMap.set(MILLIS_FORMAT, 0);
 
-    private getFormattedDate(date: string | Date, regex: any, format: string) {
-        if(!date || !regex || !format || (typeof date !== 'object' && typeof date !== 'string') || typeof format !== 'string')
+        const dateSplited = date.split(/\W/g).map(value => Number(value));
+        const formatSplited = format.split(/\W/g);
+
+        if(dateSplited.length != formatSplited.length)
+            return undefined;
+
+        let count = 0;
+        dateMap = formatSplited.reduce((map, key) => map.set(key, dateSplited[count++]), dateMap);
+
+        return dateMap;
+    } 
+
+    protected getFormattedDate(date: Date) {
+        if(!date || typeof date !== 'object')
             return date;
 
-        let total = format.split(/\W/g).length; 
-                
-        if(typeof date === 'string' && date.match(regex))
-            return date.replace(
-                regex, 
-                format.split(/\W/g).reduce((format, value)=> {
-                    return format.replace(value, `\$${total--}`);
-                }, format)
-            );
-
-        if(typeof date === 'object')
-            return this.formatDate(date, format);
-        
-        return date;
+        return this.formatDate(date, DATE_FORMAT);
     }
 
     private formatDate(date: Date, format: string, utc?: boolean) {
@@ -166,12 +193,7 @@ export abstract class Base implements OnDestroy {
         format = format.replace(/\\(.)/g, "$1");
     
         return format;
-    };
-
-    ngOnDestroy() {
-        this.endSubject.next(true);
-        this.endSubject.complete();
-    }
+    };    
 
     protected get end$() {
         return this.endSubject.pipe(

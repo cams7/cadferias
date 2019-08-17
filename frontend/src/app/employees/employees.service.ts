@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { forkJoin, of } from 'rxjs';
-import { flatMap, map, filter, share, shareReplay } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+import { StateVO } from './../shared/model/vo/state-vo';
+import { CityVO } from '../shared/model/vo/city-vo';
 import { UsersService } from 'src/app/users/users.service';
 import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';
 import { Employee } from '../shared/model/employee';
-import { StateVO } from './../shared/model/vo/state-vo';
-import { CityVO } from '../shared/model/vo/city-vo';
 
 const EMPLOYEES='employees';
 @Injectable({
