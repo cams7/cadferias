@@ -38,7 +38,7 @@ export abstract class Base implements OnDestroy {
     }
 
     protected buildMap(value: any, key?: string): Map<string, any> {
-        if(!value)
+        if(!value || typeof value !== 'object')
             return new Map<string, any>();
 
         return Object.keys(value).reduce((map, k) => {

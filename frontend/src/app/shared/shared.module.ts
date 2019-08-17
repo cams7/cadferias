@@ -39,10 +39,10 @@ import { SortFieldDirective } from './common/sort-field.directive';
     ReactiveFormsModule,
     PaginationModule,
     BsDatepickerModule,
-    TemplateComponent,
-    SortFieldDirective,
     TextMaskModule,
-    NgBrazil
+    NgBrazil,
+    TemplateComponent,
+    SortFieldDirective    
   ]
 })
 export class SharedModule {
