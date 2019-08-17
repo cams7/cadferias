@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { EventsService } from '../shared/events.service';
+import { AppEventsService } from '../shared/events.service';
+import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
 import { User } from './../shared/model/user';
@@ -18,10 +20,11 @@ export class SigninComponent extends BaseForm {
   constructor(
     private router: Router,    
     private fb: FormBuilder,
-    private eventsService: EventsService,
+    private eventsService: AppEventsService,
+    protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super();
+    super(confirmModalService);
   }
 
   ngOnInit() {
@@ -32,6 +35,10 @@ export class SigninComponent extends BaseForm {
       password: [undefined, Validators.required],
       rememberMe: [false, Validators.required]
     });
+  }
+
+  unchangedData$() {
+    return of(true);
   }
 
   submit() {

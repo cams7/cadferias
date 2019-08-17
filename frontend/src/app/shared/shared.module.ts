@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { TextMaskModule } from 'angular2-text-mask';
 import { NgBrazil } from 'ng-brazil';
@@ -28,6 +29,7 @@ import { SortFieldDirective } from './common/sort-field.directive';
     RouterModule,
     PaginationModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    ModalModule.forRoot(),
     TextMaskModule,
     NgBrazil
   ],
@@ -39,6 +41,7 @@ import { SortFieldDirective } from './common/sort-field.directive';
     ReactiveFormsModule,
     PaginationModule,
     BsDatepickerModule,
+    ModalModule,
     TextMaskModule,
     NgBrazil,
     TemplateComponent,

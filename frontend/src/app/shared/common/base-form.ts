@@ -1,10 +1,12 @@
 import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { tap, flatMap } from 'rxjs/operators';
 
 import { MASKS } from 'ng-brazil';
 
 import { Base, BR_DATE_FORMAT } from './base';
+import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 
 export abstract class BaseForm extends Base implements OnInit {   
     
@@ -13,7 +15,9 @@ export abstract class BaseForm extends Base implements OnInit {
     public form: FormGroup;
     protected _submitted = false;
 
-    constructor() { 
+    constructor(
+        protected confirmModalService: ConfirmModalService
+    ) { 
         super();
     }
 
@@ -32,7 +36,13 @@ export abstract class BaseForm extends Base implements OnInit {
     } 
 
     unchangedData$(): Observable<boolean> {
-        return of(true);
+        return of(!this.form || !(this.form.touched && this.form.dirty)).pipe(
+            flatMap(unchanged => {
+                if(unchanged)
+                    return of(true);
+                return this.confirmModalService.showConfirm$('Sair da página','Os dados do formulário foram modificados, você deseja realmente sair dessa página?');
+            })
+        );
     }
 
     classError(fieldName: string) {

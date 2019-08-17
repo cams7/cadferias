@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Employee } from './model/employee';
 import { Vacation } from './model/vacation';
 import { Staff } from './model/staff';
@@ -7,9 +7,10 @@ import { Staff } from './model/staff';
 @Injectable({
   providedIn: 'root'
 })
-export class EventsService {
+export class AppEventsService {
 
   private searchSubject = new Map<SearchType, BehaviorSubject<any>>();
+  private eventSubject = new Subject<AppEvent>();
 
   constructor() { 
     this.initSearchSubject();
@@ -52,11 +53,34 @@ export class EventsService {
       this.searchSubject.get(searchType).complete()
     );
     this.searchSubject.clear();
-  }  
+    this.eventSubject.complete();
+  }
+  
+  addEvent(event: AppEvent) {
+    this.eventSubject.next(event);
+  }
+
+  get events$() {
+    return this.eventSubject.asObservable();
+  }
 }
 
 export enum SearchType {
   EMPLOYEE,
   VACATION,
   STAFF
+}
+
+export interface AppEvent {
+  from: AppEventFrom,
+  type: AppEventType
+}
+
+export enum AppEventFrom {
+  CONFIRM_MODAL
+}
+
+export enum AppEventType {
+  MODAL_CLOSE,
+  MODAL_CONFIRM_AND_CLOSE
 }

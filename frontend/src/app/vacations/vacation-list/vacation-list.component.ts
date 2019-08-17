@@ -2,8 +2,8 @@ import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 
+import { AppEventsService, SearchType } from 'src/app/shared/events.service';
 import { SortOrder } from 'src/app/shared/common/sort-field.directive';
-import { EventsService, SearchType } from 'src/app/shared/events.service';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
@@ -21,7 +21,7 @@ export class VacationListComponent extends BaseList<Vacation> {
     protected route: ActivatedRoute,
     protected router: Router,
     protected fb: FormBuilder,
-    protected eventsService: EventsService,
+    protected eventsService: AppEventsService,
     private vacationsService: VacationsService
   ) { 
     super(renderer, route, router, fb, eventsService, vacationsService);

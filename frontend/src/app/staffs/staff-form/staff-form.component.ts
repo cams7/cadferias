@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
 import { StaffsService } from '../staffs.service';
 
@@ -11,9 +12,10 @@ import { StaffsService } from '../staffs.service';
 export class StaffFormComponent extends BaseForm {
 
   constructor(
+    protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super();
+    super(confirmModalService);
   }
 
   ngOnInit() {

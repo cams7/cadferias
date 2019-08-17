@@ -6,6 +6,7 @@ import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay } 
 
 import { NgBrazilValidators } from 'ng-brazil';
 
+import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { CityVO } from './../../shared/model/vo/city-vo';
 import { StateVO } from './../../shared/model/vo/state-vo';
 import { BaseForm } from 'src/app/shared/common/base-form';
@@ -27,9 +28,10 @@ export class EmployeeFormComponent extends BaseForm {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService
   ) { 
-    super();
+    super(confirmModalService);
   }
 
   ngOnInit() {

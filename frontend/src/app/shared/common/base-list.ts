@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable } from 'rxjs';
 import { filter, delay, concatMap, flatMap, shareReplay, delayWhen, map, distinctUntilChanged, take, debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 
-import { EventsService, SearchType } from '../events.service';
+import { AppEventsService, SearchType } from '../events.service';
 import { Base } from './base';
 import { BaseService, Page, PageAndSort } from './base-service';
 import { PaginationVO } from './../model/vo/pagination-vo';
@@ -49,7 +49,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
         protected route: ActivatedRoute,
         protected router: Router,
         protected fb: FormBuilder,
-        protected eventsService: EventsService,
+        protected eventsService: AppEventsService,
         private service: BaseService<T>
     ) { 
         super();

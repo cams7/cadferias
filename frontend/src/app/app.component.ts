@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { EventsService } from './shared/events.service';
+import { AppEventsService } from './shared/events.service';
 import { AuthService } from './shared/auth/auth.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { AuthService } from './shared/auth/auth.service';
 export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
-    private eventsService: EventsService,
+    private eventsService: AppEventsService,
     private authService: AuthService
   ) { }
 
