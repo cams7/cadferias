@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 
 import { AppEventsService, SearchType } from 'src/app/shared/events.service';
+import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { SortOrder } from 'src/app/shared/common/sort-field.directive';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { StaffsService } from '../staffs.service';
@@ -21,9 +22,10 @@ export class StaffListComponent extends BaseList<Staff> {
     protected router: Router,
     protected fb: FormBuilder,
     protected eventsService: AppEventsService,
+    protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super(renderer, route, router, fb, eventsService, staffsService);
+    super(renderer, route, router, fb, eventsService, confirmModalService, staffsService);
   }
 
   protected addModelSearch(staff: Staff) {
@@ -46,6 +48,10 @@ export class StaffListComponent extends BaseList<Staff> {
 
   protected setSortFields(sortFields: Map<string, SortOrder>) {
     sortFields.set('name', undefined);
+  }
+
+  protected getDeleteConfirmationMessage(id: number) {
+    return `Tem certeza que deseja remover a equipe "${id}"?`;
   }
 
 }

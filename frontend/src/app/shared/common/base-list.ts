@@ -1,14 +1,16 @@
 import { OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable } from 'rxjs';
+import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable, BehaviorSubject } from 'rxjs';
 import { filter, delay, concatMap, flatMap, shareReplay, delayWhen, map, distinctUntilChanged, take, debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from '../events.service';
+import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { Base } from './base';
 import { BaseService, Page, PageAndSort } from './base-service';
 import { PaginationVO } from './../model/vo/pagination-vo';
 import { SortField, SortOrder } from './sort-field.directive';
+import { BaseModel } from '../model/base-model';
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
@@ -36,6 +38,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
     private isAfterChangeEvent = false;
 
     private pagination$: Observable<PaginationVO<T>>;
+    private _items$: Observable<PaginationVO<T>>;
     
     @ViewChild('pagination', { read: ElementRef, static:true }) pagination: ElementRef;
 
@@ -43,13 +46,17 @@ export abstract class BaseList<T> extends Base implements OnInit {
 
     private _sortField = <SortField>{fieldName: 'id', order: SortOrder.DESC};
     private sortFields = new Map<string, SortOrder>();
-  
+
+    private itemDeletedSubject = new BehaviorSubject<number>(undefined);
+    private itemsDeleted = new Array<number>();
+      
     constructor(
         protected renderer: Renderer2,
         protected route: ActivatedRoute,
         protected router: Router,
         protected fb: FormBuilder,
         protected eventsService: AppEventsService,
+        protected confirmModalService: ConfirmModalService,
         private service: BaseService<T>
     ) { 
         super();
@@ -126,11 +133,14 @@ export abstract class BaseList<T> extends Base implements OnInit {
                         order: order
                     });
                 })
-            )
+            ),
+            this.itemDeletedSubject.asObservable()
         ).pipe(
-            switchMap(([modelSearch, pageAndSort]) => {
-                return forkJoin(of(pageAndSort), this.service.getAll$(pageAndSort, super.buildMap(modelSearch)))
-            }),
+            switchMap(([modelSearch, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
+                <number>super.getNumber(itemId), 
+                pageAndSort, 
+                modelSearch
+            ))),
             flatMap(([pageAndSort, pagination])=> {
                 this._totalItems = pagination.totalItems;
                 this._totalItemsPerPage = pagination.items.length;                
@@ -148,6 +158,33 @@ export abstract class BaseList<T> extends Base implements OnInit {
         );
     }  
         
+    ngOnDestroy() {
+        super.ngOnDestroy();
+
+        this.itemDeletedSubject.complete();
+    }
+
+    private getItems$(itemId: number, pageAndSort: PageAndSort, modelSearch: T) {
+        if(!this._items$ || !itemId || this.itemsDeleted.some(id => id == itemId)) {
+            this._items$ = this.service.getAll$(pageAndSort, super.buildMap(modelSearch)).pipe(         
+                shareReplay()
+            );
+        } else {            
+            this._items$.subscribe(pagination => {                
+                this.itemsDeleted.push(itemId);
+                if(pagination.items.length == 1 && Number(this.page.page) < Number(this.numPages)) {
+                    this._items$ = this.service.getAll$(pageAndSort, super.buildMap(modelSearch)).pipe(         
+                        shareReplay()
+                    );    
+                } else {
+                    pagination.items = pagination.items.filter(item => Number((<BaseModel><any>item).id) != Number(itemId));
+                    pagination.totalItems = Number(pagination.totalItems) - 1;                   
+                }
+            });
+        }
+        return this._items$;
+    }
+
     protected abstract addModelSearch(modelSearch: T): void;
     protected abstract getSearchType(): SearchType;
     protected abstract getModelBySearch(search: string): T;
@@ -314,5 +351,16 @@ export abstract class BaseList<T> extends Base implements OnInit {
     onEdit(id: number) {
         this.router.navigate([id], { relativeTo: this.route });
     }
+
+    onDelete(id: number) {
+        this.confirmModalService.showConfirm$('Confirmação', this.getDeleteConfirmationMessage(id)).pipe(
+            filter(confirmed => confirmed),            
+            switchMap(_ => this.service.remove$(id))
+        ).subscribe(_ => {    
+            this.itemDeletedSubject.next(id);                                 
+        });
+    }
+
+    protected abstract getDeleteConfirmationMessage(id: number): string;
 
 }

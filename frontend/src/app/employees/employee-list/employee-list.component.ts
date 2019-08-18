@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 
 import { AppEventsService, SearchType } from 'src/app/shared/events.service';
+import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { SortOrder } from 'src/app/shared/common/sort-field.directive';
 import { BaseList } from 'src/app/shared/common/base-list';
 import { EmployeesService } from '../employees.service';
@@ -21,9 +22,10 @@ export class EmployeeListComponent extends BaseList<Employee> {
     protected router: Router,
     protected fb: FormBuilder,    
     protected eventsService: AppEventsService,
+    protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService
   ) { 
-    super(renderer, route, router, fb, eventsService, employeesService);
+    super(renderer, route, router, fb, eventsService, confirmModalService, employeesService);
   }
 
   protected addModelSearch(employee: Employee) {
@@ -61,4 +63,7 @@ export class EmployeeListComponent extends BaseList<Employee> {
     sortFields.set('staff.id', undefined);
   }
 
+  protected getDeleteConfirmationMessage(id: number) {
+    return `Tem certeza que deseja remover o funcionário "${id}"?`;
+  }
 }
