@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { PageAndSort } from './../common/base-service';
 import { SortOrder } from '../common/sort-field.directive';
 import { AlertMessage, AppEventsService } from '../events.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-template',
@@ -12,7 +13,7 @@ import { AlertMessage, AppEventsService } from '../events.service';
   styleUrls: ['./template.component.scss']
 })
 export class TemplateComponent implements OnInit, OnDestroy {
-
+  
   readonly queryParams = <PageAndSort>{
     page: 1, 
     itemsPerPage: 10,
@@ -21,6 +22,7 @@ export class TemplateComponent implements OnInit, OnDestroy {
   };
 
   private _alerts: AlertMessage[] = [];
+  private alertSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -29,12 +31,13 @@ export class TemplateComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.eventsService.alert$.subscribe(alert => {
+    this.alertSubscription = this.eventsService.alert$.subscribe(alert => {
       this._alerts.push(alert);
     });
   }
 
   ngOnDestroy() {
+    this.alertSubscription.unsubscribe();
   }
 
   logout() {
