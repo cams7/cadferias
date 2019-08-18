@@ -18,7 +18,7 @@ const SORT_PARAM = 'sort';
 const ORDER_PARAM = 'order';
 const ITEMS_PER_PAGE_FIELD = 'itemsPerPage';
 const SEARCH_FIELD = 'search';
-export abstract class BaseList<T> extends Base implements OnInit {
+export abstract class BaseList<T extends BaseModel> extends Base implements OnInit {
                           
     readonly previousText = '&lsaquo;';
     readonly nextText = '&rsaquo;'; 
@@ -177,7 +177,7 @@ export abstract class BaseList<T> extends Base implements OnInit {
                         shareReplay()
                     );    
                 } else {
-                    pagination.items = pagination.items.filter(item => Number((<BaseModel><any>item).id) != Number(itemId));
+                    pagination.items = pagination.items.filter(item => Number(item.id) != Number(itemId));
                     pagination.totalItems = Number(pagination.totalItems) - 1;                   
                 }
             });

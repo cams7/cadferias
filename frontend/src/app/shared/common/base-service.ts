@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 import { Base } from './base';
 import { PaginationVO } from '../model/vo/pagination-vo';
 import { SortOrder } from 'src/app/shared/common/sort-field.directive';
+import { BaseModel } from '../model/base-model';
 
-export abstract class BaseService<T> extends Base {
+export abstract class BaseService<T extends BaseModel> extends Base {
 
     constructor(
         protected http: HttpClient,

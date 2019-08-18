@@ -7,10 +7,10 @@ import { BaseForm } from '../common/base-form';
 @Injectable({
   providedIn: 'root'
 })
-export class FormDeactivateGuard implements CanDeactivate<BaseForm> {
+export class FormDeactivateGuard implements CanDeactivate<BaseForm<any>> {
   constructor() { }
 
-  canDeactivate(component: BaseForm, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> {
+  canDeactivate(component: BaseForm<any>, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> {
     const unchangedData$ = component.unchangedData$();
     if(!!unchangedData$)
       return unchangedData$;

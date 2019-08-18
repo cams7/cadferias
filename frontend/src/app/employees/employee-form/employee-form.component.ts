@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, EMPTY } from 'rxjs';
 import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay } from 'rxjs/operators';
 
 import { NgBrazilValidators } from 'ng-brazil';
 
+import { AppEventsService } from 'src/app/shared/events.service';
 import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { CityVO } from './../../shared/model/vo/city-vo';
 import { StateVO } from './../../shared/model/vo/state-vo';
@@ -18,7 +19,7 @@ import { Employee } from './../../shared/model/employee';
   templateUrl: './employee-form.component.html',
   styleUrls: ['./employee-form.component.scss']
 })
-export class EmployeeFormComponent extends BaseForm {
+export class EmployeeFormComponent extends BaseForm<Employee> {
 
   private _employee: Employee;
 
@@ -28,10 +29,11 @@ export class EmployeeFormComponent extends BaseForm {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService
   ) { 
-    super(confirmModalService);
+    super(eventsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -96,7 +98,7 @@ export class EmployeeFormComponent extends BaseForm {
     );       
   }
 
-  submit() {
+  submit$() {
     const employee = <Employee>this.form.value;
     employee.id = this._employee.id;
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
@@ -107,7 +109,14 @@ export class EmployeeFormComponent extends BaseForm {
     employee.user.id = this._employee.user.id;
     employee.staff.id = this._employee.staff.id;
     
-    console.log('Employee: ', employee);
+    return this.employeesService.save$(employee);
+  }
+
+  protected getCreateSuccessMessage() {
+    return `O funcionário foi criado com sucesso.`;
+  }
+  protected getUpdateSuccessMessage(id: number) {
+    return `Os dados do funcionário "${id}" foram atualizados com sucesso.`;
   }
 
   get states$() {

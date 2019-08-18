@@ -1,14 +1,16 @@
 import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { tap, flatMap } from 'rxjs/operators';
+import { flatMap } from 'rxjs/operators';
 
 import { MASKS } from 'ng-brazil';
 
 import { Base, BR_DATE_FORMAT } from './base';
+import { AppEventsService } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
+import { BaseModel } from './../model/base-model';
 
-export abstract class BaseForm extends Base implements OnInit {   
+export abstract class BaseForm<T extends BaseModel> extends Base implements OnInit {   
     
     private _brazilMasks = MASKS;
 
@@ -16,6 +18,7 @@ export abstract class BaseForm extends Base implements OnInit {
     protected _submitted = false;
 
     constructor(
+        protected eventsService: AppEventsService,
         protected confirmModalService: ConfirmModalService
     ) { 
         super();
@@ -24,16 +27,27 @@ export abstract class BaseForm extends Base implements OnInit {
     ngOnInit() {
     }
 
-    abstract submit(): void;
+    abstract submit$(): Observable<T>;
 
     onSubmit() {        
         this._submitted = true;
     
-        if (this.form.invalid)
+        if (this.form.invalid || !(this.form.touched && this.form.dirty)) 
           return;
-    
-        this.submit();
+
+        this.submit$().subscribe(item => {
+            this.form.markAsPristine();
+            this.form.markAsUntouched();
+            
+            if(item.id)
+                this.eventsService.addSuccessAlert('Item atualizado!', this.getUpdateSuccessMessage(item.id));
+            else
+                this.eventsService.addSuccessAlert('Item criado!', this.getCreateSuccessMessage());
+        });
     } 
+    
+    protected abstract getCreateSuccessMessage(): string;
+    protected abstract getUpdateSuccessMessage(id: number): string;
 
     unchangedData$(): Observable<boolean> {
         return of(!this.form || !(this.form.touched && this.form.dirty)).pipe(

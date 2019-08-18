@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
 import { AppEventsService } from '../shared/events.service';
@@ -15,16 +15,16 @@ import { User } from './../shared/model/user';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent extends BaseForm {
+export class SigninComponent extends BaseForm<User> {
    
   constructor(
     private router: Router,    
     private fb: FormBuilder,
-    private eventsService: AppEventsService,
+    protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super(confirmModalService);
+    super(eventsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -41,7 +41,7 @@ export class SigninComponent extends BaseForm {
     return of(true);
   }
 
-  submit() {
+  submit$() {
     const user = <User>this.form.value;
 
     this.authService.signIn$(user).pipe(
@@ -57,6 +57,15 @@ export class SigninComponent extends BaseForm {
       this.router.navigate(['/home']);
       this.eventsService.resetAllSearchs();
     });
+
+    return EMPTY;
   }  
+
+  protected getCreateSuccessMessage() {
+    return undefined;
+  }
+  protected getUpdateSuccessMessage(id: number) {
+    return undefined;
+  }
 
 }
