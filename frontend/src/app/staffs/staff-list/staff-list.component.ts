@@ -54,4 +54,8 @@ export class StaffListComponent extends BaseList<Staff> {
     return `Tem certeza que deseja remover a equipe "${id}"?`;
   }
 
+  protected getDeleteSuccessMessage(id: number) {
+    return `A equipe "${id}" foi excluida com sucesso.`;
+  }
+
 }

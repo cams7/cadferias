@@ -16,7 +16,7 @@ import { Employee } from 'src/app/shared/model/employee';
   styleUrls: ['./vacation-list.component.scss']
 })
 export class VacationListComponent extends BaseList<Vacation> {
-        
+          
   constructor(
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
@@ -57,6 +57,10 @@ export class VacationListComponent extends BaseList<Vacation> {
 
   protected getDeleteConfirmationMessage(id: number) {
     return `Tem certeza que deseja remover a férias "${id}"?`;
+  }
+
+  protected getDeleteSuccessMessage(id: number) {
+    return `A férias "${id}" foi excluida com sucesso.`;
   }
 
 }

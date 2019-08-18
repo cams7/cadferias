@@ -11,6 +11,7 @@ export class AppEventsService {
 
   private searchSubject = new Map<SearchType, BehaviorSubject<any>>();
   private eventSubject = new Subject<AppEvent>();
+  private alertSubject = new Subject<AlertMessage>();
 
   constructor() { 
     this.initSearchSubject();
@@ -54,6 +55,7 @@ export class AppEventsService {
     );
     this.searchSubject.clear();
     this.eventSubject.complete();
+    this.alertSubject.complete();
   }
   
   addEvent(event: AppEvent) {
@@ -62,6 +64,36 @@ export class AppEventsService {
 
   get events$() {
     return this.eventSubject.asObservable();
+  }
+
+  addSuccessAlert(title: string, message: string, timeout?: number) {
+    this.addAlert(AlertType.SUCCESS, title, message, timeout);
+  }
+
+  addInfoAlert(title: string, message: string, timeout?: number) {
+    this.addAlert(AlertType.INFO, title, message, timeout);
+  }
+
+  addWarningAlert(title: string, message: string, timeout?: number) {
+    this.addAlert(AlertType.WARNING, title, message, timeout);
+  }
+
+  addDangerAlert(title: string, message: string, timeout?: number) {
+    this.addAlert(AlertType.DANGER, title, message, timeout);
+  }
+
+  private addAlert(type: AlertType, title: string, message: string, timeout?: number) {
+    const alert = <AlertMessage> {
+      type: type,
+      title: title,
+      message: message,
+      timeout: timeout? timeout: 5000
+    };
+    this.alertSubject.next(alert);
+  }
+
+  get alert$() {
+    return this.alertSubject.asObservable();
   }
 }
 
@@ -83,4 +115,18 @@ export enum AppEventFrom {
 export enum AppEventType {
   MODAL_CLOSE,
   MODAL_CONFIRM_AND_CLOSE
+}
+
+export interface AlertMessage {
+  type: AlertType;
+  title: string;
+  message: string;  
+  timeout: number;
+}
+
+export enum AlertType {
+  SUCCESS='success',
+  INFO='info',
+  WARNING='warning',
+  DANGER='danger'
 }

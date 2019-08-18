@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { PageAndSort } from './../common/base-service';
 import { SortOrder } from '../common/sort-field.directive';
+import { AlertMessage, AppEventsService } from '../events.service';
 
 @Component({
   selector: 'app-template',
@@ -18,13 +19,19 @@ export class TemplateComponent implements OnInit, OnDestroy {
     sort: 'id',
     order: SortOrder.DESC
   };
- 
+
+  private _alerts: AlertMessage[] = [];
+
   constructor(
     private router: Router,
+    private eventsService: AppEventsService,
     private authService: AuthService
   ) { }
 
   ngOnInit() {
+    this.eventsService.alert$.subscribe(alert => {
+      this._alerts.push(alert);
+    });
   }
 
   ngOnDestroy() {
@@ -49,4 +56,16 @@ export class TemplateComponent implements OnInit, OnDestroy {
 
     return baseUrl === url;
   }
+
+  onClosed(dismissedAlert: AlertMessage) {
+    this._alerts = this._alerts.filter(alert => alert !== dismissedAlert);
+  }
+
+  get alerts() {
+    return this._alerts;
+  }
 }
+
+
+
+

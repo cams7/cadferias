@@ -66,4 +66,8 @@ export class EmployeeListComponent extends BaseList<Employee> {
   protected getDeleteConfirmationMessage(id: number) {
     return `Tem certeza que deseja remover o funcionário "${id}"?`;
   }
+
+  protected getDeleteSuccessMessage(id: number) {
+    return `O funcionário "${id}" foi excluido com sucesso.`;
+  }
 }

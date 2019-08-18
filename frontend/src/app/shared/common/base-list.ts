@@ -357,10 +357,12 @@ export abstract class BaseList<T> extends Base implements OnInit {
             filter(confirmed => confirmed),            
             switchMap(_ => this.service.remove$(id))
         ).subscribe(_ => {    
-            this.itemDeletedSubject.next(id);                                 
+            this.itemDeletedSubject.next(id);
+            this.eventsService.addSuccessAlert('Item excluído!', this.getDeleteSuccessMessage(id));                                 
         });
     }
 
     protected abstract getDeleteConfirmationMessage(id: number): string;
+    protected abstract getDeleteSuccessMessage(id: number): string;
 
 }
