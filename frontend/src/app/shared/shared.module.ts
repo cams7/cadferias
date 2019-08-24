@@ -13,14 +13,12 @@ import { NgBrazil } from 'ng-brazil';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
-import { TemplateComponent } from './template/template.component';
 import { SortFieldDirective } from './common/sort-field.directive';
 
 @NgModule({
   declarations: [
     PageNotFoundComponent, 
-    ConfirmModalComponent, 
-    TemplateComponent, 
+    ConfirmModalComponent,
     SortFieldDirective
   ],
   imports: [
@@ -47,7 +45,6 @@ import { SortFieldDirective } from './common/sort-field.directive';
     AlertModule,
     TextMaskModule,
     NgBrazil,
-    TemplateComponent,
     SortFieldDirective    
   ]
 })
