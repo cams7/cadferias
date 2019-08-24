@@ -8,6 +8,8 @@ import { SigninService } from './signin/signin.service';
 import { PageAndSort } from './shared/common/base-service';
 import { SortOrder } from './shared/common/sort-field.directive';
 
+import * as $ from 'jquery';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -39,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.alertSubscription = this.eventsService.alert$.subscribe(alert => {
       this._alerts.push(alert);
+      this.scrollToTop();
     });
   }
 
@@ -70,6 +73,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onClosed(dismissedAlert: AlertMessage) {
     this._alerts = this._alerts.filter(alert => alert !== dismissedAlert);
+  }
+
+  scrollToTop() {
+    $('html,body').animate({
+      scrollTop: $('.container').offset().top
+    },'1000');
   }
 
   get isLoggedIn$() {
