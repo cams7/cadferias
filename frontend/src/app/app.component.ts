@@ -4,9 +4,9 @@ import { Subscription } from 'rxjs';
 
 import { AppEventsService, AlertMessage } from './shared/events.service';
 import { AuthService } from './shared/auth/auth.service';
+import { SigninService } from './signin/signin.service';
 import { PageAndSort } from './shared/common/base-service';
 import { SortOrder } from './shared/common/sort-field.directive';
-
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private eventsService: AppEventsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private signinService: SigninService
   ) { }
 
   ngOnInit() {
@@ -52,8 +53,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigate(['/home']);
   }
 
-  get isLoggedIn$() {
-    return this.authService.loggedIn$;
+  login() {
+    this.signinService.showSignin$().subscribe();
   }
 
   isLinkActive(url: string) {
@@ -71,8 +72,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this._alerts = this._alerts.filter(alert => alert !== dismissedAlert);
   }
 
-  get alerts() {
-    return this._alerts;
+  get isLoggedIn$() {
+    return this.authService.loggedIn$;
   }
 
+  get alerts() {
+    return this._alerts;
+  } 
 }

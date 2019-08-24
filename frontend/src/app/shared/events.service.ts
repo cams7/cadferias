@@ -109,7 +109,8 @@ export interface AppEvent {
 }
 
 export enum AppEventFrom {
-  CONFIRM_MODAL
+  CONFIRM_MODAL,
+  SIGNIN_MODAL
 }
 
 export enum AppEventType {

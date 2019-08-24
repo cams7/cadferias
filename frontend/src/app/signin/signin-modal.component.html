@@ -1,0 +1,37 @@
+<div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title">Sign In</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClose()">
+          <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <form class="form-signin needs-validation" novalidate [formGroup]="form">
+            <img class="mb-4" src="./assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Por favor, faça o login</h1>
+            <label for="email" class="sr-only">E-mail</label>
+            <input formControlName="email" [ngClass]="classError('email')" type="email" id="email" class="form-control" placeholder="E-mail" autofocus>
+            <div class="invalid-feedback" *ngIf="hasRequiredError('email')" >
+                Por favor, informe um e-mail.
+            </div>
+            <div class="invalid-feedback" *ngIf="hasEmailError('email')" >
+                Por favor, informe um e-mail válido.
+            </div>
+            <label for="password" class="sr-only">Senha</label>
+            <input formControlName="password" [ngClass]="classError('password')" type="password" id="password" class="form-control" placeholder="Senha">
+            <div class="invalid-feedback" *ngIf="hasRequiredError('password')" >
+                Por favor, informe uma senha.
+            </div>
+            <div class="checkbox mb-3">
+              <label>
+                <input formControlName="rememberMe" type="checkbox" value="remember-me"> Lembre-me
+              </label>
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="onClose()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">Enviar</button>
+      </div>
+  </div>
+  

@@ -1,24 +1,22 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { AppEventsService } from '../shared/events.service';
+import { AppEventsService, AppEvent, AppEventFrom, AppEventType } from '../shared/events.service';
 import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
-import { User } from './../shared/model/user';
+import { User } from '../shared/model/user';
 
 @Component({
   selector: 'app-signin',
-  templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.scss']
+  templateUrl: './signin-modal.component.html',
+  styleUrls: ['./signin-modal.component.scss']
 })
-export class SigninComponent extends BaseForm<User> {
+export class SigninModalComponent extends BaseForm<User> {
    
-  constructor(
-    private router: Router,    
+  constructor(   
     private fb: FormBuilder,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
@@ -54,12 +52,22 @@ export class SigninComponent extends BaseForm<User> {
       filter(loggedIn => loggedIn),
       take(1)
     ).subscribe(_ => {
-      this.router.navigate(['/home']);
       this.eventsService.resetAllSearchs();
+      this.eventsService.addEvent(<AppEvent> {
+        from: AppEventFrom.SIGNIN_MODAL, 
+        type: AppEventType.MODAL_CONFIRM_AND_CLOSE
+      });
     });
 
     return EMPTY;
-  }  
+  }
+  
+  onClose() {
+    this.eventsService.addEvent(<AppEvent> {
+      from: AppEventFrom.SIGNIN_MODAL, 
+      type: AppEventType.MODAL_CLOSE
+    });
+  }
 
   protected getCreateSuccessMessage() {
     return undefined;
