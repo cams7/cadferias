@@ -1,21 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import * as $ from 'jquery';
+
 import { AppEventsService, AlertMessage } from './shared/events.service';
 import { AuthService } from './shared/auth/auth.service';
+import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
 import { PageAndSort } from './shared/common/base-service';
 import { SortOrder } from './shared/common/sort-field.directive';
-
-import * as $ from 'jquery';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {  
 
   readonly queryParams = <PageAndSort>{
     page: 1, 
@@ -25,12 +26,19 @@ export class AppComponent implements OnInit, OnDestroy {
   };
 
   private _alerts: AlertMessage[] = [];
-  private alertSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
+
+  private _loading: ElementRef;
+  @ViewChild('divLoading', { read: ElementRef, static:true }) set loading (loading: ElementRef) {
+    this._loading = loading;
+  };
 
   constructor(
+    private renderer: Renderer2,
     private router: Router,
     private eventsService: AppEventsService,
     private authService: AuthService,
+    private httpIndicatorService: HttpIndicatorService,
     private signinService: SigninService
   ) { }
 
@@ -39,16 +47,31 @@ export class AppComponent implements OnInit, OnDestroy {
     //FIXME Remove the line below when the app development phase is over
     this.eventsService.resetAllSearchs();
 
-    this.alertSubscription = this.eventsService.alert$.subscribe(alert => {
-      this._alerts.push(alert);
-      this.scrollToTop();
-    });
+    this.subscriptions.push(
+      this.eventsService.alert$.subscribe(alert => {
+        this._alerts.push(alert);
+        this.scrollToTop();
+      })
+    );
+  }
+
+  ngAfterViewInit() {
+    this.renderer.addClass(this._loading.nativeElement, 'hide-loading');
+    this.subscriptions.push(
+      this.httpIndicatorService.onLoadingChanged.subscribe(loading => {  
+        if(loading) {
+          this.renderer.removeClass(this._loading.nativeElement, 'hide-loading');
+        } else {
+          this.renderer.addClass(this._loading.nativeElement, 'hide-loading');
+        }
+      })
+    ); 
   }
 
   ngOnDestroy() {
     this.authService.signOut();
     this.eventsService.endAllEvents();
-    this.alertSubscription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   logout() {

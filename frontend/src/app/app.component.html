@@ -43,12 +43,16 @@
     </div>
   </nav>
   <div class="container">
+    <div class="loading" #divLoading>Loading...</div>
+
     <div class="app-alert-message">
       <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" dismissible=true (onClosed)="onClosed(alert)" *ngFor="let alert of alerts" >
         <strong>{{ alert.title }}</strong>&nbsp;{{ alert.message }}
       </alert> 
     </div> 
+
     <router-outlet></router-outlet>
+
     <div class='scrolltop'>
       <div class='scroll icon' (click)="scrollToTop()">
         <i class="fa fa-4x fa-angle-up"></i>
