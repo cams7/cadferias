@@ -25,12 +25,15 @@ import { User } from 'src/app/shared/model/user';
 })
 export class EmployeeFormComponent extends BaseForm<Employee> {
 
-  private _cities$: Observable<CityVO[]>;
+  stateName$ = new Subject<string>();
   private _states$: Observable<StateVO[]>;
+
+  cityName$ = new Subject<string>();
+  private _cities$: Observable<CityVO[]>;
 
   staffName$ = new Subject<string>();
   private _staffs$: Observable<Staff[]>;  
-    
+     
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
@@ -68,8 +71,29 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
       })
     });
 
-    this._states$ = this.employeesService.allStates$.pipe(
+    const states$ = this.employeesService.allStates$.pipe(
       shareReplay()
+    );
+
+    this._states$ = merge(
+      of(this.entity.address.state).pipe(
+        filter(acronym => !!acronym),
+        flatMap(acronym => states$.pipe<StateVO>(
+          map(states => states.find(state => state.acronym == acronym))
+        )),
+        filter(state => !!state),
+        map(state => [state])
+      ),
+      this.stateName$.pipe(
+        filter(name => !!name && name.trim().length > 0),
+        debounceTime(super.debounceTime),
+        map(name => name.trim().toLowerCase()),
+        distinctUntilChanged(),
+        switchMap(name => states$.pipe<StateVO[]>(
+          map(states => states.filter(state => !!state && new RegExp(name, 'i').test(state.name.trim().toLowerCase())))
+        )),
+        takeUntil(super.end$)
+      )
     );
 
     const cities$ = this.employeesService.allCities$.pipe(
@@ -77,26 +101,33 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
 
     this._cities$ = merge(
-      of(this.entity.address.state).pipe(
-        filter(acronym => !!acronym),
-        switchMap(acronym => this._states$.pipe<StateVO>(
-          map(states => states.find(state => state.acronym == acronym))
+      of(this.entity.address.city).pipe(
+        filter(name => !!name && !!this.form.get('address.state').value),
+        flatMap(name => forkJoin(
+          of(name), 
+          states$.pipe<StateVO>(
+            map(states => states.find(state => state.acronym == this.form.get('address.state').value))
+          ), 
+          cities$
         )),
-        filter(state => !!state),
-        map(state => state.id),
-        switchMap(stateId => cities$.pipe(
-          map(cities => cities.filter(city => city.stateId == stateId))
-        ))
+        map(([name, state, cities]) => cities.find(city => city.stateId == state.id && city.name == name)),
+        filter(city => !!city),
+        map(city => [city])
       ),
-      this.form.get('address.state').valueChanges.pipe(
+      this.cityName$.pipe(
+        filter(name => !!name && name.trim().length > 0 && !!this.form.get('address.state').value),
+        debounceTime(super.debounceTime),
+        map(name => name.trim().toLowerCase()),
         distinctUntilChanged(),
-        switchMap(acronym => this._states$.pipe<StateVO>(
-          map(states => states.find(state => state.acronym == acronym))
+        flatMap(name => forkJoin(
+          of(name), 
+          states$.pipe<StateVO>(
+            map(states => states.find(state => state.acronym == this.form.get('address.state').value))
+          ), 
+          cities$
         )),
-        filter(state => !!state),
-        map(state => state.id),
-        switchMap(stateId => cities$.pipe(
-          map(cities => cities.filter(city => city.stateId == stateId))
+        map(([name, state, cities]) => cities.filter(city => 
+          !!city && city.stateId == state.id && new RegExp(name, 'i').test(city.name.trim().toLowerCase())          
         )),
         takeUntil(super.end$)
       )
@@ -105,13 +136,13 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     this._staffs$ = merge(
       of(this.entity.staff.id).pipe(
         filter(id => !!id),
-        switchMap(id => this.staffsService.getById$(id)),
+        flatMap(id => this.staffsService.getById$(id)),
         filter(staff => !!staff),
         map(staff => [staff])
       ),
       this.staffName$.pipe(
           filter(name => !!name && name.trim().length > 0),          
-          debounceTime(1000),
+          debounceTime(super.debounceTime),
           map(name => name.trim()),
           distinctUntilChanged(),
           switchMap(name => this.staffsService.getByName$(name)),
@@ -155,6 +186,10 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
             this.eventsService.addSuccessAlert('Funcionário cadastrado!', `O funcionário "${employee.name}" foi cadastrado com sucesso.`);  
       })
     ); 
+  }
+
+  trackByAcronym(state: StateVO) {
+    return state.acronym;
   }
 
   get states$() {

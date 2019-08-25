@@ -11,8 +11,9 @@ import { AppEventsService } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { BaseEntity } from '../model/base-entity';
 
-export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {   
-    
+const DEBOUNCE_TIME = 500;
+export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {
+          
     private _brazilMasks = MASKS;
 
     public form: FormGroup;
@@ -29,7 +30,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     }
 
     ngOnInit() {
-        this._entity = this.route.snapshot.data['entity'];  
+        this._entity = this.route.snapshot.data['entity'];          
     }
 
     abstract submit$(): Observable<E>;
@@ -40,9 +41,12 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
         if (this.form.invalid || !(this.form.touched && this.form.dirty)) 
           return;
 
-        this.submit$().subscribe(_ => {
+        this.submit$().subscribe(entity => {
             this.form.markAsPristine();
             this.form.markAsUntouched();
+
+            if(!this.isRegistred)
+                this._entity = entity;
         });
     } 
     
@@ -72,7 +76,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
         return this.hasError(fieldName) && this.hasError(fieldName)[typeError];
     }
 
-    trackByFn(entity: E) {
+    trackById(entity: BaseEntity) {
         return entity.id;
     }
 
@@ -103,5 +107,9 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     get isRegistred() {
         return !!this._entity.id;
+    }
+
+    get debounceTime() {
+        return DEBOUNCE_TIME;
     }
 }

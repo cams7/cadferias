@@ -22,7 +22,7 @@
             <div class="col-md-4 mb-3" formGroupName="staff">
                 <label for="staffName" class="control-label">Equipe</label>
                 <ng-select id="staffName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('staff.id')"
-                    [items]="staffs$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackByFn" [typeahead]="staffName$"
+                    [items]="staffs$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackById" [typeahead]="staffName$"
                     [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
                     notFoundText="Nenhuma equipe foi encontrada" typeToSearchText="Informe o nome da equipe">
                 </ng-select>
@@ -95,18 +95,20 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="addressCity">Cidade</label>
-                <select id="addressCity" class="form-control" formControlName="city" [ngClass]="classError('address.city')">
-                    <option *ngFor="let city of cities$ | async" [value]="city.name">{{ city.name }}</option>
-                </select>
+                <ng-select id="addressCity" formControlName="city" class="form-control" style="border: none" [ngClass]="classError('address.city')"
+                    [items]="cities$ | async" bindLabel="name" bindValue="name" [multiple]="false" [trackByFn]="trackById" [typeahead]="cityName$"
+                    [openOnEnter]="false" notFoundText="Nenhuma cidade foi encontrada" typeToSearchText="Informe o nome da cidade">
+                </ng-select>
                 <div class="invalid-feedback" *ngIf="hasRequiredError('address.city')">
                     Por favor, informe a cidade.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="addressState">Estado</label>
-                <select id="addressState" class="form-control" formControlName="state" [ngClass]="classError('address.state')">
-                    <option *ngFor="let state of states$ | async" [value]="state.acronym">{{ state.name }}</option>
-                </select>
+                <ng-select id="addressState" formControlName="state" class="form-control" style="border: none" [ngClass]="classError('address.state')"
+                    [items]="states$ | async" bindLabel="name" bindValue="acronym" [multiple]="false" [trackByFn]="trackByAcronym" [typeahead]="stateName$"
+                    [openOnEnter]="false" notFoundText="Nenhum estado foi encontrado" typeToSearchText="Informe o nome do estado">
+                </ng-select>
                 <div class="invalid-feedback" *ngIf="hasRequiredError('address.state')">
                     Por favor, informe o estado.
                 </div>
