@@ -1,8 +1,8 @@
-import { BaseModel } from './base-model';
+import { BaseEntity } from './base-entity';
 import { User } from './user';
 import { Staff } from './staff';
 
-export interface Employee extends BaseModel {
+export interface Employee extends BaseEntity {
     id: number;
     hiringDate: Date;
     employeePhoto: string;

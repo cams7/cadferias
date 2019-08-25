@@ -24,22 +24,22 @@ export class AppEventsService {
   }
 
   addEmployeeSearch(employee?: Employee) {
-    this.addModelSearch(SearchType.EMPLOYEE, employee);
+    this.addEntitySearch(SearchType.EMPLOYEE, employee);
   }
 
   addVacationSearch(vacation?: Vacation) {
-    this.addModelSearch(SearchType.VACATION, vacation);
+    this.addEntitySearch(SearchType.VACATION, vacation);
   }
 
   addStaffSearch(staff?: Staff) {
-    this.addModelSearch(SearchType.STAFF, staff);
+    this.addEntitySearch(SearchType.STAFF, staff);
   }
 
-  private addModelSearch(searchType: SearchType, modelSearch: any) {
-    this.searchSubject.get(searchType).next(modelSearch);
+  private addEntitySearch(searchType: SearchType, entitySearch: any) {
+    this.searchSubject.get(searchType).next(entitySearch);
   }
 
-  getModelSearch$(searchType: SearchType) {
+  getEntitySearch$(searchType: SearchType) {
     return this.searchSubject.get(searchType).asObservable();
   }
 

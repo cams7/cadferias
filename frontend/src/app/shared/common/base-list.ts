@@ -10,7 +10,7 @@ import { Base } from './base';
 import { BaseService, Page, PageAndSort } from './base-service';
 import { PaginationVO } from './../model/vo/pagination-vo';
 import { SortField, SortOrder } from './sort-field.directive';
-import { BaseModel } from '../model/base-model';
+import { BaseEntity } from '../model/base-entity';
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
@@ -18,7 +18,7 @@ const SORT_PARAM = 'sort';
 const ORDER_PARAM = 'order';
 const ITEMS_PER_PAGE_FIELD = 'itemsPerPage';
 const SEARCH_FIELD = 'search';
-export abstract class BaseList<T extends BaseModel> extends Base implements OnInit {
+export abstract class BaseList<E extends BaseEntity> extends Base implements OnInit {
                           
     readonly previousText = '&lsaquo;';
     readonly nextText = '&rsaquo;'; 
@@ -37,8 +37,8 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
     private _page = <Page>{};
     private isAfterChangeEvent = false;
 
-    private pagination$: Observable<PaginationVO<T>>;
-    private _items$: Observable<PaginationVO<T>>;
+    private pagination$: Observable<PaginationVO<E>>;
+    private _currentItems$: Observable<PaginationVO<E>>;
     
     @ViewChild('pagination', { read: ElementRef, static:true }) pagination: ElementRef;
 
@@ -47,8 +47,8 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
     private _sortField = <SortField>{fieldName: 'id', order: SortOrder.DESC};
     private sortFields = new Map<string, SortOrder>();
 
-    private itemDeletedSubject = new BehaviorSubject<number>(undefined);
-    private itemsDeleted = new Array<number>();
+    private deletedEntitySubject = new BehaviorSubject<number>(undefined);
+    private deletedEntities = new Array<number>();
       
     constructor(
         protected renderer: Renderer2,
@@ -57,7 +57,7 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
         protected fb: FormBuilder,
         protected eventsService: AppEventsService,
         protected confirmModalService: ConfirmModalService,
-        private service: BaseService<T>
+        private service: BaseService<E>
     ) { 
         super();
     }
@@ -70,11 +70,11 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
             search: []
         });
 
-        this.eventsService.getModelSearch$(this.getSearchType()).pipe( 
+        this.eventsService.getEntitySearch$(this.getSearchType()).pipe( 
             take(1),           
-            filter(modelSearch => !!modelSearch)
-        ).subscribe(modelSearch => {
-            const search = this.getSearchByModel(modelSearch);
+            filter(entitySearch => !!entitySearch)
+        ).subscribe(entitySearch => {
+            const search = this.getSearchByEntity(entitySearch);
             this.form.get(SEARCH_FIELD).setValue(search);    
         });
 
@@ -100,12 +100,12 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
             distinctUntilChanged(),
             takeUntil(super.end$)
         ).subscribe((search: string) => {
-            const modelSearch = this.getModelBySearch(search);
-            this.addModelSearch(modelSearch);         
+            const entitySearch = this.getEntityBySearch(search);
+            this.addEntitySearch(entitySearch);         
         });
 
         this.pagination$ = combineLatest(
-            this.eventsService.getModelSearch$(this.getSearchType()),
+            this.eventsService.getEntitySearch$(this.getSearchType()),
             this.route.queryParams.pipe(
                 filter(params => params[PAGE_PARAM] && params[SORT_PARAM] && params[ORDER_PARAM]),
                 flatMap(params => { 
@@ -134,12 +134,12 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
                     });
                 })
             ),
-            this.itemDeletedSubject.asObservable()
+            this.deletedEntitySubject.asObservable()
         ).pipe(
-            switchMap(([modelSearch, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
+            switchMap(([entitySearch, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
                 <number>super.getNumber(itemId), 
                 pageAndSort, 
-                modelSearch
+                entitySearch
             ))),
             flatMap(([pageAndSort, pagination])=> {
                 this._totalItems = pagination.totalItems;
@@ -161,34 +161,34 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
     ngOnDestroy() {
         super.ngOnDestroy();
 
-        this.itemDeletedSubject.complete();
+        this.deletedEntitySubject.complete();
     }
 
-    private getItems$(itemId: number, pageAndSort: PageAndSort, modelSearch: T) {
-        if(!this._items$ || !itemId || this.itemsDeleted.some(id => id == itemId)) {
-            this._items$ = this.service.getAll$(pageAndSort, super.buildMap(modelSearch)).pipe(         
+    private getItems$(entityId: number, pageAndSort: PageAndSort, entitySearch: E) {
+        if(!this._currentItems$ || !entityId || this.deletedEntities.some(id => id == entityId)) {
+            this._currentItems$ = this.service.getAll$(pageAndSort, super.buildMap(entitySearch)).pipe(         
                 shareReplay()
             );
         } else {            
-            this._items$.subscribe(pagination => {                
-                this.itemsDeleted.push(itemId);
+            this._currentItems$.subscribe(pagination => {                
+                this.deletedEntities.push(entityId);
                 if(pagination.items.length == 1 && Number(this.page.page) < Number(this.numPages)) {
-                    this._items$ = this.service.getAll$(pageAndSort, super.buildMap(modelSearch)).pipe(         
+                    this._currentItems$ = this.service.getAll$(pageAndSort, super.buildMap(entitySearch)).pipe(         
                         shareReplay()
                     );    
                 } else {
-                    pagination.items = pagination.items.filter(item => Number(item.id) != Number(itemId));
+                    pagination.items = pagination.items.filter(item => Number(item.id) != Number(entityId));
                     pagination.totalItems = Number(pagination.totalItems) - 1;                   
                 }
             });
         }
-        return this._items$;
+        return this._currentItems$;
     }
 
-    protected abstract addModelSearch(modelSearch: T): void;
+    protected abstract addEntitySearch(entitySearch: E): void;
     protected abstract getSearchType(): SearchType;
-    protected abstract getModelBySearch(search: string): T;
-    protected abstract getSearchByModel(modelSearch: T): string;
+    protected abstract getEntityBySearch(search: string): E;
+    protected abstract getSearchByEntity(entitySearch: E): string;
     protected abstract setSortFields(sortFields: Map<string, SortOrder>): void;
 
     get totalItems() {
@@ -352,17 +352,11 @@ export abstract class BaseList<T extends BaseModel> extends Base implements OnIn
         this.router.navigate([id], { relativeTo: this.route });
     }
 
-    onDelete(id: number) {
-        this.confirmModalService.showConfirm$('Confirmação', this.getDeleteConfirmationMessage(id)).pipe(
-            filter(confirmed => confirmed),            
-            switchMap(_ => this.service.remove$(id))
-        ).subscribe(_ => {    
-            this.itemDeletedSubject.next(id);
-            this.eventsService.addSuccessAlert('Item excluído!', this.getDeleteSuccessMessage(id));                                 
+    onDelete(entity: E) {
+        this.delete$(entity).subscribe(_ => {    
+            this.deletedEntitySubject.next(entity.id);                                
         });
     }
 
-    protected abstract getDeleteConfirmationMessage(id: number): string;
-    protected abstract getDeleteSuccessMessage(id: number): string;
-
+    protected abstract delete$(entity: E): Observable<void>;
 }

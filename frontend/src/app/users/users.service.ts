@@ -27,4 +27,10 @@ export class UsersService extends BaseService<User> {
       map((data: any) => data.length == 1 ? data[0].token : undefined)   
     );
   }
+
+  isRegisteredEmail$(email: string) {
+    return this.http.get<User[]>(`${environment.API}${USERS}`, { params: new HttpParams().append('email', email) }).pipe<boolean>(
+      map(users => !!users && users.length > 0)
+    );
+  }
 }

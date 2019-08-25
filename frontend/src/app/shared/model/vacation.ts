@@ -1,7 +1,7 @@
-import { BaseModel } from './base-model';
+import { BaseEntity } from './base-entity';
 import { Employee } from './employee';
 
-export interface Vacation extends BaseModel {
+export interface Vacation extends BaseEntity {
     vacationStartDate: Date;
     vacationEndDate: Date;
     employee: Employee;

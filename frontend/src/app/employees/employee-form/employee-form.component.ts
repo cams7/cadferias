@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, merge, of, EMPTY } from 'rxjs';
-import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay } from 'rxjs/operators';
+import { Observable, merge, of, Subject, EMPTY, forkJoin } from 'rxjs';
+import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, debounceTime, flatMap, tap } from 'rxjs/operators';
 
 import { NgBrazilValidators } from 'ng-brazil';
 
@@ -11,8 +11,12 @@ import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.
 import { CityVO } from './../../shared/model/vo/city-vo';
 import { StateVO } from './../../shared/model/vo/state-vo';
 import { BaseForm } from 'src/app/shared/common/base-form';
+import { UsersService } from './../../users/users.service';
+import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
 import { Employee } from './../../shared/model/employee';
+import { Staff } from './../../shared/model/staff';
+import { User } from 'src/app/shared/model/user';
 
 @Component({
   selector: 'app-employee-form',
@@ -21,45 +25,46 @@ import { Employee } from './../../shared/model/employee';
 })
 export class EmployeeFormComponent extends BaseForm<Employee> {
 
-  private _employee: Employee;
-
   private _cities$: Observable<CityVO[]>;
   private _states$: Observable<StateVO[]>;
+
+  staffName$ = new Subject<string>();
+  private _staffs$: Observable<Staff[]>;  
     
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
+    protected route: ActivatedRoute,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
-    private employeesService: EmployeesService
+    private usersService: UsersService,
+    private staffsService: StaffsService,
+    private employeesService: EmployeesService    
   ) { 
-    super(eventsService, confirmModalService);
+    super(route, eventsService, confirmModalService);
   }
 
   ngOnInit() {
     super.ngOnInit();
 
-    this._employee = this.route.snapshot.data['employee'];    
-
     super.form = this.fb.group({
-      hiringDate: [super.getDate(<any>this._employee.hiringDate), [Validators.required]], 
+      hiringDate: [super.getDate(<any>this.entity.hiringDate), Validators.required], 
       //employeePhoto: [undefined, Validators.required],
-      employeeRegistration: [this._employee.employeeRegistration],
-      name: [this._employee.name, Validators.required],
-      birthDate: [super.getDate(<any>this._employee.birthDate), Validators.required],
-      phoneNumber: [this._employee.phoneNumber, [Validators.required, NgBrazilValidators.telefone]],
+      employeeRegistration: [this.entity.employeeRegistration, Validators.required],
+      name: [this.entity.name, Validators.required],
+      birthDate: [super.getDate(<any>this.entity.birthDate), Validators.required],
+      phoneNumber: [this.entity.phoneNumber, [Validators.required, NgBrazilValidators.telefone]],
       address: this.fb.group({
-        street: [this._employee.address.street, [Validators.required]],
-        houseNumber: [this._employee.address.houseNumber, [Validators.required]],
-        neighborhood: [this._employee.address.neighborhood, [Validators.required]],
-        city: [this._employee.address.city, [Validators.required]],
-        state: [this._employee.address.state, [Validators.required]]
+        street: [this.entity.address.street, Validators.required],
+        houseNumber: [this.entity.address.houseNumber, Validators.required],
+        neighborhood: [this.entity.address.neighborhood, Validators.required],
+        city: [this.entity.address.city, Validators.required],
+        state: [this.entity.address.state, Validators.required]
       }),
       user: this.fb.group({
-        email: [this._employee.user.email]
+        email: [this.entity.user.email, Validators.required]
       }),
       staff: this.fb.group({
-        name: [this._employee.staff.name]
+        id: [this.entity.staff.id, Validators.required]
       })
     });
 
@@ -72,7 +77,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
 
     this._cities$ = merge(
-      of(this._employee.address.state).pipe(
+      of(this.entity.address.state).pipe(
         filter(acronym => !!acronym),
         switchMap(acronym => this._states$.pipe<StateVO>(
           map(states => states.find(state => state.acronym == acronym))
@@ -95,28 +100,61 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
         )),
         takeUntil(super.end$)
       )
-    );       
-  }
+    );
+    
+    this._staffs$ = merge(
+      of(this.entity.staff.id).pipe(
+        filter(id => !!id),
+        switchMap(id => this.staffsService.getById$(id)),
+        filter(staff => !!staff),
+        map(staff => [staff])
+      ),
+      this.staffName$.pipe(
+          filter(name => !!name && name.trim().length > 0),          
+          debounceTime(1000),
+          map(name => name.trim()),
+          distinctUntilChanged(),
+          switchMap(name => this.staffsService.getByName$(name)),
+          takeUntil(super.end$)
+        )
+    );
+  } 
 
   submit$() {
     const employee = <Employee>this.form.value;
-    employee.id = this._employee.id;
+    employee.id = this.entity.id;
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
     employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
     employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
-    employee.user.email = undefined;
-    employee.staff.name = undefined;
-    employee.user.id = this._employee.user.id;
-    employee.staff.id = this._employee.staff.id;
+    employee.user.id = this.entity.user.id;
     
-    return this.employeesService.save$(employee);
-  }
+    return (!super.isRegistred ? this.usersService.isRegisteredEmail$(employee.user.email) : of(undefined)).pipe(
+      flatMap(isRegisteredEmail => {
+        let user$: Observable<User>;
+        if(!super.isRegistred) {
+          if(isRegisteredEmail) {
+            this.eventsService.addWarningAlert('E-mail já cadastrado!', `O e-mail "${employee.user.email}" já foi cadastrado anteriormente.`);
+            return EMPTY;
+          }
+          user$ = this.usersService.save$(employee.user);
+        } else 
+          user$ = of(undefined);
 
-  protected getCreateSuccessMessage() {
-    return `O funcionário foi criado com sucesso.`;
-  }
-  protected getUpdateSuccessMessage(id: number) {
-    return `Os dados do funcionário "${id}" foram atualizados com sucesso.`;
+        return user$;
+      }),
+      flatMap(user => {
+        if(!!user) 
+          employee.user.id = user.id;
+        employee.user.email = undefined;
+        return this.employeesService.save$(employee);
+      }),
+      tap(employee => {
+        if(this.isRegistred)
+            this.eventsService.addSuccessAlert('Funcionário atualizado!', `Os dados do funcionário "${employee.name}" foram atualizados com sucesso.`);
+        else
+            this.eventsService.addSuccessAlert('Funcionário cadastrado!', `O funcionário "${employee.name}" foi cadastrado com sucesso.`);  
+      })
+    ); 
   }
 
   get states$() {
@@ -125,6 +163,10 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
 
   get cities$() {
     return this._cities$;
+  }
+
+  get staffs$() {
+    return this._staffs$;
   }
 
 }

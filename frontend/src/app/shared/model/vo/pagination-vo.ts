@@ -1,6 +1,6 @@
-import { BaseModel } from '../base-model';
+import { BaseEntity } from '../base-entity';
 
-export interface PaginationVO<T extends BaseModel> {
+export interface PaginationVO<E extends BaseEntity> {
     totalItems: number;
-    items: T[];
+    items: E[];
 }

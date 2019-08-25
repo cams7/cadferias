@@ -10,12 +10,12 @@ const routes: Routes = [
   {
     path: 'register',
     component: VacationFormComponent,
-    resolve: { vacation : VacationResolverGuard }
+    resolve: { entity : VacationResolverGuard }
   },
   {
     path: ':id',
     component: VacationFormComponent,
-    resolve: { vacation : VacationResolverGuard },
+    resolve: { entity : VacationResolverGuard },
     canDeactivate: [FormDeactivateGuard]
   },
   {

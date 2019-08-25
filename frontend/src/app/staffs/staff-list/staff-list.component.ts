@@ -1,6 +1,8 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from 'src/app/shared/events.service';
 import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
@@ -28,7 +30,7 @@ export class StaffListComponent extends BaseList<Staff> {
     super(renderer, route, router, fb, eventsService, confirmModalService, staffsService);
   }
 
-  protected addModelSearch(staff: Staff) {
+  protected addEntitySearch(staff: Staff) {
     this.eventsService.addStaffSearch(staff);
   }  
 
@@ -36,13 +38,13 @@ export class StaffListComponent extends BaseList<Staff> {
     return SearchType.STAFF;
   }
 
-  protected getModelBySearch(search: string): Staff {
+  protected getEntityBySearch(search: string): Staff {
     const staff = <Staff>{};
     staff.name = search;
     return staff;
   }
 
-  protected getSearchByModel(staff: Staff): string {
+  protected getSearchByEntity(staff: Staff): string {
     return super.buildMap(staff).get('name');
   }
 
@@ -50,12 +52,11 @@ export class StaffListComponent extends BaseList<Staff> {
     sortFields.set('name', undefined);
   }
 
-  protected getDeleteConfirmationMessage(id: number) {
-    return `Tem certeza que deseja remover a equipe "${id}"?`;
+  protected delete$(staff: Staff): Observable<void> {
+    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a equipe "${staff.name}"?`).pipe(
+      filter(confirmed => confirmed),            
+      switchMap(_ => this.staffsService.remove$(staff.id)),
+      tap(_ => this.eventsService.addSuccessAlert('Equipe excluída!', `A equipe "${staff.name}" foi excluida com sucesso.`))
+    );
   }
-
-  protected getDeleteSuccessMessage(id: number) {
-    return `A equipe "${id}" foi excluida com sucesso.`;
-  }
-
 }

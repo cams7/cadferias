@@ -1,6 +1,8 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from 'src/app/shared/events.service';
 import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
@@ -16,7 +18,7 @@ import { Employee } from 'src/app/shared/model/employee';
   styleUrls: ['./vacation-list.component.scss']
 })
 export class VacationListComponent extends BaseList<Vacation> {
-          
+            
   constructor(
     protected renderer: Renderer2,
     protected route: ActivatedRoute,
@@ -29,7 +31,7 @@ export class VacationListComponent extends BaseList<Vacation> {
     super(renderer, route, router, fb, eventsService, confirmModalService, vacationsService);
   }
   
-  protected addModelSearch(vacation: Vacation) {
+  protected addEntitySearch(vacation: Vacation) {
     this.eventsService.addVacationSearch(vacation);
   } 
   
@@ -37,7 +39,7 @@ export class VacationListComponent extends BaseList<Vacation> {
     return SearchType.VACATION;
   }
 
-  protected getModelBySearch(search: string): Vacation {
+  protected getEntityBySearch(search: string): Vacation {
     const vacation = <Vacation>{};
     vacation.employee = <Employee>{};
     if(this.isNumber(search))
@@ -45,7 +47,7 @@ export class VacationListComponent extends BaseList<Vacation> {
     return vacation;
   }
 
-  protected getSearchByModel(vacation: Vacation): string {
+  protected getSearchByEntity(vacation: Vacation): string {
     return super.buildMap(vacation).get('employee.id');
   }
 
@@ -55,12 +57,12 @@ export class VacationListComponent extends BaseList<Vacation> {
     sortFields.set('employee.id', undefined);
   }
 
-  protected getDeleteConfirmationMessage(id: number) {
-    return `Tem certeza que deseja remover a férias "${id}"?`;
-  }
-
-  protected getDeleteSuccessMessage(id: number) {
-    return `A férias "${id}" foi excluida com sucesso.`;
+  protected delete$(vacation: Vacation): Observable<void> {
+    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a férias "${vacation.id}"?`).pipe(
+      filter(confirmed => confirmed),            
+      switchMap(_ => this.vacationsService.remove$(vacation.id)),
+      tap(_ => this.eventsService.addSuccessAlert('Férias excluída!', `A férias "${vacation.id}" foi excluida com sucesso.`))
+    );
   }
 
 }

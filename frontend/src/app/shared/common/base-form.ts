@@ -1,5 +1,6 @@
 import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 
@@ -8,16 +9,19 @@ import { MASKS } from 'ng-brazil';
 import { Base, BR_DATE_FORMAT } from './base';
 import { AppEventsService } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
-import { BaseModel } from './../model/base-model';
+import { BaseEntity } from '../model/base-entity';
 
-export abstract class BaseForm<T extends BaseModel> extends Base implements OnInit {   
+export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {   
     
     private _brazilMasks = MASKS;
 
     public form: FormGroup;
     protected _submitted = false;
 
+    private _entity: E;
+
     constructor(
+        protected route: ActivatedRoute,
         protected eventsService: AppEventsService,
         protected confirmModalService: ConfirmModalService
     ) { 
@@ -25,9 +29,10 @@ export abstract class BaseForm<T extends BaseModel> extends Base implements OnIn
     }
 
     ngOnInit() {
+        this._entity = this.route.snapshot.data['entity'];  
     }
 
-    abstract submit$(): Observable<T>;
+    abstract submit$(): Observable<E>;
 
     onSubmit() {        
         this._submitted = true;
@@ -35,20 +40,12 @@ export abstract class BaseForm<T extends BaseModel> extends Base implements OnIn
         if (this.form.invalid || !(this.form.touched && this.form.dirty)) 
           return;
 
-        this.submit$().subscribe(item => {
+        this.submit$().subscribe(_ => {
             this.form.markAsPristine();
             this.form.markAsUntouched();
-            
-            if(item.id)
-                this.eventsService.addSuccessAlert('Item atualizado!', this.getUpdateSuccessMessage(item.id));
-            else
-                this.eventsService.addSuccessAlert('Item criado!', this.getCreateSuccessMessage());
         });
     } 
     
-    protected abstract getCreateSuccessMessage(): string;
-    protected abstract getUpdateSuccessMessage(id: number): string;
-
     unchangedData$(): Observable<boolean> {
         return of(!this.form || !(this.form.touched && this.form.dirty)).pipe(
             flatMap(unchanged => {
@@ -75,6 +72,10 @@ export abstract class BaseForm<T extends BaseModel> extends Base implements OnIn
         return this.hasError(fieldName) && this.hasError(fieldName)[typeError];
     }
 
+    trackByFn(entity: E) {
+        return entity.id;
+    }
+
     private hasError(field: string) {
         return this.form.get(field).errors;
     }
@@ -94,5 +95,13 @@ export abstract class BaseForm<T extends BaseModel> extends Base implements OnIn
 
     get brazilMasks() {
         return this._brazilMasks;
+    }
+
+    get entity() {
+        return this._entity;
+    }
+
+    get isRegistred() {
+        return !!this._entity.id;
     }
 }

@@ -5,9 +5,9 @@ import { map } from 'rxjs/operators';
 import { Base } from './base';
 import { PaginationVO } from '../model/vo/pagination-vo';
 import { SortOrder } from 'src/app/shared/common/sort-field.directive';
-import { BaseModel } from '../model/base-model';
+import { BaseEntity } from '../model/base-entity';
 
-export abstract class BaseService<T extends BaseModel> extends Base {
+export abstract class BaseService<E extends BaseEntity> extends Base {
 
     constructor(
         protected http: HttpClient,
@@ -16,7 +16,7 @@ export abstract class BaseService<T extends BaseModel> extends Base {
         super();
     }
 
-    getAll$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PaginationVO<T>> {
+    getAll$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PaginationVO<E>> {
         let params = new HttpParams();   
 
         if(pageAndSort) {
@@ -37,31 +37,31 @@ export abstract class BaseService<T extends BaseModel> extends Base {
                 return params.append(`${key}_like`, searchParams.get(key));
             }, params);
         
-        return this.http.get<T[]>(this.API_URL, { params: params, observe: 'response' }).pipe(
-            map(response => <PaginationVO<T>>{
-                totalItems: <any>response.headers.get('X-Total-Count'), 
-                items: response.body
+        return this.http.get(this.API_URL, { params: params, observe: 'response' }).pipe<PaginationVO<E>>(
+            map(response => <PaginationVO<E>>{
+                totalItems: Number(response.headers.get('X-Total-Count')), 
+                items: response.body as E[]
             })
         );
     }
     
     getById$(id: number) {
-        return this.http.get<T>(`${this.API_URL}/${id}`);
+        return this.http.get<E>(`${this.API_URL}/${id}`);
     }
 
-    protected create$(record: T) {
-        return this.http.post<T>(this.API_URL, record);
+    protected create$(entity: E) {
+        return this.http.post<E>(this.API_URL, entity);
     }
 
-    protected update$(record: T) {
-        return this.http.put<T>(`${this.API_URL}/${record["id"]}`, record);
+    protected update$(entity: E) {
+        return this.http.put<E>(`${this.API_URL}/${entity.id}`, entity);
     }
 
-    save$(record: T) {
-        if (record["id"])
-            return this.update$(record);
+    save$(entity: E) {
+        if (entity.id)
+            return this.update$(entity);
 
-        return this.create$(record);
+        return this.create$(entity);
     }
 
     remove$(id: number) {

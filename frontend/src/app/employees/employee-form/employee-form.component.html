@@ -21,16 +21,29 @@
         <div class="row">
             <div class="col-md-4 mb-3" formGroupName="staff">
                 <label for="staffName" class="control-label">Equipe</label>
-                <input id="staffName" type="text" readonly class="form-control-plaintext form-control-lg" formControlName="name">
+                <ng-select id="staffName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('staff.id')"
+                    [items]="staffs$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackByFn" [typeahead]="staffName$"
+                    [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
+                    notFoundText="Nenhuma equipe foi encontrada" typeToSearchText="Informe o nome da equipe">
+                </ng-select>
+                <div class="invalid-feedback" *ngIf="hasRequiredError('staff.id')">
+                    Por favor, informe a equipe.
+                </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="employeeRegistration" class="col-form-label">Matricula</label>
-                <input id="employeeRegistration" type="text" readonly class="form-control-plaintext form-control-lg"  formControlName="employeeRegistration">
+                <input id="employeeRegistration" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control"  formControlName="employeeRegistration" [ngClass]="classError('employeeRegistration')">
+                <div class="invalid-feedback" *ngIf="hasRequiredError('employeeRegistration')">
+                    Por favor, informe a matricula.
+                </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="hiringDate" class="col-form-label">Data de contratação</label>
-                <input id="hiringDate" type="text" readonly class="form-control-plaintext form-control-lg" formControlName="hiringDate"
-                    bsDatepicker [bsConfig]="bsConfig" isDisabled=true>
+                <input id="hiringDate" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control" formControlName="hiringDate"
+                    bsDatepicker [bsConfig]="bsConfig" [isDisabled]="isRegistred" [ngClass]="classError('hiringDate')">
+                <div class="invalid-feedback" *ngIf="hasRequiredError('hiringDate')">
+                    Por favor, informe a data de contratação.
+                </div>
             </div>            
         </div>
     </fieldset>
@@ -39,7 +52,10 @@
         <div class="row">
             <div class="col-md-8 mb-3" formGroupName="user">
                 <label for="userEmail" class="control-label">E-mail</label>
-                <input id="userEmail" type="text" readonly class="form-control-plaintext" formControlName="email">
+                <input id="userEmail" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control" formControlName="email" [ngClass]="classError('user.email')">
+                <div class="invalid-feedback" *ngIf="hasRequiredError('user.email')">
+                    Por favor, informe o e-mail.
+                </div>
             </div>            
             <div class="col-md-4 mb-3">
                 <label for="phoneNumber" class="control-label">Telefone</label>
@@ -98,11 +114,9 @@
         </div>
     </fieldset>
     <div class="form-group row">
-        <div class="col-sm-6">
-            <button type="button" class="btn btn-info btn-lg">Voltar</button>
-        </div>
-        <div class="col-sm-6 text-right">
-            <button type="submit" class="btn btn-primary btn-lg">Atualizar</button><!--&nbsp;
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-info btn-lg float-left">Voltar</button>
+            <button type="submit" class="btn btn-primary btn-lg float-right">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button><!--&nbsp;
             <button type="button" class="btn btn-secondary btn-lg">Limpar</button>-->
         </div>        
     </div>        

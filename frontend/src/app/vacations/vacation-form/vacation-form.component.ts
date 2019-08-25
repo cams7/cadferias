@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { AppEventsService } from 'src/app/shared/events.service';
 import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
@@ -15,11 +16,12 @@ import { EMPTY } from 'rxjs';
 export class VacationFormComponent extends BaseForm<Vacation> {  
   
   constructor(
+    protected route: ActivatedRoute,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
     private vacationsService: VacationsService
   ) { 
-    super(eventsService, confirmModalService);
+    super(route, eventsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -28,13 +30,6 @@ export class VacationFormComponent extends BaseForm<Vacation> {
 
   submit$() {
     return EMPTY;
-  }
-
-  protected getCreateSuccessMessage() {
-    return `A férias foi criada com sucesso.`;
-  }
-  protected getUpdateSuccessMessage(id: number) {
-    return `Os dados da férias "${id}" foram atualizados com sucesso.`;
   }
 
 }

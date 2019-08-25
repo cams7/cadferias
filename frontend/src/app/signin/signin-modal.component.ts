@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
@@ -8,6 +9,7 @@ import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from 'src/app/shared/common/base-form';
 import { User } from '../shared/model/user';
+
 
 @Component({
   selector: 'app-signin',
@@ -18,11 +20,12 @@ export class SigninModalComponent extends BaseForm<User> {
    
   constructor(   
     private fb: FormBuilder,
+    protected route: ActivatedRoute,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super(eventsService, confirmModalService);
+    super(route, eventsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -67,13 +70,6 @@ export class SigninModalComponent extends BaseForm<User> {
       from: AppEventFrom.SIGNIN_MODAL, 
       type: AppEventType.MODAL_CLOSE
     });
-  }
-
-  protected getCreateSuccessMessage() {
-    return undefined;
-  }
-  protected getUpdateSuccessMessage(id: number) {
-    return undefined;
   }
 
 }

@@ -8,6 +8,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 
+import { NgSelectModule } from '@ng-select/ng-select';
+
 import { TextMaskModule } from 'angular2-text-mask';
 import { NgBrazil } from 'ng-brazil';
 
@@ -30,6 +32,7 @@ import { SortFieldDirective } from './common/sort-field.directive';
     BsDatepickerModule.forRoot(),
     ModalModule.forRoot(),
     AlertModule.forRoot(),
+    NgSelectModule,
     TextMaskModule,
     NgBrazil
   ],
@@ -43,6 +46,7 @@ import { SortFieldDirective } from './common/sort-field.directive';
     BsDatepickerModule,
     ModalModule,
     AlertModule,
+    NgSelectModule,
     TextMaskModule,
     NgBrazil,
     SortFieldDirective    

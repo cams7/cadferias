@@ -1,5 +1,5 @@
-import { BaseModel } from './base-model';
+import { BaseEntity } from './base-entity';
 
-export interface Staff extends BaseModel {
+export interface Staff extends BaseEntity {
     name: string;
 }
