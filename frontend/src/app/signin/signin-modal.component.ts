@@ -5,14 +5,14 @@ import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
 import { AppEventsService, AppEvent, AppEventFrom, AppEventType } from '../shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
+import { ConfirmModalService } from './../shared/confirm-modal/confirm-modal.service';
 import { AuthService } from '../shared/auth/auth.service';
-import { BaseForm } from 'src/app/shared/common/base-form';
+import { BaseForm } from './../shared/common/base-form';
 import { User } from '../shared/model/user';
 
 
 @Component({
-  selector: 'app-signin',
+  selector: 'app-signin-modal',
   templateUrl: './signin-modal.component.html',
   styleUrls: ['./signin-modal.component.scss']
 })

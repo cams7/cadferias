@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { forkJoin, of } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { StateVO } from './../shared/model/vo/state-vo';
 import { CityVO } from '../shared/model/vo/city-vo';
-import { UsersService } from 'src/app/users/users.service';
+import { UsersService } from './../users/users.service';
 import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';
 import { Employee } from '../shared/model/employee';
@@ -49,5 +49,17 @@ export class EmployeesService extends BaseService<Employee> {
 
   get allCities$() {
     return this.http.get<CityVO[]>('assets/data/brazilian-cities.json');  
+  }
+
+  totalEmployees$(staffId: number) {
+    return this.http.get<Employee[]>(`${environment.API}${EMPLOYEES}`, { params: new HttpParams().append('staff.id', <any>staffId) }).pipe<number>(
+      map(employees => (!!employees && employees.length > 0) ? employees.length : 0)
+    );
+  }
+
+  getByName$(name: string) {
+    return this.http.get<Employee[]>(`${environment.API}${EMPLOYEES}`, { 
+      params: new HttpParams().append('name_like', name).append('_sort', 'name').append('_order', 'asc').append('_limit', "7") 
+    });
   }
 }

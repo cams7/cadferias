@@ -6,17 +6,17 @@ import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, d
 
 import { NgBrazilValidators } from 'ng-brazil';
 
-import { AppEventsService } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
+import { AppEventsService } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
 import { CityVO } from './../../shared/model/vo/city-vo';
 import { StateVO } from './../../shared/model/vo/state-vo';
-import { BaseForm } from 'src/app/shared/common/base-form';
+import { BaseForm } from './../../shared/common/base-form';
 import { UsersService } from './../../users/users.service';
 import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
 import { Employee } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
-import { User } from 'src/app/shared/model/user';
+import { User } from './../../shared/model/user';
 
 @Component({
   selector: 'app-employee-form',
@@ -181,9 +181,9 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
       }),
       tap(employee => {
         if(this.isRegistred)
-            this.eventsService.addSuccessAlert('Funcionário atualizado!', `Os dados do funcionário "${employee.name}" foram atualizados com sucesso.`);
+            this.eventsService.addSuccessAlert('Funcionário(a) atualizado(a)!', `Os dados do(a) funcionário(a) "${employee.name}" foram atualizados com sucesso.`);
         else
-            this.eventsService.addSuccessAlert('Funcionário cadastrado!', `O funcionário "${employee.name}" foi cadastrado com sucesso.`);  
+            this.eventsService.addSuccessAlert('Funcionário(a) cadastrado(a)!', `O(A) funcionário(a) "${employee.name}" foi cadastrado(a) com sucesso.`);  
       })
     ); 
   }

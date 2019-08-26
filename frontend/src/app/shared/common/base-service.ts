@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 
 import { Base } from './base';
 import { PaginationVO } from '../model/vo/pagination-vo';
-import { SortOrder } from 'src/app/shared/common/sort-field.directive';
+import { SortOrder } from './../../shared/common/sort-field.directive';
 import { BaseEntity } from '../model/base-entity';
 
 export abstract class BaseService<E extends BaseEntity> extends Base {

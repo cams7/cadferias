@@ -10,7 +10,8 @@ const routes: Routes = [
   {
     path: 'register',
     component: StaffFormComponent,
-    resolve: { entity : StaffResolverGuard }
+    resolve: { entity : StaffResolverGuard },
+    canDeactivate: [FormDeactivateGuard]
   },
   {
     path: ':id',

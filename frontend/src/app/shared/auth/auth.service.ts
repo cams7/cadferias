@@ -3,9 +3,8 @@ import { Observable, of } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
 
 import { TokenStorageService } from './token-storage.service';
+import { UsersService } from './../../users/users.service';
 import { User } from './../model/user';
-import { UsersService } from 'src/app/users/users.service';
-
 
 @Injectable({
   providedIn: 'root'

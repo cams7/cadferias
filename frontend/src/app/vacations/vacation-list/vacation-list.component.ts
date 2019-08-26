@@ -4,13 +4,13 @@ import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from 'src/app/shared/common/sort-field.directive';
-import { BaseList } from 'src/app/shared/common/base-list';
+import { AppEventsService, SearchType } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { SortOrder } from './../../shared/common/sort-field.directive';
+import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
-import { Employee } from 'src/app/shared/model/employee';
+import { Employee } from './../../shared/model/employee';
 
 @Component({
   selector: 'app-vacation-list',

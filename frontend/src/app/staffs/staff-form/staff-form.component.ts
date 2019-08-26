@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
-import { AppEventsService } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
-import { BaseForm } from 'src/app/shared/common/base-form';
+import { AppEventsService } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from '../staffs.service';
-import { Staff } from 'src/app/shared/model/staff';
-import { EMPTY } from 'rxjs';
-
+import { Staff } from './../../shared/model/staff';
 
 @Component({
   selector: 'app-staff-form',
@@ -17,6 +17,7 @@ import { EMPTY } from 'rxjs';
 export class StaffFormComponent extends BaseForm<Staff> {
 
   constructor(
+    private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
@@ -27,10 +28,23 @@ export class StaffFormComponent extends BaseForm<Staff> {
 
   ngOnInit() {
     super.ngOnInit();
+
+    super.form = this.fb.group({
+      name: [this.entity.name, Validators.required]
+    });
   }
 
   submit$() {
-    return EMPTY;
-  }
+    const staff = <Staff>this.form.value;
+    staff.id = this.entity.id;
 
+    return this.staffsService.save$(staff).pipe(
+      tap(staff => {
+        if(this.isRegistred)
+            this.eventsService.addSuccessAlert('Equipe atualizada!', `Os dados da equipe "${staff.name}" foram atualizados com sucesso.`);
+        else
+            this.eventsService.addSuccessAlert('Equipe cadastrada!', `A equipe "${staff.name}" foi cadastrada com sucesso.`);  
+      })
+    );
+  }
 }

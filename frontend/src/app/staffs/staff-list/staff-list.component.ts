@@ -1,14 +1,15 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { filter, switchMap, tap, flatMap } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from 'src/app/shared/common/sort-field.directive';
-import { BaseList } from 'src/app/shared/common/base-list';
+import { AppEventsService, SearchType } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { SortOrder } from './../../shared/common/sort-field.directive';
+import { BaseList } from './../../shared/common/base-list';
 import { StaffsService } from '../staffs.service';
+import { EmployeesService } from './../../employees/employees.service';
 import { Staff } from './../../shared/model/staff';
 
 @Component({
@@ -25,7 +26,8 @@ export class StaffListComponent extends BaseList<Staff> {
     protected fb: FormBuilder,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
-    private staffsService: StaffsService
+    private staffsService: StaffsService,
+    private employeesService: EmployeesService
   ) { 
     super(renderer, route, router, fb, eventsService, confirmModalService, staffsService);
   }
@@ -54,8 +56,15 @@ export class StaffListComponent extends BaseList<Staff> {
 
   protected delete$(staff: Staff): Observable<void> {
     return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a equipe "${staff.name}"?`).pipe(
-      filter(confirmed => confirmed),            
-      switchMap(_ => this.staffsService.remove$(staff.id)),
+      filter(confirmed => confirmed),
+      flatMap(_ => this.employeesService.totalEmployees$(staff.id)),            
+      flatMap(totalEmployees => {
+        if(totalEmployees > 0) {
+          this.eventsService.addWarningAlert('Tem funcionários!', `A equipe "${staff.name}" não pode ser excluída, porque essa tem ${totalEmployees} funcionário(s) cadastrado(s).`)
+          return EMPTY;
+        }
+        return this.staffsService.remove$(staff.id)
+      }),
       tap(_ => this.eventsService.addSuccessAlert('Equipe excluída!', `A equipe "${staff.name}" foi excluida com sucesso.`))
     );
   }

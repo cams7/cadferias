@@ -1,15 +1,16 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
 import { filter, tap, flatMap } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from 'src/app/shared/common/sort-field.directive';
-import { BaseList } from 'src/app/shared/common/base-list';
+import { AppEventsService, SearchType } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { SortOrder } from './../../shared/common/sort-field.directive';
+import { BaseList } from './../../shared/common/base-list';
 import { UsersService } from './../../users/users.service';
 import { EmployeesService } from '../employees.service';
+import { VacationsService } from './../../vacations/vacations.service';
 import { Employee } from './../../shared/model/employee';
 
 @Component({
@@ -27,7 +28,8 @@ export class EmployeeListComponent extends BaseList<Employee> {
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
     private usersService: UsersService,
-    private employeesService: EmployeesService
+    private employeesService: EmployeesService,
+    private vacationsService: VacationsService
   ) { 
     super(renderer, route, router, fb, eventsService, confirmModalService, employeesService);
   }
@@ -68,11 +70,18 @@ export class EmployeeListComponent extends BaseList<Employee> {
   }
 
   protected delete$(employee: Employee): Observable<void> {
-    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover o funcionário "${employee.name}"?`).pipe(
+    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover o(a) funcionário(a) "${employee.name}"?`).pipe(
       filter(confirmed => confirmed),
-      flatMap(_ => this.usersService.remove$(employee.user.id)),
+      flatMap(_ => this.vacationsService.totalVacations$(employee.id)),
+      flatMap(totalVacations => {
+        if(totalVacations > 0) {
+          this.eventsService.addWarningAlert('Tem férias!', `O(A) funcionário(a) "${employee.name}" não pode ser excluído(a), porque esse(a) tem ${totalVacations} férias cadastrada(s).`)
+          return EMPTY;
+        }
+        return this.usersService.remove$(employee.user.id)
+      }),
       flatMap(_ => this.employeesService.remove$(employee.id)),
-      tap(_ => this.eventsService.addSuccessAlert('Funcionário excluído!', `O funcionário "${employee.name}" foi excluido com sucesso.`))
+      tap(_ => this.eventsService.addSuccessAlert('Funcionário(a) excluído(a)!', `O(A) funcionário(a) "${employee.name}" foi excluido(a) com sucesso.`))
     );
   }
 }

@@ -15,8 +15,10 @@ export class StaffResolverGuard implements Resolve<Staff> {
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Staff> {
-    if (route.params && route.params['id']) 
-      return of(<Staff>{}); 
+    if (route.params && route.params['id']) {
+      const id: number = route.params['id'];
+      return this.staffsService.getById$(id); 
+    }
 
     return of(<Staff>{});
   }

@@ -1,1 +1,57 @@
-<p>vacation-form works!</p>
+<form class="needs-validation" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset class="border p-2 form-group">
+            <legend  class="w-auto">Funcionário</legend>
+            <div class="row">
+                <div class="col-md-8 mb-3" formGroupName="employee">
+                    <label for="employeeName" class="control-label">Nome</label>
+                    <ng-select id="employeeName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('employee.id')"
+                        [items]="employees$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackById" [typeahead]="employeeName$"
+                        [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
+                        notFoundText="Nenhum funcionário foi encontrado" typeToSearchText="Informe o nome do funcionário">
+                    </ng-select>
+                    <div class="invalid-feedback" *ngIf="hasRequiredError('employee.id')">
+                        Por favor, informe o funcionário.
+                    </div>     
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="vacationBreak" class="control-label">Data da férias</label>
+                    <input id="vacationBreak" type="text" class="form-control" formControlName="vacationBreak" [ngClass]="classError('vacationBreak')" 
+                        bsDaterangepicker [bsConfig]="bsDaterangeConfig">
+                    <div class="invalid-feedback" *ngIf="hasRequiredError('vacationBreak')">
+                        Por favor, informe a data inicial e final das férias.
+                    </div> 
+                </div>
+            </div>
+            <div class="row" formGroupName="employee">
+                <div class="col-md-6 mb-3" formGroupName="staff">
+                    <label for="staffName" class="control-label">Equipe</label>
+                    <input id="staffName" type="text" readonly=true class="form-control form-control-plaintext" formControlName="name">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="employeeRegistration" class="col-form-label">Matricula</label>
+                    <input id="employeeRegistration" type="text" readonly=true class="form-control form-control-plaintext"  formControlName="employeeRegistration">                    
+                </div>            
+            </div>
+        </fieldset>
+        <fieldset class="border p-2 form-group">
+            <legend  class="w-auto">Contato</legend>
+            <div class="row" formGroupName="employee">
+                <div class="col-md-8 mb-3" formGroupName="user">
+                    <label for="email" class="control-label">E-mail</label>
+                    <input id="email" type="text" readonly=true class="form-control form-control-plaintext" formControlName="email">                    
+                </div>            
+                <div class="col-md-4 mb-3">
+                    <label for="phoneNumber" class="control-label">Telefone</label>
+                    <input id="phoneNumber" type="text" readonly=true class="form-control form-control-plaintext" formControlName="phoneNumber"
+                        telefone [textMask]="{mask: brazilMasks.telefone.textMaskFunction}">      
+                </div>
+            </div>  
+        </fieldset>  
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-info btn-lg float-left">Voltar</button>
+                <button type="submit" class="btn btn-primary btn-lg float-right">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button><!--&nbsp;
+                <button type="button" class="btn btn-secondary btn-lg">Limpar</button>-->
+            </div>        
+        </div>        
+    </form>

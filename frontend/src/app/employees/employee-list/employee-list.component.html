@@ -3,21 +3,25 @@
         <div class="form-row">
             <div class="col-sm-12 col-md-6">
                 <div class="input-group input-group-md">
-                    <label for="itemsPerPage">Show <select id="itemsPerPage" formControlName="itemsPerPage" class="custom-select custom-select-sm form-control form-control-sm" class="form-control" placeholder="Items per page">
-                        <option *ngFor="let itemsPerPage of allItemsPerPage" [value]="itemsPerPage">{{ itemsPerPage }}</option>
-                    </select> entries</label>
+                    <label for="itemsPerPage">Números de linhas: 
+                        <select id="itemsPerPage" formControlName="itemsPerPage" class="custom-select custom-select-sm form-control form-control-sm" class="form-control">
+                            <option *ngFor="let itemsPerPage of allItemsPerPage" [value]="itemsPerPage">{{ itemsPerPage }}</option>
+                        </select>
+                    </label>
                 </div>
             </div>
             <div class="col-sm-12 col-md-6">
                 <div class="input-group input-group-md">
-                    <label for="search">Search:<input id="search" formControlName="search" type="search" class="form-control form-control-sm" class="form-control" placeholder="Search" autofocus></label>
+                    <label for="search">Buscar:
+                        <input id="search" formControlName="search" type="search" class="form-control form-control-sm" class="form-control" autofocus>
+                    </label>
                 </div>
             </div>
         </div>        
     </form>
     <div class="row">
         <div class="col-sm-12">
-            <a class="btn btn-sm btn-outline-primary mb-1 float-right" role="button" [routerLink]="['register']"><i class="fa fa-plus"></i>&nbsp;Novo Funcionário</a>
+            <a class="btn btn-sm btn-outline-primary mb-1 float-right" role="button" [routerLink]="['register']"><i class="fa fa-plus"></i>&nbsp;Cadastrar Funcionário</a>
         </div>
     </div>
     <div class="row">

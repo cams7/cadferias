@@ -97,6 +97,15 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
         }
     }
 
+    get bsDaterangeConfig() {
+        return { 
+            rangeInputFormat: BR_DATE_FORMAT.toUpperCase(),
+            isAnimated: true,
+            adaptivePosition: true,
+            containerClass: 'theme-dark-blue' 
+        }
+    }
+
     get brazilMasks() {
         return this._brazilMasks;
     }

@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Subject, Observable, merge, of } from 'rxjs';
+import { tap, filter, flatMap, map, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 
-import { AppEventsService } from 'src/app/shared/events.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal/confirm-modal.service';
-import { BaseForm } from 'src/app/shared/common/base-form';
+import { AppEventsService } from './../../shared/events.service';
+import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { BaseForm } from './../../shared/common/base-form';
+import { EmployeesService } from './../../employees/employees.service';
 import { VacationsService } from './../vacations.service';
+import { Employee } from './../../shared/model/employee';
 import { Vacation } from './../../shared/model/vacation';
-import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-vacation-form',
@@ -14,11 +18,16 @@ import { EMPTY } from 'rxjs';
   styleUrls: ['./vacation-form.component.scss']
 })
 export class VacationFormComponent extends BaseForm<Vacation> {  
+
+  employeeName$ = new Subject<string>();
+  private _employees$: Observable<Employee[]>; 
   
   constructor(
+    private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected eventsService: AppEventsService,
     protected confirmModalService: ConfirmModalService,
+    private employeesService: EmployeesService,
     private vacationsService: VacationsService
   ) { 
     super(route, eventsService, confirmModalService);
@@ -26,10 +35,87 @@ export class VacationFormComponent extends BaseForm<Vacation> {
 
   ngOnInit() {
     super.ngOnInit();
+
+    super.form = this.fb.group({
+      vacationBreak: [this.vacationBreak, Validators.required],
+      employee: this.fb.group({
+        id: [this.entity.employee.id, Validators.required],
+        employeeRegistration: [this.entity.employee.employeeRegistration],
+        phoneNumber: [this.entity.employee.phoneNumber],
+        user: this.fb.group({
+          email: [this.entity.employee.user.email]
+        }),
+        staff: this.fb.group({
+          name: [this.entity.employee.staff.name]
+        })
+      }) 
+    });
+
+    this.form.get('employee.id').valueChanges.pipe(
+      filter(employeeId => !!employeeId),
+      distinctUntilChanged(),
+      switchMap(employeeId => this.employeesService.getById$(employeeId)),
+      filter(employee => !!employee),
+      takeUntil(super.end$)
+    ).subscribe(employee => {
+      this.entity.employee = employee;
+      this.form.get('employee').patchValue(employee);
+    })
+
+    this._employees$ = merge(
+      of(this.entity.employee.id).pipe(
+        filter(id => !!id),
+        flatMap(id => this.employeesService.getById$(id)),
+        filter(employee => !!employee),
+        map(employee => [employee])
+      ),
+      this.employeeName$.pipe(
+          filter(name => !!name && name.trim().length > 0),          
+          debounceTime(super.debounceTime),
+          map(name => name.trim()),
+          distinctUntilChanged(),
+          switchMap(name => this.employeesService.getByName$(name)),
+          takeUntil(super.end$)
+        )
+    );
+
+  }
+
+  private get vacationBreak(): Date[] {
+    if (!this.entity.vacationStartDate || !this.entity.vacationEndDate)
+      return undefined;
+
+    return  [
+      <Date>super.getDate(<any>this.entity.vacationStartDate),
+      <Date>super.getDate(<any>this.entity.vacationEndDate)
+    ]
   }
 
   submit$() {
-    return EMPTY;
+    const vacationBreak: Date[] = this.form.get('vacationBreak').value;
+
+    const vacation = <Vacation>this.form.value;       
+    vacation.vacationStartDate = <any>super.getFormattedDate(vacationBreak[0]);
+    vacation.vacationEndDate = <any>super.getFormattedDate(vacationBreak[1]);
+    (<any>vacation).vacationBreak = undefined; 
+    vacation.id = this.entity.id;
+    vacation.employee.employeeRegistration = undefined;
+    vacation.employee.phoneNumber = undefined;
+    vacation.employee.user = undefined;
+    vacation.employee.staff = undefined;    
+
+    return this.vacationsService.save$(vacation).pipe(
+      tap(vacation => {
+        if(this.isRegistred)
+            this.eventsService.addSuccessAlert('Férias atualizada!', `Os dados da férias "${vacation.id}" foram atualizados com sucesso.`);
+        else
+            this.eventsService.addSuccessAlert('Férias cadastrada!', `A férias foi cadastrada com sucesso.`);  
+      })
+    );
+  }
+
+  get employees$() {
+    return this._employees$;
   }
 
 }
