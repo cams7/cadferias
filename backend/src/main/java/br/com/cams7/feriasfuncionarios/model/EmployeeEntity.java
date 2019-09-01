@@ -1,0 +1,202 @@
+/**
+ * 
+ */
+package br.com.cams7.feriasfuncionarios.model;
+
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.SEQUENCE;
+
+import java.time.LocalDate;
+import java.util.Collection;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.model.common.Auditable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * @author ceanm
+ *
+ */
+@ApiModel(description = "Entidade que representa o funcionário.")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode(of = "id", callSuper = false)
+@Entity
+@Table(name = "TB_FUNCIONARIO")
+public class EmployeeEntity extends Auditable<Long> {
+
+	@ApiModelProperty(notes = "Identificador único do funcionário.", example = "1", required = true, position = 5)
+	@JsonView(Views.Public.class)
+	@Id
+	@SequenceGenerator(name = "SQ_FUNCIONARIO", sequenceName = "SQ_FUNCIONARIO", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_FUNCIONARIO")
+	@Column(name = "ID_FUNCIONARIO", nullable = false)
+	private Long id;
+
+	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = true, position = 6)
+	@JsonView(Views.Public.class)
+	@NotNull
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(name = "ID_USUARIO")
+	private UserEntity user;
+
+	@ApiModelProperty(notes = "Equipe a qual o funcionário é membro.", required = true, position = 7)
+	@JsonView(Views.Public.class)
+	@NotNull
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "ID_EQUIPE")
+	private StaffEntity staff;
+
+	@ApiModelProperty(notes = "Data da contratação do funcionário.", example = "01/01/2019", required = true, position = 8)
+	@JsonView(Views.Public.class)
+	@NotNull
+	@Column(name = "DATA_CONTRATACAO")
+	private LocalDate hiringDate;
+
+	@ApiModelProperty(notes = "Matricula do funcionário.", example = "123456789abc", required = true, position = 9)
+	@JsonView(Views.Public.class)
+	@Column(name = "MATRICULA", nullable = false, length = 20)
+	private String employeeRegistration;
+
+	@ApiModelProperty(notes = "Nome do funcionário.", example = "José Silva Pinheiro", required = true, position = 10)
+	@JsonView(Views.Public.class)
+	@NotBlank
+	@Size(min = 3, max = 50)
+	@Column(name = "NOME")
+	private String name;
+
+	@ApiModelProperty(notes = "Data de nascimento do funcionário.", example = "08/03/1984", required = true, position = 11)
+	@JsonView(Views.Public.class)
+	@NotNull
+	@Column(name = "DATA_NASCIMENTO")
+	private LocalDate birthDate;
+
+	@ApiModelProperty(notes = "Número de telefone do funcionário.", example = "3136457856", required = true, position = 12)
+	@JsonView(Views.Public.class)
+	@NotBlank
+	@Size(min = 10, max = 11)
+	@Column(name = "TELEFONE")
+	private String phoneNumber;
+
+	@ApiModelProperty(notes = "Endereço do funcionário.", required = true, position = 13)
+	@JsonView(Views.Public.class)
+	@NotNull
+	@Embedded
+	private Address address;
+
+	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 14)
+	@JsonView(Views.Detail.class)
+	@OneToMany(mappedBy = "employee")
+	private Collection<VacationEntity> vacations;
+
+	@ApiModel(description = "Entidade que representa o endereço do funcionário.")
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@Embeddable
+	public static class Address {
+
+		@ApiModelProperty(notes = "Rua onde onde residi o funcionário.", example = "Av. Francisco Sales", required = true, position = 0)
+		@JsonView(Views.Public.class)
+		@NotBlank
+		@Size(min = 3, max = 50)
+		@Column(name = "LOGRADOURO", length = 50, nullable = false)
+		private String street;
+
+		@ApiModelProperty(notes = "Número da residência do funcionário.", example = "123", required = true, position = 1)
+		@JsonView(Views.Public.class)
+		@NotNull
+		@Column(name = "NUMERO_RESIDENCIAL", nullable = false)
+		private Integer houseNumber;
+
+		@ApiModelProperty(notes = "Bairro onde onde residi o funcionário.", example = "Floresta", required = true, position = 2)
+		@JsonView(Views.Public.class)
+		@NotBlank
+		@Size(min = 3, max = 50)
+		@Column(name = "BAIRRO", length = 50, nullable = false)
+		private String neighborhood;
+
+		@ApiModelProperty(notes = "Cidade onde onde residi o funcionário.", example = "Belo Horizonte", required = true, position = 3)
+		@JsonView(Views.Public.class)
+		@NotBlank
+		@Size(min = 3, max = 30)
+		@Column(name = "CIDADE", length = 30, nullable = false)
+		private String city;
+
+		@ApiModelProperty(notes = "Estado onde onde residi o funcionário.", example = "MG", required = true, position = 4)
+		@JsonView(Views.Public.class)
+		@NotNull
+		@Column(name = "UF", nullable = false, columnDefinition = "CHAR(2)")
+		@Enumerated(STRING)
+		private State state;
+
+		@Getter
+		private static enum State {
+			// @formatter:off
+			AC("Acre"), 
+			AL("Alagoas"), 
+			AM("Amazonas"), 
+			AP("Amapá"), 
+			BA("Bahia"), 
+			CE("Ceará"), 
+			DF("Distrito Federal"),
+			ES("Espírito Santo"), 
+			GO("Goiás"), 
+			MA("Maranhão"), 
+			MG("Minas Gerais"), 
+			MS("Mato Grosso do Sul"),
+			MT("Mato Grosso"), 
+			PA("Pará"), 
+			PB("Paraíba"), 
+			PE("Pernambuco"), 
+			PI("Piauí"), 
+			PR("Paraná"),
+			RJ("Rio de Janeiro"), 
+			RN("Rio Grande do Norte"), 
+			RO("Rondônia"), 
+			RR("Roraima"), 
+			RS("Rio Grande do Sul"),
+			SC("Santa Catarina"), 
+			SE("Sergipe"), 
+			SP("São Paulo"), 
+			TO("Tocantins");
+			// @formatter:on
+
+			private String name;
+
+			private State(String name) {
+				this.name = name;
+			}
+
+		}
+	}
+
+}
