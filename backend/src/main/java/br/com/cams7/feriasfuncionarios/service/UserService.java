@@ -12,4 +12,5 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseService;
  */
 public interface UserService extends BaseService<UserEntity, Long> {
 
+	void delete(Long userId, boolean deleteEmployee);
 }

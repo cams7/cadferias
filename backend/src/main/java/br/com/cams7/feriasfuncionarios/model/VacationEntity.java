@@ -14,6 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -40,9 +43,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
+//@formatter:off
+@NamedEntityGraph(name = VacationEntity.WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE, attributeNodes = {
+	@NamedAttributeNode("createdBy"), 
+	@NamedAttributeNode("lastModifiedBy"),
+	@NamedAttributeNode(value = "employee", subgraph = "employee")
+}, subgraphs = @NamedSubgraph(name = "employee", attributeNodes = {
+	@NamedAttributeNode(value = "user"),
+	@NamedAttributeNode(value = "staff")
+}))
+//@formatter:on
 @Entity
 @Table(name = "TB_FERIAS")
 public class VacationEntity extends Auditable<Long> {
+	
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE = "Vacation.withCreatedByAndLastModifiedByAndEmployee";
 
 	@ApiModelProperty(notes = "Identificador único da férias.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)

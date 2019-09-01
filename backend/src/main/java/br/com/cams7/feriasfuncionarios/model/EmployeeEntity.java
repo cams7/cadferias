@@ -19,10 +19,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -49,9 +52,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
+//@formatter:off
+@NamedEntityGraph(name = EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF, attributeNodes = {
+	@NamedAttributeNode("createdBy"), 
+	@NamedAttributeNode("lastModifiedBy"), 
+	@NamedAttributeNode("user"),
+	@NamedAttributeNode("staff") 
+})
+//@formatter:on
 @Entity
-@Table(name = "TB_FUNCIONARIO")
+@Table(name = "TB_FUNCIONARIO", uniqueConstraints = @UniqueConstraint(columnNames = { "ID_USUARIO", "MATRICULA" }))
 public class EmployeeEntity extends Auditable<Long> {
+
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF = "Employee.withCreatedByAndLastModifiedByAndUserAndStaff";
 
 	@ApiModelProperty(notes = "Identificador único do funcionário.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
@@ -77,8 +90,7 @@ public class EmployeeEntity extends Auditable<Long> {
 
 	@ApiModelProperty(notes = "Data da contratação do funcionário.", example = "01/01/2019", required = true, position = 8)
 	@JsonView(Views.Public.class)
-	@NotNull
-	@Column(name = "DATA_CONTRATACAO")
+	@Column(name = "DATA_CONTRATACAO", nullable = false)
 	private LocalDate hiringDate;
 
 	@ApiModelProperty(notes = "Matricula do funcionário.", example = "123456789abc", required = true, position = 9)
@@ -116,6 +128,11 @@ public class EmployeeEntity extends Auditable<Long> {
 	@JsonView(Views.Detail.class)
 	@OneToMany(mappedBy = "employee")
 	private Collection<VacationEntity> vacations;
+
+	public EmployeeEntity(Long id) {
+		this();
+		this.id = id;
+	}
 
 	@ApiModel(description = "Entidade que representa o endereço do funcionário.")
 	@Getter

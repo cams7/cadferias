@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -37,9 +39,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
+//@formatter:off
+@NamedEntityGraph(name = UserEntity.WITH_CREATEDBY_LASTMODIFIEDBY, attributeNodes = {
+	@NamedAttributeNode("createdBy"), 
+	@NamedAttributeNode("lastModifiedBy")
+})
+//@formatter:on
 @Entity
 @Table(name = "TB_USUARIO")
 public class UserEntity extends Auditable<Long> {
+	
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "User.withCreatedByAndLastModifiedBy";
 
 	@ApiModelProperty(notes = "Identificador único do usuário.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
@@ -64,10 +74,16 @@ public class UserEntity extends Auditable<Long> {
 	@Column(name = "SENHA")
 	private String password;
 
+	public UserEntity(Long id) {
+		this.id = id;
+	}
+
 //	@ApiModelProperty(notes = "Funcionário vinculado ao usuário.", required = false, position = 8)
 //	@JsonView(Views.Detail.class)
 //	@LazyToOne(LazyToOneOption.NO_PROXY)
 //	@OneToOne(mappedBy = "user", fetch = LAZY)
 //	private EmployeeEntity Employee;
+	
+	
 
 }

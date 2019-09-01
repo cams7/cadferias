@@ -12,4 +12,6 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseService;
  */
 public interface VacationService extends BaseService<VacationEntity, Long> {
 
+	Long[] getIdsByEmployeeId(Long employeeId);
+
 }

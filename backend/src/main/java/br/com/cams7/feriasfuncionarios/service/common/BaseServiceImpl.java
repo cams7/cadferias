@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
+import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
+import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
 import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepository;
 
 /**
@@ -39,32 +41,46 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 				.orElseThrow(() -> new ResourceNotFoundException(String.format(ENTITY_NOT_FOUND, id)));
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public boolean existsById(ID id) {
+		return reporitory.existsById(id);
+	}
+
 	@Override
 	public E create(E entity) {
-		if (entity.getId() != null)
-			throw new InvalidDataException("O ID da entidade não pode ser informado durante o cadastro");
-
+		entity.setId(null);
 		entity.setActive(true);
 		return reporitory.save(entity);
 	}
 
 	@Override
 	public E update(E entity) {
-		if (entity.getId() == null)
+		ID id = entity.getId();
+
+		if (id == null)
 			throw new InvalidDataException("O ID da entidade não foi informado");
 
-		if (!reporitory.existsById(entity.getId()))
-			throw new ResourceNotFoundException(String.format(ENTITY_NOT_FOUND, entity.getId()));
+		CreationAuditableVO auditable = reporitory.findCreationAuditableById(id);
 
 		entity.setActive(true);
+		entity.setCreatedBy(new UserEntity(auditable.getCreatedBy()));
+		entity.setCreatedDate(auditable.getCreatedDate());
+
 		return reporitory.save(entity);
 	}
 
 	@Override
 	public void delete(ID id) {
-		if (!reporitory.existsById(id))
-			throw new ResourceNotFoundException(String.format(ENTITY_NOT_FOUND, id));
+//		if (!existsById(id))
+//			throw new ResourceNotFoundException(String.format(ENTITY_NOT_FOUND, id));
 
 		reporitory.deleteById(id);
 	}
+
+	@Override
+	public void deleteAllById(Iterable<ID> ids) {
+		reporitory.deleteAllById(ids);
+	}
+
 }

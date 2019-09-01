@@ -45,7 +45,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID>, E extends Audit
 	}
 
 	@ApiOperation("Busca a entidade pelo ID.")
-	@JsonView(Views.Public.class)
+	@JsonView(Views.Detail.class)
 	@ResponseStatus(value = OK)
 	@GetMapping(path = "{id}")
 	public E getById(@ApiParam("ID da entidade.") @PathVariable ID id) {
@@ -53,7 +53,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID>, E extends Audit
 	}
 
 	@ApiOperation("Cadastra uma nova entidade.")
-	@JsonView(Views.Public.class)
+	@JsonView(Views.Detail.class)
 	@ResponseStatus(value = CREATED)
 	@PostMapping
 	public E create(@ApiParam("Entidade informada.") @Valid @RequestBody E entity) {
@@ -61,7 +61,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID>, E extends Audit
 	}
 
 	@ApiOperation("Atualiza a entidade pelo ID.")
-	@JsonView(Views.Public.class)
+	@JsonView(Views.Detail.class)
 	@ResponseStatus(value = OK)
 	@PutMapping
 	public E update(@ApiParam("Entidade informada.") @Valid @RequestBody E entity) {

@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -39,9 +41,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
+//@formatter:off
+@NamedEntityGraph(name = StaffEntity.WITH_CREATEDBY_LASTMODIFIEDBY, attributeNodes = {
+	@NamedAttributeNode("createdBy"), 
+	@NamedAttributeNode("lastModifiedBy")
+})
+//@formatter:on
 @Entity
 @Table(name = "TB_EQUIPE")
 public class StaffEntity extends Auditable<Long> {
+	
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "Staff.withCreatedByAndLastModifiedBy";
 
 	@ApiModelProperty(notes = "Identificador único da equipe.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
