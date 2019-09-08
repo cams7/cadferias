@@ -13,6 +13,9 @@ import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
+import br.com.cams7.feriasfuncionarios.model.vo.SearchVO;
+import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
+import br.com.cams7.feriasfuncionarios.model.vo.pagination.PageVO;
 import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepository;
 
 /**
@@ -20,19 +23,19 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
  *
  */
 @Transactional
-public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>, E extends Auditable<ID>, ID extends Serializable>
-		implements BaseService<E, ID> {
+public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>, E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO>
+		implements BaseService<E, ID, F> {
 
 	private static final String ENTITY_NOT_FOUND = "Nenhuma entidade foi encontrada pelo ID: %d";
 
 	@Autowired
 	protected R reporitory;
 
-	@Transactional(readOnly = true)
-	@Override
-	public Iterable<E> getAll() {
-		return reporitory.findAll();
-	}
+//	@Transactional(readOnly = true)
+//	@Override
+//	public Iterable<E> getAll() {
+//		return reporitory.findAll();
+//	}
 
 	@Transactional(readOnly = true)
 	@Override
@@ -81,6 +84,14 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	@Override
 	public void deleteAllById(Iterable<ID> ids) {
 		reporitory.deleteAllById(ids);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public PageVO<E, ID> getBySearch(SearchVO<F> search) {
+		@SuppressWarnings("unchecked")
+		PageVO<E, ID> page = reporitory.findBySearch((SearchVO<AuditableFilterVO>) search);
+		return page;
 	}
 
 }

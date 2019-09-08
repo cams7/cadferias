@@ -69,7 +69,7 @@ public class StaffEntity extends Auditable<Long> {
 	private String name;
 
 	@ApiModelProperty(notes = "Funcionários que pertence a equipe.", required = false, position = 7)
-	@JsonView(Views.Detail.class)
+	@JsonView(Views.Details.class)
 	@OneToMany(mappedBy = "staff")
 	private Collection<EmployeeEntity> employees;
 

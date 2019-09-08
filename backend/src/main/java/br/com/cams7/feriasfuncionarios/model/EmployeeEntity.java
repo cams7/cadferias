@@ -26,6 +26,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -120,12 +121,13 @@ public class EmployeeEntity extends Auditable<Long> {
 
 	@ApiModelProperty(notes = "Endereço do funcionário.", required = true, position = 13)
 	@JsonView(Views.Public.class)
+	@Valid
 	@NotNull
 	@Embedded
 	private Address address;
 
 	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 14)
-	@JsonView(Views.Detail.class)
+	@JsonView(Views.Details.class)
 	@OneToMany(mappedBy = "employee")
 	private Collection<VacationEntity> vacations;
 

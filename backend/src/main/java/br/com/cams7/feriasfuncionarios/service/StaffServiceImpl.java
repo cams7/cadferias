@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.StaffEntity;
+import br.com.cams7.feriasfuncionarios.model.vo.filter.StaffFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.StaffRepository;
 import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 
@@ -19,7 +20,8 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
  */
 @Service
 @Transactional
-public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEntity, Long> implements StaffService {
+public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEntity, Long, StaffFilterVO>
+		implements StaffService {
 
 	@Autowired
 	private EmployeeService employeeService;

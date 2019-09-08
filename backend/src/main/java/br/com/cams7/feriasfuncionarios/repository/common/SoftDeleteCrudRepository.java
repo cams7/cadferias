@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
+import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
 
 /**
  * @author ceanm
@@ -22,7 +23,7 @@ import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
 @Transactional
 @NoRepositoryBean
 public interface SoftDeleteCrudRepository<E extends Auditable<ID>, ID extends Serializable>
-		extends CrudRepository<E, ID> {
+		extends CrudRepository<E, ID>, BaseRepository<E, ID, AuditableFilterVO> {
 
 	@Override
 	@Transactional(readOnly = true)

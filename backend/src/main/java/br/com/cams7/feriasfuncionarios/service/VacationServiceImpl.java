@@ -11,6 +11,7 @@ import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.model.VacationEntity;
+import br.com.cams7.feriasfuncionarios.model.vo.filter.VacationFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.VacationRepository;
 import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 
@@ -20,7 +21,7 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
  */
 @Service
 @Transactional
-public class VacationServiceImpl extends BaseServiceImpl<VacationRepository, VacationEntity, Long>
+public class VacationServiceImpl extends BaseServiceImpl<VacationRepository, VacationEntity, Long, VacationFilterVO>
 		implements VacationService {
 
 	@Autowired
