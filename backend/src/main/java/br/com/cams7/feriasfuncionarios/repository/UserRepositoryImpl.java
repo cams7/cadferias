@@ -43,27 +43,27 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<UserEntity, Long, Use
 	}
 
 	@Override
-	protected List<Predicate> getAndWithFilter(UserFilterVO filter, CriteriaBuilder cb, Root<UserEntity> root,
-			Join<?, ?>... join) {
-		return getAndWithUserFilter(INDEX_CREATEDBY, filter, cb, root, join);
+	protected List<Predicate> getConditionalWithFilter(boolean globalFilter, UserFilterVO filter, CriteriaBuilder cb,
+			Root<UserEntity> root, Join<?, ?>... join) {
+		return getConditionalWithUserFilter(INDEX_CREATEDBY, globalFilter, filter, cb, root, join);
 	}
 
-	public List<Predicate> getAndWithUserFilter(int createdByIndex, UserFilterVO filter, CriteriaBuilder cb, From<?, ?> root,
-			Join<?, ?>... join) {
+	public List<Predicate> getConditionalWithUserFilter(int createdByIndex, boolean globalFilter, UserFilterVO filter,
+			CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
 		if (filter == null)
 			return null;
 
-		List<Predicate> and = new ArrayList<>();
+		List<Predicate> conditional = new ArrayList<>();
 
 		if (isNotBlank(filter.getEmail()))
-			and.add(cb.like(cb.lower(root.get(FIELD_EMAIL)), getLowerValue2Like(filter.getEmail())));
+			conditional.add(cb.like(cb.lower(root.get(FIELD_EMAIL)), getLowerValue2Like(filter.getEmail())));
 
 		if (join != null && join.length > 0 && filter.getEmailOfCreatedBy() != null
 				&& isNotBlank(filter.getEmailOfCreatedBy()))
-			and.add(cb.like(cb.lower(join[createdByIndex].get(FIELD_CREATEDBY_EMAIL)),
+			conditional.add(cb.like(cb.lower(join[createdByIndex].get(FIELD_CREATEDBY_EMAIL)),
 					getLowerValue2Like(filter.getEmailOfCreatedBy())));
 
-		return and;
+		return conditional;
 	}
 
 	@Override

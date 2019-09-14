@@ -87,7 +87,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 		selectQuery.select(root);
 
-		selectQuery.where(cb.and(getAnd(filter, cb, root, join)));
+		selectQuery.where(cb.and(getConditional(search.isGlobalFilter(), filter, cb, root, join)));
 
 		PageInputVO pageInput = search.getPageInput();
 
@@ -97,7 +97,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 		List<E> content = getContent(selectQuery, pageInput.getPageNumber(), pageInput.getSize());
 
-		Long totalElements = getTotalElements(filter, cb, pageInput);
+		Long totalElements = getTotalElements(search.isGlobalFilter(), filter, pageInput, cb);
 
 		PageVO<E, ID> page = new PageVO<>(pageInput.getPageNumber(), pageInput.getSize(), content, totalElements,
 				pageInput.getChangedQuery(), pageInput.getSort());
@@ -113,7 +113,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		return content;
 	}
 
-	private Long getTotalElements(F filter, CriteriaBuilder cb, PageInputVO pageInput) {
+	private Long getTotalElements(boolean globalFilter, F filter, PageInputVO pageInput, CriteriaBuilder cb) {
 		Long totalElements = pageInput.getTotalElements();
 		if (pageInput.getChangedQuery()) {
 			CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
@@ -122,7 +122,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 			countQuery.select(cb.count(root));
 
-			countQuery.where(cb.and(getAnd(filter, cb, root, join)));
+			countQuery.where(cb.and(getConditional(globalFilter, filter, cb, root, join)));
 
 			totalElements = em.createQuery(countQuery).getSingleResult();
 		}
@@ -130,14 +130,19 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		return totalElements;
 	}
 
-	private Predicate[] getAnd(F filter, CriteriaBuilder cb, Root<E> root, Join<?, ?>... join) {
-		List<Predicate> and = getAndWithAuditableFilter(cb, root, filter);
-		List<Predicate> andWithFilter = getAndWithFilter(filter, cb, root, join);
+	private Predicate[] getConditional(boolean globalFilter, F filter, CriteriaBuilder cb, Root<E> root,
+			Join<?, ?>... join) {
+		List<Predicate> and = getAndWithAuditableFilter(globalFilter, filter, cb, root);
+		List<Predicate> conditionalWithFilter = getConditionalWithFilter(globalFilter, filter, cb, root, join);
 
-		if (andWithFilter != null && !andWithFilter.isEmpty())
-			and.addAll(andWithFilter);
+		if (conditionalWithFilter != null && !conditionalWithFilter.isEmpty()) {
+			if (globalFilter)
+				and.add(cb.or(conditionalWithFilter.stream().toArray(Predicate[]::new)));
+			else
+				and.addAll(conditionalWithFilter);
+		}
 
-		return and.toArray(new Predicate[0]);
+		return and.toArray(Predicate[]::new);
 	}
 
 	protected abstract Join<?, ?>[] getJoin(Root<E> root, boolean isFetch);
@@ -146,14 +151,15 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		return (Join<?, ?>) (isFetch ? from.fetch(fieldName, JoinType.INNER) : from.join(fieldName, JoinType.INNER));
 	}
 
-	protected abstract List<Predicate> getAndWithFilter(F filter, CriteriaBuilder cb, Root<E> root, Join<?, ?>... join);
+	protected abstract List<Predicate> getConditionalWithFilter(boolean globalFilter, F filter, CriteriaBuilder cb,
+			Root<E> root, Join<?, ?>... join);
 
-	private static List<Predicate> getAndWithAuditableFilter(CriteriaBuilder cb, Root<?> root,
-			AuditableFilterVO filter) {
+	private static List<Predicate> getAndWithAuditableFilter(boolean globalFilter, AuditableFilterVO filter,
+			CriteriaBuilder cb, Root<?> root) {
 		List<Predicate> and = new ArrayList<>();
 		and.add(cb.isTrue(root.get(FIELD_ACTIVE)));
 
-		if (filter != null) {
+		if (!globalFilter && filter != null) {
 			final LocalTime START_OF_DAY = LocalTime.parse("00:00:00");
 			final LocalTime END_OF_DAY = LocalTime.parse("23:59:59");
 

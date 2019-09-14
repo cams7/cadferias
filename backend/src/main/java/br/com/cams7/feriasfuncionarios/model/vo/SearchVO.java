@@ -33,5 +33,7 @@ public class SearchVO<F extends AuditableFilterVO> {
 	@Valid
 	@NotNull
 	private PageInputVO pageInput;
+	
+	private boolean globalFilter;
 
 }

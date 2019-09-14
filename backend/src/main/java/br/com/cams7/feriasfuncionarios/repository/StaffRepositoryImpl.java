@@ -43,27 +43,27 @@ public class StaffRepositoryImpl extends BaseRepositoryImpl<StaffEntity, Long, S
 	}
 
 	@Override
-	protected List<Predicate> getAndWithFilter(StaffFilterVO filter, CriteriaBuilder cb, Root<StaffEntity> root,
-			Join<?, ?>... join) {
-		return getAndWithStaffFilter(INDEX_CREATEDBY, filter, cb, root, join);
+	protected List<Predicate> getConditionalWithFilter(boolean globalFilter, StaffFilterVO filter, CriteriaBuilder cb,
+			Root<StaffEntity> root, Join<?, ?>... join) {
+		return getConditionalWithStaffFilter(INDEX_CREATEDBY, globalFilter, filter, cb, root, join);
 	}
 
-	public List<Predicate> getAndWithStaffFilter(int createdByIndex, StaffFilterVO filter, CriteriaBuilder cb,
-			From<?, ?> root, Join<?, ?>... join) {
+	public List<Predicate> getConditionalWithStaffFilter(int createdByIndex, boolean globalFilter, StaffFilterVO filter,
+			CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
 		if (filter == null)
 			return null;
 
-		List<Predicate> and = new ArrayList<>();
+		List<Predicate> conditional = new ArrayList<>();
 
 		if (isNotBlank(filter.getName()))
-			and.add(cb.like(cb.lower(root.get(FIELD_NAME)), getLowerValue2Like(filter.getName())));
+			conditional.add(cb.like(cb.lower(root.get(FIELD_NAME)), getLowerValue2Like(filter.getName())));
 
 		if (join != null && join.length > 0 && filter.getEmailOfCreatedBy() != null
 				&& isNotBlank(filter.getEmailOfCreatedBy()))
-			and.add(cb.like(cb.lower(join[createdByIndex].get(FIELD_CREATEDBY_EMAIL)),
+			conditional.add(cb.like(cb.lower(join[createdByIndex].get(FIELD_CREATEDBY_EMAIL)),
 					getLowerValue2Like(filter.getEmailOfCreatedBy())));
 
-		return and;
+		return conditional;
 	}
 
 	@Override

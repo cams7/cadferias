@@ -3,7 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.repository;
 
-import static br.com.cams7.feriasfuncionarios.repository.EmployeeRepositoryImpl.getAndWithEmployeeFilter;
+import static br.com.cams7.feriasfuncionarios.repository.EmployeeRepositoryImpl.getConditionalWithEmployeeFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,36 +52,37 @@ public class VacationRepositoryImpl extends BaseRepositoryImpl<VacationEntity, L
 	}
 
 	@Override
-	protected List<Predicate> getAndWithFilter(VacationFilterVO filter, CriteriaBuilder cb, Root<VacationEntity> root,
-			Join<?, ?>... join) {
-		return getAndWithVacationFilter(INDEX_EMPLOYEE, INDEX_EMPLOYEE_USER, INDEX_EMPLOYEE_STAFF, filter, cb, root,
-				join);
+	protected List<Predicate> getConditionalWithFilter(boolean globalFilter, VacationFilterVO filter,
+			CriteriaBuilder cb, Root<VacationEntity> root, Join<?, ?>... join) {
+		return getConditionalWithVacationFilter(INDEX_EMPLOYEE, INDEX_EMPLOYEE_USER, INDEX_EMPLOYEE_STAFF, globalFilter,
+				filter, cb, root, join);
 	}
 
-	public List<Predicate> getAndWithVacationFilter(int employeeIndex, int userIndex, int staffIndex,
-			VacationFilterVO filter, CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
+	public List<Predicate> getConditionalWithVacationFilter(int employeeIndex, int userIndex, int staffIndex,
+			boolean globalFilter, VacationFilterVO filter, CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
 		if (filter == null)
 			return null;
 
-		List<Predicate> and = new ArrayList<>();
+		List<Predicate> conditional = new ArrayList<>();
 
-		if (filter.getStartOfStartDate() != null)
-			and.add(cb.greaterThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getStartOfStartDate()));
-		if (filter.getEndOfStartDate() != null)
-			and.add(cb.lessThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getEndOfStartDate()));
+		if (!globalFilter) {
+			if (filter.getStartOfStartDate() != null)
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getStartOfStartDate()));
+			if (filter.getEndOfStartDate() != null)
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getEndOfStartDate()));
 
-		if (filter.getStartOfEndDate() != null)
-			and.add(cb.greaterThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getStartOfEndDate()));
-		if (filter.getEndOfEndDate() != null)
-			and.add(cb.lessThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getEndOfEndDate()));
-
-		if (filter.getEmployee() != null) {
-			List<Predicate> andWithEmployeerFilter = getAndWithEmployeeFilter(userIndex, staffIndex,
-					filter.getEmployee(), cb, join[employeeIndex], join);
-			if (andWithEmployeerFilter != null)
-				and.addAll(andWithEmployeerFilter);
+			if (filter.getStartOfEndDate() != null)
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getStartOfEndDate()));
+			if (filter.getEndOfEndDate() != null)
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getEndOfEndDate()));
 		}
-		return and;
+		if (filter.getEmployee() != null) {
+			List<Predicate> conditionalWithEmployeerFilter = getConditionalWithEmployeeFilter(userIndex, staffIndex,
+					globalFilter, filter.getEmployee(), cb, join[employeeIndex], join);
+			if (conditionalWithEmployeerFilter != null)
+				conditional.addAll(conditionalWithEmployeerFilter);
+		}
+		return conditional;
 	}
 
 	@Override

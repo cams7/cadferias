@@ -57,63 +57,67 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<EmployeeEntity, L
 	}
 
 	@Override
-	protected List<Predicate> getAndWithFilter(EmployeeFilterVO filter, CriteriaBuilder cb, Root<EmployeeEntity> root,
-			Join<?, ?>... join) {
-		return getAndWithEmployeeFilter(INDEX_USER, INDEX_STAFF, filter, cb, root, join);
+	protected List<Predicate> getConditionalWithFilter(boolean globalFilter, EmployeeFilterVO filter,
+			CriteriaBuilder cb, Root<EmployeeEntity> root, Join<?, ?>... join) {
+		return getConditionalWithEmployeeFilter(INDEX_USER, INDEX_STAFF, globalFilter, filter, cb, root, join);
 	}
 
-	public static List<Predicate> getAndWithEmployeeFilter(int userIndex, int staffIndex, EmployeeFilterVO filter,
-			CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
+	public static List<Predicate> getConditionalWithEmployeeFilter(int userIndex, int staffIndex, boolean globalFilter,
+			EmployeeFilterVO filter, CriteriaBuilder cb, From<?, ?> root, Join<?, ?>... join) {
 		if (filter == null)
 			return null;
 
-		List<Predicate> and = new ArrayList<>();
+		List<Predicate> conditional = new ArrayList<>();
 
-		if (filter.getStartOfHiringDate() != null)
-			and.add(cb.greaterThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getStartOfHiringDate()));
-		if (filter.getEndOfHiringDate() != null)
-			and.add(cb.lessThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getEndOfHiringDate()));
+		if (!globalFilter) {
+			if (filter.getStartOfHiringDate() != null)
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getStartOfHiringDate()));
+			if (filter.getEndOfHiringDate() != null)
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getEndOfHiringDate()));
+		}
 
 		if (isNotBlank(filter.getEmployeeRegistration()))
-			and.add(cb.like(cb.lower(root.get(FIELD_EMPLOYEEREGISTRATION)),
+			conditional.add(cb.like(cb.lower(root.get(FIELD_EMPLOYEEREGISTRATION)),
 					getLowerValue2Like(filter.getEmployeeRegistration())));
 
 		if (isNotBlank(filter.getName()))
-			and.add(cb.like(cb.lower(root.get(FIELD_NAME)), getLowerValue2Like(filter.getName())));
+			conditional.add(cb.like(cb.lower(root.get(FIELD_NAME)), getLowerValue2Like(filter.getName())));
 
-		if (filter.getStartOfBirthDate() != null)
-			and.add(cb.greaterThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getStartOfBirthDate()));
-		if (filter.getEndOfBirthDate() != null)
-			and.add(cb.lessThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getEndOfBirthDate()));
+		if (!globalFilter) {
+			if (filter.getStartOfBirthDate() != null)
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getStartOfBirthDate()));
+			if (filter.getEndOfBirthDate() != null)
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getEndOfBirthDate()));
+		}
 
 		if (isNotBlank(filter.getPhoneNumber()))
-			and.add(cb.like(root.get(FIELD_PHONENUMBER), getValue2Like(filter.getPhoneNumber())));
+			conditional.add(cb.like(root.get(FIELD_PHONENUMBER), getValue2Like(filter.getPhoneNumber())));
 
 		if (filter.getAddress() != null) {
 			if (isNotBlank(filter.getAddress().getStreet()))
-				and.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_STREET)),
+				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_STREET)),
 						getLowerValue2Like(filter.getAddress().getStreet())));
 
 			if (isNotBlank(filter.getAddress().getNeighborhood()))
-				and.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_NEIGHBORHOOD)),
+				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_NEIGHBORHOOD)),
 						getLowerValue2Like(filter.getAddress().getNeighborhood())));
 
 			if (isNotBlank(filter.getAddress().getCity()))
-				and.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_CITY)),
+				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_CITY)),
 						getLowerValue2Like(filter.getAddress().getCity())));
 		}
 
 		if (join != null && join.length > 0) {
 			if (filter.getUser() != null && isNotBlank(filter.getUser().getEmail()))
-				and.add(cb.like(cb.lower(join[userIndex].get(FIELD_USER_EMAIL)),
+				conditional.add(cb.like(cb.lower(join[userIndex].get(FIELD_USER_EMAIL)),
 						getLowerValue2Like(filter.getUser().getEmail())));
 
 			if (filter.getStaff() != null && isNotBlank(filter.getStaff().getName()))
-				and.add(cb.like(cb.lower(join[staffIndex].get(FIELD_STAFF_NAME)),
+				conditional.add(cb.like(cb.lower(join[staffIndex].get(FIELD_STAFF_NAME)),
 						getLowerValue2Like(filter.getStaff().getName())));
 
 		}
-		return and;
+		return conditional;
 	}
 
 	@Override
