@@ -23,16 +23,12 @@ import lombok.ToString;
 @ToString
 public class VacationFilterVO extends AuditableFilterVO {
 
-	@ApiModelProperty(notes = "Data inicial da data inicial da férias.", required = false, position = 6)
-	private LocalDate startOfStartDate;
-	@ApiModelProperty(notes = "Data final da data inicial da férias.", required = false, position = 7)
-	private LocalDate endOfStartDate;
+	@ApiModelProperty(notes = "Data inicial da férias.", required = false, position = 4)
+	private LocalDate[] startDate;
 
-	@ApiModelProperty(notes = "Data inicial da data final da férias.", required = false, position = 8)
-	private LocalDate startOfEndDate;
-	@ApiModelProperty(notes = "Data final da data final da férias.", required = false, position = 9)
-	private LocalDate endOfEndDate;
+	@ApiModelProperty(notes = "Data final da férias.", required = false, position = 5)
+	private LocalDate[] endDate;
 
-	@ApiModelProperty(notes = "Funcionário do qual pertence a férias.", required = false, position = 10)
+	@ApiModelProperty(notes = "Funcionário do qual pertence a férias.", required = false, position = 6)
 	private EmployeeFilterVO employee;
 }

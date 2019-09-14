@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.EmployeeFilterVO;
+import br.com.cams7.feriasfuncionarios.model.vo.filter.EmployeeFilterVO.AddressFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.common.BaseRepositoryImpl;
 
 /**
@@ -38,6 +39,7 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<EmployeeEntity, L
 	private static final String FIELD_ADDRESS_STREET = "street";
 	private static final String FIELD_ADDRESS_NEIGHBORHOOD = "neighborhood";
 	private static final String FIELD_ADDRESS_CITY = "city";
+	private static final String FIELD_ADDRESS_STATE = "state";
 	private static final String FIELD_USER = "user";
 	private static final String FIELD_USER_EMAIL = "email";
 	private static final String FIELD_STAFF = "staff";
@@ -69,11 +71,9 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<EmployeeEntity, L
 
 		List<Predicate> conditional = new ArrayList<>();
 
-		if (!globalFilter) {
-			if (filter.getStartOfHiringDate() != null)
-				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getStartOfHiringDate()));
-			if (filter.getEndOfHiringDate() != null)
-				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getEndOfHiringDate()));
+		if (!globalFilter && filter.getHiringDate() != null && filter.getHiringDate().length == 2) {
+			conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getHiringDate()[0]));
+			conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_HIRINGDATE), filter.getHiringDate()[1]));
 		}
 
 		if (isNotBlank(filter.getEmployeeRegistration()))
@@ -83,28 +83,30 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<EmployeeEntity, L
 		if (isNotBlank(filter.getName()))
 			conditional.add(cb.like(cb.lower(root.get(FIELD_NAME)), getLowerValue2Like(filter.getName())));
 
-		if (!globalFilter) {
-			if (filter.getStartOfBirthDate() != null)
-				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getStartOfBirthDate()));
-			if (filter.getEndOfBirthDate() != null)
-				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getEndOfBirthDate()));
+		if (!globalFilter && filter.getBirthDate() != null && filter.getBirthDate().length == 2) {
+			conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getBirthDate()[0]));
+			conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_BIRTHDATE), filter.getBirthDate()[1]));
 		}
 
 		if (isNotBlank(filter.getPhoneNumber()))
 			conditional.add(cb.like(root.get(FIELD_PHONENUMBER), getValue2Like(filter.getPhoneNumber())));
 
-		if (filter.getAddress() != null) {
-			if (isNotBlank(filter.getAddress().getStreet()))
+		AddressFilterVO adress = filter.getAddress();
+		if (adress != null) {
+			if (isNotBlank(adress.getStreet()))
 				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_STREET)),
-						getLowerValue2Like(filter.getAddress().getStreet())));
+						getLowerValue2Like(adress.getStreet())));
 
-			if (isNotBlank(filter.getAddress().getNeighborhood()))
+			if (isNotBlank(adress.getNeighborhood()))
 				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_NEIGHBORHOOD)),
-						getLowerValue2Like(filter.getAddress().getNeighborhood())));
+						getLowerValue2Like(adress.getNeighborhood())));
 
-			if (isNotBlank(filter.getAddress().getCity()))
+			if (isNotBlank(adress.getCity()))
 				conditional.add(cb.like(cb.lower(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_CITY)),
-						getLowerValue2Like(filter.getAddress().getCity())));
+						getLowerValue2Like(adress.getCity())));
+
+			if (!globalFilter && adress.getState() != null)
+				conditional.add(cb.equal(root.get(FIELD_ADDRESS).get(FIELD_ADDRESS_STATE), adress.getState()));
 		}
 
 		if (join != null && join.length > 0) {

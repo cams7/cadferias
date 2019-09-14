@@ -163,19 +163,19 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 			final LocalTime START_OF_DAY = LocalTime.parse("00:00:00");
 			final LocalTime END_OF_DAY = LocalTime.parse("23:59:59");
 
-			if (filter.getStartOfCreatedDate() != null)
+			if (filter.getCreatedDate() != null && filter.getCreatedDate().length == 2) {
 				and.add(cb.greaterThanOrEqualTo(root.get(FIELD_CREATEDDATE),
-						filter.getStartOfCreatedDate().atTime(START_OF_DAY)));
-			if (filter.getEndOfCreatedDate() != null)
+						filter.getCreatedDate()[0].atTime(START_OF_DAY)));
 				and.add(cb.lessThanOrEqualTo(root.get(FIELD_CREATEDDATE),
-						filter.getEndOfCreatedDate().atTime(END_OF_DAY)));
+						filter.getCreatedDate()[1].atTime(END_OF_DAY)));
+			}
 
-			if (filter.getStartOfLastModifiedDate() != null)
+			if (filter.getLastModifiedDate() != null && filter.getLastModifiedDate().length == 2) {
 				and.add(cb.greaterThanOrEqualTo(root.get(FIELD_LASTMODIFIEDDATE),
-						filter.getStartOfLastModifiedDate().atTime(START_OF_DAY)));
-			if (filter.getEndOfLastModifiedDate() != null)
+						filter.getLastModifiedDate()[0].atTime(START_OF_DAY)));
 				and.add(cb.lessThanOrEqualTo(root.get(FIELD_LASTMODIFIEDDATE),
-						filter.getEndOfLastModifiedDate().atTime(END_OF_DAY)));
+						filter.getLastModifiedDate()[1].atTime(END_OF_DAY)));
+			}
 		}
 		return and;
 	}

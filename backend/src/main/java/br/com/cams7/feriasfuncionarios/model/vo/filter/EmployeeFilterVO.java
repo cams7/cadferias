@@ -5,6 +5,7 @@ package br.com.cams7.feriasfuncionarios.model.vo.filter;
 
 import java.time.LocalDate;
 
+import br.com.cams7.feriasfuncionarios.model.EmployeeEntity.Address.State;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,32 +24,28 @@ import lombok.ToString;
 @ToString
 public class EmployeeFilterVO extends AuditableFilterVO {
 
-	@ApiModelProperty(notes = "Data inicial da data da contratação do funcionário.", required = false, position = 6)
-	private LocalDate startOfHiringDate;
-	@ApiModelProperty(notes = "Data final da data da contratação do funcionário.", required = false, position = 7)
-	private LocalDate endOfHiringDate;
+	@ApiModelProperty(notes = "Data da contratação do funcionário.", required = false, position = 4)
+	private LocalDate[] hiringDate;
 
-	@ApiModelProperty(notes = "Matricula do funcionário.", example = "123456789abc", required = false, position = 8)
+	@ApiModelProperty(notes = "Matricula do funcionário.", example = "123456789abc", required = false, position = 5)
 	private String employeeRegistration;
 
-	@ApiModelProperty(notes = "Nome do funcionário.", example = "José Silva Pinheiro", required = false, position = 9)
+	@ApiModelProperty(notes = "Nome do funcionário.", example = "José Silva Pinheiro", required = false, position = 6)
 	private String name;
 
-	@ApiModelProperty(notes = "Data inicial da data de nascimento do funcionário.", required = false, position = 10)
-	private LocalDate startOfBirthDate;
-	@ApiModelProperty(notes = "Data final da data de nascimento do funcionário.", required = false, position = 11)
-	private LocalDate endOfBirthDate;
+	@ApiModelProperty(notes = "Data de nascimento do funcionário.", required = false, position = 7)
+	private LocalDate[] birthDate;
 
-	@ApiModelProperty(notes = "Número de telefone do funcionário.", example = "3136457856", required = false, position = 12)
+	@ApiModelProperty(notes = "Número de telefone do funcionário.", example = "3136457856", required = false, position = 8)
 	private String phoneNumber;
 
-	@ApiModelProperty(notes = "Endereço do funcionário.", required = false, position = 13)
+	@ApiModelProperty(notes = "Endereço do funcionário.", required = false, position = 9)
 	private AddressFilterVO address;
 
-	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = false, position = 14)
+	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = false, position = 10)
 	private UserFilterVO user;
 
-	@ApiModelProperty(notes = "Equipe a qual o funcionário é membro.", required = true, position = 15)
+	@ApiModelProperty(notes = "Equipe a qual o funcionário é membro.", required = true, position = 11)
 	private StaffFilterVO staff;
 
 	@ApiModel(description = "Filtro de busca com os dados do endereço do funcionário.")
@@ -66,6 +63,9 @@ public class EmployeeFilterVO extends AuditableFilterVO {
 
 		@ApiModelProperty(notes = "Cidade onde onde residi o funcionário.", example = "Belo Horizonte", required = false, position = 2)
 		private String city;
+
+		@ApiModelProperty(notes = "Estado onde onde residi o funcionário.", example = "MG", required = false, position = 3)
+		private State state;
 
 	}
 }

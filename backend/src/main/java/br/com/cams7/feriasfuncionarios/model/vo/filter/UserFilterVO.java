@@ -20,8 +20,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserFilterVO extends AuditableFilterVO {
-	
-	@ApiModelProperty(notes = "E-mail do usuário.", example = "usuario@teste.com", required = false, position = 6)
+
+	@ApiModelProperty(notes = "E-mail do usuário.", example = "usuario@teste.com", required = false, position = 4)
 	private String email;
 
 }

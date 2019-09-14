@@ -66,15 +66,15 @@ public class VacationRepositoryImpl extends BaseRepositoryImpl<VacationEntity, L
 		List<Predicate> conditional = new ArrayList<>();
 
 		if (!globalFilter) {
-			if (filter.getStartOfStartDate() != null)
-				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getStartOfStartDate()));
-			if (filter.getEndOfStartDate() != null)
-				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getEndOfStartDate()));
+			if (filter.getStartDate() != null && filter.getStartDate().length == 2) {
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getStartDate()[0]));
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_STARTDATE), filter.getStartDate()[1]));
+			}
 
-			if (filter.getStartOfEndDate() != null)
-				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getStartOfEndDate()));
-			if (filter.getEndOfEndDate() != null)
-				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getEndOfEndDate()));
+			if (filter.getEndDate() != null && filter.getEndDate().length == 2) {
+				conditional.add(cb.greaterThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getEndDate()[0]));
+				conditional.add(cb.lessThanOrEqualTo(root.get(FIELD_ENDDATE), filter.getEndDate()[1]));
+			}
 		}
 		if (filter.getEmployee() != null) {
 			List<Predicate> conditionalWithEmployeerFilter = getConditionalWithEmployeeFilter(userIndex, staffIndex,

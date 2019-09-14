@@ -21,6 +21,6 @@ import lombok.ToString;
 @ToString
 public class StaffFilterVO extends AuditableFilterVO {
 
-	@ApiModelProperty(notes = "Nome da equipe.", example = "Equipe 1", required = false, position = 6)
+	@ApiModelProperty(notes = "Nome da equipe.", example = "Equipe 1", required = false, position = 4)
 	private String name;
 }

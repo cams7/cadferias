@@ -178,7 +178,7 @@ public class EmployeeEntity extends Auditable<Long> {
 		private State state;
 
 		@Getter
-		private static enum State {
+		public static enum State {
 			// @formatter:off
 			AC("Acre"), 
 			AL("Alagoas"), 
