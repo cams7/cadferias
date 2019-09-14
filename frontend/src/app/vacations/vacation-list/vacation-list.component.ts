@@ -10,6 +10,7 @@ import { SortOrder } from './../../shared/common/sort-field.directive';
 import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
+import { VacationFilterVO } from 'src/app/shared/model/vo/filter/vacation-filter-vo';
 import { Employee } from './../../shared/model/employee';
 
 @Component({
@@ -17,7 +18,7 @@ import { Employee } from './../../shared/model/employee';
   templateUrl: './vacation-list.component.html',
   styleUrls: ['./vacation-list.component.scss']
 })
-export class VacationListComponent extends BaseList<Vacation> {
+export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> {
             
   constructor(
     protected renderer: Renderer2,
@@ -52,8 +53,8 @@ export class VacationListComponent extends BaseList<Vacation> {
   }
 
   protected setSortFields(sortFields: Map<string, SortOrder>) {
-    sortFields.set('vacationStartDate', undefined);
-    sortFields.set('vacationEndDate', undefined);
+    sortFields.set('startDate', undefined);
+    sortFields.set('endDate', undefined);
     sortFields.set('employee.id', undefined);
   }
 

@@ -3,11 +3,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Base } from './base';
-import { PaginationVO } from '../model/vo/pagination-vo';
+import { PageVO } from '../model/vo/pagination/page-vo';
 import { SortOrder } from './../../shared/common/sort-field.directive';
 import { BaseEntity } from '../model/base-entity';
+import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
 
-export abstract class BaseService<E extends BaseEntity> extends Base {
+export abstract class BaseService<E extends BaseEntity, F extends AuditableFilterVO> extends Base {
 
     constructor(
         protected http: HttpClient,
@@ -16,7 +17,7 @@ export abstract class BaseService<E extends BaseEntity> extends Base {
         super();
     }
 
-    getAll$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PaginationVO<E>> {
+    getBySearch$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PageVO<E>> {
         let params = new HttpParams();   
 
         if(pageAndSort) {
@@ -37,10 +38,10 @@ export abstract class BaseService<E extends BaseEntity> extends Base {
                 return params.append(`${key}_like`, searchParams.get(key));
             }, params);
         
-        return this.http.get(this.API_URL, { params: params, observe: 'response' }).pipe<PaginationVO<E>>(
-            map(response => <PaginationVO<E>>{
-                totalItems: Number(response.headers.get('X-Total-Count')), 
-                items: response.body as E[]
+        return this.http.get(this.API_URL, { params: params, observe: 'response' }).pipe<PageVO<E>>(
+            map(response => <PageVO<E>>{
+                totalElements: Number(response.headers.get('X-Total-Count')), 
+                content: response.body as E[]
             })
         );
     }

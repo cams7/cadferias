@@ -12,13 +12,14 @@ import { UsersService } from './../../users/users.service';
 import { EmployeesService } from '../employees.service';
 import { VacationsService } from './../../vacations/vacations.service';
 import { Employee } from './../../shared/model/employee';
+import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
 
 @Component({
   selector: 'app-employee-list',
   templateUrl: './employee-list.component.html',
   styleUrls: ['./employee-list.component.scss']
 })
-export class EmployeeListComponent extends BaseList<Employee> {
+export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> {
           
   constructor(
     protected renderer: Renderer2,

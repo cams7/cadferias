@@ -14,10 +14,10 @@
                     </div>     
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="vacationBreak" class="control-label">Data da férias</label>
-                    <input id="vacationBreak" type="text" class="form-control" formControlName="vacationBreak" [ngClass]="classError('vacationBreak')" 
+                    <label for="vacationDate" class="control-label">Data da férias</label>
+                    <input id="vacationDate" type="text" class="form-control" formControlName="vacationDate" [ngClass]="classError('vacationDate')" 
                         bsDaterangepicker [bsConfig]="bsDaterangeConfig">
-                    <div class="invalid-feedback" *ngIf="hasRequiredError('vacationBreak')">
+                    <div class="invalid-feedback" *ngIf="hasRequiredError('vacationDate')">
                         Por favor, informe a data inicial e final das férias.
                     </div> 
                 </div>

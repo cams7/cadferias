@@ -2,7 +2,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { Observable, EMPTY } from 'rxjs';
-import { filter, switchMap, tap, flatMap } from 'rxjs/operators';
+import { filter, tap, flatMap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
@@ -11,13 +11,14 @@ import { BaseList } from './../../shared/common/base-list';
 import { StaffsService } from '../staffs.service';
 import { EmployeesService } from './../../employees/employees.service';
 import { Staff } from './../../shared/model/staff';
+import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
 
 @Component({
   selector: 'app-staff-list',
   templateUrl: './staff-list.component.html',
   styleUrls: ['./staff-list.component.scss']
 })
-export class StaffListComponent extends BaseList<Staff> {
+export class StaffListComponent extends BaseList<Staff, StaffFilterVO> {
     
   constructor(
     protected renderer: Renderer2,

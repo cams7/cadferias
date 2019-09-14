@@ -31,8 +31,8 @@
                     <thead>
                         <tr>
                             <th [sortField]="getSortField('id')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
-                            <th [sortField]="getSortField('vacationStartDate')" (sortFieldChanged)="sortFieldChanged = $event">Data inicial</th>
-                            <th [sortField]="getSortField('vacationEndDate')" (sortFieldChanged)="sortFieldChanged = $event">Data final</th>                        
+                            <th [sortField]="getSortField('startDate')" (sortFieldChanged)="sortFieldChanged = $event">Data inicial</th>
+                            <th [sortField]="getSortField('endDate')" (sortFieldChanged)="sortFieldChanged = $event">Data final</th>                        
                             <th [sortField]="getSortField('employee.id')" (sortFieldChanged)="sortFieldChanged = $event">Funcionário</th>
                             <th class="without-order">Ações</th>
                         </tr>
@@ -40,8 +40,8 @@
                     <tbody>
                         <tr *ngFor="let vacation of items$ | async">
                             <td>{{ vacation.id }}</td>
-                            <td>{{ vacation.vacationStartDate | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ vacation.vacationEndDate | date: 'dd/MM/yyyy' }}</td>
+                            <td>{{ vacation.startDate | date: 'dd/MM/yyyy' }}</td>
+                            <td>{{ vacation.endDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ vacation.employee.id }}</td>
                             <td>
                                 <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.id)"><i class="fa fa-edit"></i></a>&nbsp;

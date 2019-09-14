@@ -10,12 +10,13 @@ import { UsersService } from './../users/users.service';
 import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';
 import { Employee } from '../shared/model/employee';
+import { EmployeeFilterVO } from '../shared/model/vo/filter/employee-filter-vo';
 
 const EMPLOYEES='employees';
 @Injectable({
   providedIn: 'root'
 })
-export class EmployeesService extends BaseService<Employee> {
+export class EmployeesService extends BaseService<Employee, EmployeeFilterVO> {
 
   constructor(
     protected http: HttpClient,

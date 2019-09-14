@@ -4,12 +4,13 @@ import { environment } from '../../environments/environment';
 
 import { BaseService } from '../shared/common/base-service';
 import { Staff } from './../shared/model/staff';
+import { StaffFilterVO } from '../shared/model/vo/filter/staff-filter-vo';
 
 const STAFFS = 'staffs';
 @Injectable({
   providedIn: 'root'
 })
-export class StaffsService extends BaseService<Staff> {
+export class StaffsService extends BaseService<Staff, StaffFilterVO> {
 
   constructor(
     protected http: HttpClient

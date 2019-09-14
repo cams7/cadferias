@@ -1,6 +1,9 @@
-import { BaseEntity } from './base-entity';
+import { Auditable } from './auditable';
 
-export interface User extends BaseEntity {
+//Entidade que representa o usuário.
+export interface User extends Auditable {
+    //E-mail do usuário.
     email: string;
+    //Senha do usuário.
     password: string;
 }

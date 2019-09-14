@@ -1,5 +1,7 @@
-import { BaseEntity } from './base-entity';
+import { Auditable } from './auditable';
 
-export interface Staff extends BaseEntity {
+//Entidade que representa a equipe.
+export interface Staff extends Auditable {
+    //Nome da equipe.
     name: string;
 }

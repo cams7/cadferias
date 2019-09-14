@@ -4,181 +4,181 @@
       "id": 1,
       "email": "jorge78@teste.com",
       "password": "12345",
-      "token":"{\"id\": 1,\"email\": \"jorge78@teste.com\"}"
+      "token": "{\"id\": 1,\"email\": \"jorge78@teste.com\"}"
     },
     {
       "id": 2,
       "email": "diego68@teste.com",
       "password": "12345",
-      "token":"{\"id\": 2,\"email\": \"diego68@teste.com\"}"
+      "token": "{\"id\": 2,\"email\": \"diego68@teste.com\"}"
     },
     {
       "id": 3,
       "email": "carolina77@teste.com",
       "password": "12345",
-      "token":"{\"id\": 3,\"email\": \"carolina77@teste.com\"}"
+      "token": "{\"id\": 3,\"email\": \"carolina77@teste.com\"}"
     },
     {
       "id": 4,
       "email": "leticia84@teste.com",
       "password": "12345",
-      "token":"{\"id\": 4,\"email\": \"leticia84@teste.com\"}"
+      "token": "{\"id\": 4,\"email\": \"leticia84@teste.com\"}"
     },
     {
       "id": 5,
       "email": "jessica74@teste.com",
       "password": "12345",
-      "token":"{\"id\": 5,\"email\": \"jessica74@teste.com\"}"
+      "token": "{\"id\": 5,\"email\": \"jessica74@teste.com\"}"
     },
     {
       "id": 6,
       "email": "gael86@teste.com",
       "password": "12345",
-      "token":"{\"id\": 6,\"email\": \"gael86@teste.com\"}"
+      "token": "{\"id\": 6,\"email\": \"gael86@teste.com\"}"
     },
     {
       "id": 7,
       "email": "jennifer80@teste.com",
       "password": "12345",
-      "token":"{\"id\": 7,\"email\": \"jennifer80@teste.com\"}"
+      "token": "{\"id\": 7,\"email\": \"jennifer80@teste.com\"}"
     },
     {
       "id": 8,
       "email": "julio84@teste.com",
       "password": "12345",
-      "token":"{\"id\": 8,\"email\": \"julio84@teste.com\"}"
+      "token": "{\"id\": 8,\"email\": \"julio84@teste.com\"}"
     },
     {
       "id": 9,
       "email": "allana92@teste.com",
       "password": "12345",
-      "token":"{\"id\": 9,\"email\": \"allana92@teste.com\"}"
+      "token": "{\"id\": 9,\"email\": \"allana92@teste.com\"}"
     },
     {
       "id": 10,
       "email": "bernado86@teste.com",
       "password": "12345",
-      "token":"{\"id\": 10,\"email\": \"bernado86@teste.com\"}"
+      "token": "{\"id\": 10,\"email\": \"bernado86@teste.com\"}"
     },
     {
       "id": 11,
       "email": "allana80@teste.com",
       "password": "12345",
-      "token":"{\"id\": 11,\"email\": \"allana80@teste.com\"}"
+      "token": "{\"id\": 11,\"email\": \"allana80@teste.com\"}"
     },
     {
       "id": 12,
       "email": "lavinia91@teste.com",
       "password": "12345",
-      "token":"{\"id\": 12,\"email\": \"lavinia91@teste.com\"}"
+      "token": "{\"id\": 12,\"email\": \"lavinia91@teste.com\"}"
     },
     {
       "id": 13,
       "email": "marcos84@teste.com",
       "password": "12345",
-      "token":"{\"id\": 13,\"email\": \"marcos84@teste.com\"}"
+      "token": "{\"id\": 13,\"email\": \"marcos84@teste.com\"}"
     },
     {
       "id": 14,
       "email": "liz82@teste.com",
       "password": "12345",
-      "token":"{\"id\": 14,\"email\": \"liz82@teste.com\"}"
+      "token": "{\"id\": 14,\"email\": \"liz82@teste.com\"}"
     },
     {
       "id": 15,
       "email": "jaqueline73@teste.com",
       "password": "12345",
-      "token":"{\"id\": 15,\"email\": \"jaqueline73@teste.com\"}"
+      "token": "{\"id\": 15,\"email\": \"jaqueline73@teste.com\"}"
     },
     {
       "id": 16,
       "email": "theo83@teste.com",
       "password": "12345",
-      "token":"{\"id\": 16,\"email\": \"theo83@teste.com\"}"
+      "token": "{\"id\": 16,\"email\": \"theo83@teste.com\"}"
     },
     {
       "id": 17,
       "email": "benicio93@teste.com",
       "password": "12345",
-      "token":"{\"id\": 17,\"email\": \"benicio93@teste.com\"}"
+      "token": "{\"id\": 17,\"email\": \"benicio93@teste.com\"}"
     },
     {
       "id": 18,
       "email": "jaqueline84@teste.com",
       "password": "12345",
-      "token":"{\"id\": 18,\"email\": \"jaqueline84@teste.com\"}"
+      "token": "{\"id\": 18,\"email\": \"jaqueline84@teste.com\"}"
     },
     {
       "id": 19,
       "email": "regina69@teste.com",
       "password": "12345",
-      "token":"{\"id\": 19,\"email\": \"regina69@teste.com\"}"
+      "token": "{\"id\": 19,\"email\": \"regina69@teste.com\"}"
     },
     {
       "id": 20,
       "email": "sebastiao81@teste.com",
       "password": "12345",
-      "token":"{\"id\": 20,\"email\": \"sebastiao81@teste.com\"}"
+      "token": "{\"id\": 20,\"email\": \"sebastiao81@teste.com\"}"
     },
     {
       "id": 21,
       "email": "andreia93@teste.com",
       "password": "12345",
-      "token":"{\"id\": 21,\"email\": \"andreia93@teste.com\"}"
+      "token": "{\"id\": 21,\"email\": \"andreia93@teste.com\"}"
     },
     {
       "id": 22,
       "email": "bernardo75@teste.com",
       "password": "12345",
-      "token":"{\"id\": 22,\"email\": \"bernardp75@teste.com\"}"
+      "token": "{\"id\": 22,\"email\": \"bernardp75@teste.com\"}"
     },
     {
       "id": 23,
       "email": "oliver67@teste.com",
       "password": "12345",
-      "token":"{\"id\": 23,\"email\": \"oliver67@teste.com\"}"
+      "token": "{\"id\": 23,\"email\": \"oliver67@teste.com\"}"
     },
     {
       "id": 24,
       "email": "fabiana81@teste.com",
       "password": "12345",
-      "token":"{\"id\": 24,\"email\": \"fabiana81@teste.com\"}"
+      "token": "{\"id\": 24,\"email\": \"fabiana81@teste.com\"}"
     },
     {
       "id": 25,
       "email": "igor68@teste.com",
       "password": "12345",
-      "token":"{\"id\": 25,\"email\": \"igor68@teste.com\"}"
+      "token": "{\"id\": 25,\"email\": \"igor68@teste.com\"}"
     },
     {
       "id": 26,
       "email": "igor95@teste.com",
       "password": "12345",
-      "token":"{\"id\": 26,\"email\": \"igor95@teste.com\"}"
+      "token": "{\"id\": 26,\"email\": \"igor95@teste.com\"}"
     },
     {
       "id": 27,
       "email": "luana76@teste.com",
       "password": "12345",
-      "token":"{\"id\": 27,\"email\": \"luana76@teste.com\"}"
+      "token": "{\"id\": 27,\"email\": \"luana76@teste.com\"}"
     },
     {
       "id": 28,
       "email": "betina77@teste.com",
       "password": "12345",
-      "token":"{\"id\": 28,\"email\": \"betina77@teste.com\"}"
+      "token": "{\"id\": 28,\"email\": \"betina77@teste.com\"}"
     },
     {
       "id": 29,
       "email": "pietro78@teste.com",
       "password": "12345",
-      "token":"{\"id\": 29,\"email\": \"pietro78@teste.com\"}"
+      "token": "{\"id\": 29,\"email\": \"pietro78@teste.com\"}"
     },
     {
       "id": 30,
       "email": "davi83@teste.com",
       "password": "12345",
-      "token":"{\"id\": 30,\"email\": \"davi83@teste.com\"}"
+      "token": "{\"id\": 30,\"email\": \"davi83@teste.com\"}"
     }
   ],
   "staffs": [
@@ -223,8 +223,12 @@
       "name": "Equipe 10"
     },
     {
-      "id": 11,
-      "name": "Equipe 11"
+      "name": "Barreiro",
+      "id": 11
+    },
+    {
+      "name": "São Benedito",
+      "id": 12
     }
   ],
   "employees": [
@@ -232,14 +236,14 @@
       "id": 1,
       "hiringDate": "2016-05-01",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010001",
+      "employeeRegistration": "1000100010001",
       "user": {
         "id": 1
       },
       "staff": {
         "id": 1
       },
-      "name": "Jorge Marcelo Viana",		
+      "name": "Jorge Marcelo Viana",
       "birthDate": "1978-02-02",
       "address": {
         "street": "Travessa Melancia",
@@ -254,15 +258,15 @@
       "id": 2,
       "hiringDate": "2014-07-01",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010002",
+      "employeeRegistration": "1000100010002",
       "user": {
         "id": 2
       },
       "staff": {
         "id": 2
       },
-      "name": "Diego Edson Enrico Lima",		
-      "birthDate": "1968-05-07",	
+      "name": "Diego Edson Enrico Lima",
+      "birthDate": "1968-05-07",
       "address": {
         "street": "Rua Guariúba",
         "houseNumber": 427,
@@ -276,14 +280,14 @@
       "id": 3,
       "hiringDate": "2018-02-11",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010003",
+      "employeeRegistration": "1000100010003",
       "user": {
         "id": 3
       },
       "staff": {
         "id": 3
       },
-      "name": "Carolina Esther Duarte",		
+      "name": "Carolina Esther Duarte",
       "birthDate": "1977-11-06",
       "address": {
         "street": "Rua Pernambuco",
@@ -298,14 +302,14 @@
       "id": 4,
       "hiringDate": "2010-09-21",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010004",
+      "employeeRegistration": "1000100010004",
       "user": {
         "id": 4
       },
       "staff": {
         "id": 4
       },
-      "name": "Letícia Nina Silveira",		
+      "name": "Letícia Nina Silveira",
       "birthDate": "1984-02-26",
       "address": {
         "street": "Rua São Jorge",
@@ -320,14 +324,14 @@
       "id": 5,
       "hiringDate": "2005-11-10",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010005",
+      "employeeRegistration": "1000100010005",
       "user": {
         "id": 5
       },
       "staff": {
         "id": 5
       },
-      "name": "Jéssica Isabelle da Costa",		
+      "name": "Jéssica Isabelle da Costa",
       "birthDate": "1974-06-11",
       "address": {
         "street": "Rua Alfredo Zaire",
@@ -342,7 +346,7 @@
       "id": 6,
       "hiringDate": "2009-04-01",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010006",
+      "employeeRegistration": "1000100010006",
       "user": {
         "id": 6
       },
@@ -364,7 +368,7 @@
       "id": 7,
       "hiringDate": "2018-02-10",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010007",
+      "employeeRegistration": "1000100010007",
       "user": {
         "id": 7
       },
@@ -386,7 +390,7 @@
       "id": 8,
       "hiringDate": "2017-09-08",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010008",
+      "employeeRegistration": "1000100010008",
       "user": {
         "id": 8
       },
@@ -408,7 +412,7 @@
       "id": 9,
       "hiringDate": "2011-03-05",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010009",
+      "employeeRegistration": "1000100010009",
       "user": {
         "id": 9
       },
@@ -430,7 +434,7 @@
       "id": 10,
       "hiringDate": "2008-06-12",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010010",
+      "employeeRegistration": "1000100010010",
       "user": {
         "id": 10
       },
@@ -452,7 +456,7 @@
       "id": 11,
       "hiringDate": "2007-04-19",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010011",
+      "employeeRegistration": "1000100010011",
       "user": {
         "id": 11
       },
@@ -474,7 +478,7 @@
       "id": 12,
       "hiringDate": "2006-07-10",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010012",
+      "employeeRegistration": "1000100010012",
       "user": {
         "id": 12
       },
@@ -496,7 +500,7 @@
       "id": 13,
       "hiringDate": "2005-12-11",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010013",
+      "employeeRegistration": "1000100010013",
       "user": {
         "id": 13
       },
@@ -518,7 +522,7 @@
       "id": 14,
       "hiringDate": "2006-07-21",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010014",
+      "employeeRegistration": "1000100010014",
       "user": {
         "id": 14
       },
@@ -540,7 +544,7 @@
       "id": 15,
       "hiringDate": "2004-08-25",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010015",
+      "employeeRegistration": "1000100010015",
       "user": {
         "id": 15
       },
@@ -562,7 +566,7 @@
       "id": 16,
       "hiringDate": "2008-11-02",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010016",
+      "employeeRegistration": "1000100010016",
       "user": {
         "id": 16
       },
@@ -584,7 +588,7 @@
       "id": 17,
       "hiringDate": "2006-08-10",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010017",
+      "employeeRegistration": "1000100010017",
       "user": {
         "id": 17
       },
@@ -606,7 +610,7 @@
       "id": 18,
       "hiringDate": "2006-06-14",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010018",
+      "employeeRegistration": "1000100010018",
       "user": {
         "id": 18
       },
@@ -628,7 +632,7 @@
       "id": 19,
       "hiringDate": "2006-05-22",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010019",
+      "employeeRegistration": "1000100010019",
       "user": {
         "id": 19
       },
@@ -650,7 +654,7 @@
       "id": 20,
       "hiringDate": "2001-04-10",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010020",
+      "employeeRegistration": "1000100010020",
       "user": {
         "id": 20
       },
@@ -672,7 +676,7 @@
       "id": 21,
       "hiringDate": "2005-05-21",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010021",
+      "employeeRegistration": "1000100010021",
       "user": {
         "id": 21
       },
@@ -694,7 +698,7 @@
       "id": 22,
       "hiringDate": "2004-09-22",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010022",
+      "employeeRegistration": "1000100010022",
       "user": {
         "id": 22
       },
@@ -716,7 +720,7 @@
       "id": 23,
       "hiringDate": "2001-11-22",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010023",
+      "employeeRegistration": "1000100010023",
       "user": {
         "id": 23
       },
@@ -738,7 +742,7 @@
       "id": 24,
       "hiringDate": "2007-08-20",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010024",
+      "employeeRegistration": "1000100010024",
       "user": {
         "id": 24
       },
@@ -760,7 +764,7 @@
       "id": 25,
       "hiringDate": "2007-08-20",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010025",
+      "employeeRegistration": "1000100010025",
       "user": {
         "id": 25
       },
@@ -782,7 +786,7 @@
       "id": 26,
       "hiringDate": "2001-06-22",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010026",
+      "employeeRegistration": "1000100010026",
       "user": {
         "id": 26
       },
@@ -804,7 +808,7 @@
       "id": 27,
       "hiringDate": "2002-07-20",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010027",
+      "employeeRegistration": "1000100010027",
       "user": {
         "id": 27
       },
@@ -826,7 +830,7 @@
       "id": 28,
       "hiringDate": "2009-04-20",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010028",
+      "employeeRegistration": "1000100010028",
       "user": {
         "id": 28
       },
@@ -848,7 +852,7 @@
       "id": 29,
       "hiringDate": "2002-04-24",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010029",
+      "employeeRegistration": "1000100010029",
       "user": {
         "id": 29
       },
@@ -870,7 +874,7 @@
       "id": 30,
       "hiringDate": "2003-05-15",
       "employeePhoto": null,
-      "employeeRegistration":"1000100010030",
+      "employeeRegistration": "1000100010030",
       "user": {
         "id": 30
       },
@@ -892,91 +896,99 @@
   "vacations": [
     {
       "id": 1,
-      "vacationStartDate": "2019-08-20",
-      "vacationEndDate":"2019-09-10",
+      "startDate": "2019-08-20",
+      "endDate": "2019-09-10",
       "employee": {
         "id": 1
       }
     },
     {
       "id": 2,
-      "vacationStartDate": "2019-09-21",
-      "vacationEndDate":"2019-10-15",
+      "startDate": "2019-09-21",
+      "endDate": "2019-10-15",
       "employee": {
         "id": 2
       }
     },
     {
       "id": 3,
-      "vacationStartDate": "2019-09-30",
-      "vacationEndDate":"2019-10-28",
+      "startDate": "2019-09-30",
+      "endDate": "2019-10-28",
       "employee": {
         "id": 3
       }
     },
     {
       "id": 4,
-      "vacationStartDate": "2020-01-02",
-      "vacationEndDate":"2020-01-29",
+      "startDate": "2020-01-02",
+      "endDate": "2020-01-29",
       "employee": {
         "id": 7
       }
     },
     {
       "id": 5,
-      "vacationStartDate": "2020-01-10",
-      "vacationEndDate":"2020-02-05",
+      "startDate": "2020-01-10",
+      "endDate": "2020-02-05",
       "employee": {
         "id": 8
       }
     },
     {
       "id": 6,
-      "vacationStartDate": "2020-01-20",
-      "vacationEndDate":"2020-02-15",
+      "startDate": "2020-01-20",
+      "endDate": "2020-02-15",
       "employee": {
         "id": 11
       }
     },
     {
       "id": 7,
-      "vacationStartDate": "2020-01-28",
-      "vacationEndDate":"2020-02-25",
+      "startDate": "2020-01-28",
+      "endDate": "2020-02-25",
       "employee": {
         "id": 16
       }
     },
     {
       "id": 8,
-      "vacationStartDate": "2020-02-05",
-      "vacationEndDate":"2020-02-25",
+      "startDate": "2020-02-05",
+      "endDate": "2020-02-25",
       "employee": {
         "id": 19
       }
     },
     {
       "id": 9,
-      "vacationStartDate": "2020-02-03",
-      "vacationEndDate":"2020-02-28",
+      "startDate": "2020-02-03",
+      "endDate": "2020-02-28",
       "employee": {
         "id": 25
       }
     },
     {
       "id": 10,
-      "vacationStartDate": "2020-02-10",
-      "vacationEndDate":"2020-03-05",
+      "startDate": "2020-02-10",
+      "endDate": "2020-03-05",
       "employee": {
         "id": 26
       }
     },
     {
       "id": 11,
-      "vacationStartDate": "2020-02-15",
-      "vacationEndDate":"2020-03-10",
+      "startDate": "2020-02-15",
+      "endDate": "2020-03-10",
       "employee": {
         "id": 29
       }
+    },
+    {
+      "employee": {
+        "id": 30
+      },
+      "startDate": "2019-11-01",
+      "endDate": "2019-11-29",
+      "id": 12
     }
   ]
 }

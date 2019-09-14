@@ -8,9 +8,10 @@ import { AppEventsService, SearchType } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { Base } from './base';
 import { BaseService, Page, PageAndSort } from './base-service';
-import { PaginationVO } from './../model/vo/pagination-vo';
+import { PageVO } from '../model/vo/pagination/page-vo';
 import { SortField, SortOrder } from './sort-field.directive';
 import { BaseEntity } from '../model/base-entity';
+import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
@@ -18,7 +19,7 @@ const SORT_PARAM = 'sort';
 const ORDER_PARAM = 'order';
 const ITEMS_PER_PAGE_FIELD = 'itemsPerPage';
 const SEARCH_FIELD = 'search';
-export abstract class BaseList<E extends BaseEntity> extends Base implements OnInit {
+export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO> extends Base implements OnInit {
                           
     readonly previousText = '&lsaquo;';
     readonly nextText = '&rsaquo;'; 
@@ -37,8 +38,8 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
     private _page = <Page>{};
     private isAfterChangeEvent = false;
 
-    private pagination$: Observable<PaginationVO<E>>;
-    private _currentItems$: Observable<PaginationVO<E>>;
+    private pagination$: Observable<PageVO<E>>;
+    private _currentItems$: Observable<PageVO<E>>;
     
     @ViewChild('pagination', { read: ElementRef, static:true }) pagination: ElementRef;
 
@@ -57,7 +58,7 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
         protected fb: FormBuilder,
         protected eventsService: AppEventsService,
         protected confirmModalService: ConfirmModalService,
-        private service: BaseService<E>
+        private service: BaseService<E, F>
     ) { 
         super();
     }
@@ -142,8 +143,8 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
                 entitySearch
             ))),
             flatMap(([pageAndSort, pagination])=> {
-                this._totalItems = pagination.totalItems;
-                this._totalItemsPerPage = pagination.items.length;                
+                this._totalItems = pagination.totalElements;
+                this._totalItemsPerPage = pagination.content.length;                
                 this.page = pageAndSort;
                 
                 const sortField = <SortField> {
@@ -166,19 +167,19 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
 
     private getItems$(entityId: number, pageAndSort: PageAndSort, entitySearch: E) {
         if(!this._currentItems$ || !entityId || this.deletedEntities.some(id => id == entityId)) {
-            this._currentItems$ = this.service.getAll$(pageAndSort, super.buildMap(entitySearch)).pipe(         
+            this._currentItems$ = this.service.getBySearch$(pageAndSort, super.buildMap(entitySearch)).pipe(         
                 shareReplay()
             );
         } else {            
             this._currentItems$.subscribe(pagination => {                
                 this.deletedEntities.push(entityId);
-                if(pagination.items.length == 1 && Number(this.page.page) < Number(this.numPages)) {
-                    this._currentItems$ = this.service.getAll$(pageAndSort, super.buildMap(entitySearch)).pipe(         
+                if(pagination.content.length == 1 && Number(this.page.page) < Number(this.numPages)) {
+                    this._currentItems$ = this.service.getBySearch$(pageAndSort, super.buildMap(entitySearch)).pipe(         
                         shareReplay()
                     );    
                 } else {
-                    pagination.items = pagination.items.filter(item => Number(item.id) != Number(entityId));
-                    pagination.totalItems = Number(pagination.totalItems) - 1;                   
+                    pagination.content = pagination.content.filter(item => Number(item.id) != Number(entityId));
+                    pagination.totalElements = Number(pagination.totalElements) - 1;                   
                 }
             });
         }
@@ -288,7 +289,7 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
     get items$() {
         return this.pagination$.pipe(
             map(pagination => {        
-              return pagination.items;
+              return pagination.content;
             })
         );
     }
@@ -296,7 +297,7 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
     get totalItems$() {
         return this.pagination$.pipe(
             map(pagination => {        
-              return pagination.totalItems;
+              return pagination.totalElements;
             })
         );    
     }
@@ -304,7 +305,7 @@ export abstract class BaseList<E extends BaseEntity> extends Base implements OnI
     get isLoadedItems$() {
         return this.pagination$.pipe(
           map(pagination => {
-            return pagination.totalItems > 0 && pagination.items.length > 0;
+            return pagination.totalElements > 0 && pagination.content.length > 0;
           })
         );
     }

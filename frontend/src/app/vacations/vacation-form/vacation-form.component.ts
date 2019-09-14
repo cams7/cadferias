@@ -37,7 +37,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     super.ngOnInit();
 
     super.form = this.fb.group({
-      vacationBreak: [this.vacationBreak, Validators.required],
+      vacationDate: [this.vacationDate, Validators.required],
       employee: this.fb.group({
         id: [this.entity.employee.id, Validators.required],
         employeeRegistration: [this.entity.employee.employeeRegistration],
@@ -81,23 +81,23 @@ export class VacationFormComponent extends BaseForm<Vacation> {
 
   }
 
-  private get vacationBreak(): Date[] {
-    if (!this.entity.vacationStartDate || !this.entity.vacationEndDate)
+  private get vacationDate(): Date[] {
+    if (!this.entity.startDate || !this.entity.endDate)
       return undefined;
 
     return  [
-      <Date>super.getDate(<any>this.entity.vacationStartDate),
-      <Date>super.getDate(<any>this.entity.vacationEndDate)
+      <Date>super.getDate(<any>this.entity.startDate),
+      <Date>super.getDate(<any>this.entity.endDate)
     ]
   }
 
   submit$() {
-    const vacationBreak: Date[] = this.form.get('vacationBreak').value;
+    const vacationDate: Date[] = this.form.get('vacationDate').value;
 
     const vacation = <Vacation>this.form.value;       
-    vacation.vacationStartDate = <any>super.getFormattedDate(vacationBreak[0]);
-    vacation.vacationEndDate = <any>super.getFormattedDate(vacationBreak[1]);
-    (<any>vacation).vacationBreak = undefined; 
+    vacation.startDate = <any>super.getFormattedDate(vacationDate[0]);
+    vacation.endDate = <any>super.getFormattedDate(vacationDate[1]);
+    (<any>vacation).vacationDate = undefined; 
     vacation.id = this.entity.id;
     vacation.employee.employeeRegistration = undefined;
     vacation.employee.phoneNumber = undefined;
