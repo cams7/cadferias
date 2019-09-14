@@ -1,20 +1,21 @@
 import { Directive, ElementRef, Renderer2, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { SortVO, Direction } from '../model/vo/pagination/sort-vo';
 
 @Directive({
   selector: '[sortField]'
 })
 export class SortFieldDirective {
 
-  private _sortField: SortField;
-  @Input() set sortField(sortField: SortField) {
-    if(!!sortField && (!this._sortField || this._sortField.order != sortField.order)) { 
-      if(!!this._sortField && !!this._sortField.order)
-        this.renderer.removeClass(this.el.nativeElement, this._sortField.order);
+  private sort: SortVO;
+  @Input() set sortField(sort: SortVO) {
+    if(!!sort && (!this.sort || this.sort.direction != sort.direction)) { 
+      if(!!this.sort && !!this.sort.direction)
+        this.renderer.removeClass(this.el.nativeElement, this.sort.direction.toLowerCase());
       
-      if(!!sortField.order)
-        this.renderer.addClass(this.el.nativeElement, sortField.order);
+      if(!!sort.direction)
+        this.renderer.addClass(this.el.nativeElement, sort.direction.toLowerCase());
       
-      this._sortField = sortField;
+      this.sort = sort;
     }    
   }
 
@@ -28,23 +29,13 @@ export class SortFieldDirective {
 
 
   @HostListener('click') changeSortOrder() {          
-    const sortOrder =  (!this._sortField.order || this._sortField.order == SortOrder.DESC) ? SortOrder.ASC : SortOrder.DESC; 
+    const direction =  (!this.sort.direction || this.sort.direction == Direction.DESC) ? Direction.ASC : Direction.DESC; 
     
-    const sortField = <SortField> {
-      fieldName: this._sortField.fieldName, 
-      order: sortOrder
+    const sort = <SortVO> {
+      property: this.sort.property, 
+      direction: direction
     };
 
-    this.sortFieldChanged.emit(sortField);
+    this.sortFieldChanged.emit(sort);
   }
-}
-
-export interface SortField {
-  fieldName: string;
-  order: SortOrder;
-}
-
-export enum SortOrder {
-  ASC='asc',
-  DESC='desc'
 }

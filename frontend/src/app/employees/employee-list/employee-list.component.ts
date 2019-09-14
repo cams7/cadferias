@@ -6,13 +6,13 @@ import { filter, tap, flatMap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from './../../shared/common/sort-field.directive';
-import { BaseList } from './../../shared/common/base-list';
+import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';import { BaseList } from './../../shared/common/base-list';
 import { UsersService } from './../../users/users.service';
 import { EmployeesService } from '../employees.service';
 import { VacationsService } from './../../vacations/vacations.service';
 import { Employee } from './../../shared/model/employee';
 import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
+
 
 @Component({
   selector: 'app-employee-list',
@@ -62,7 +62,7 @@ export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> 
     return super.buildMap(employee).get('name');
   }
 
-  protected setSortFields(sortFields: Map<string, SortOrder>) {    
+  protected setSortFields(sortFields: Map<string, Direction>) {    
     sortFields.set('name', undefined);
     sortFields.set('birthDate', undefined);
     sortFields.set('hiringDate', undefined);

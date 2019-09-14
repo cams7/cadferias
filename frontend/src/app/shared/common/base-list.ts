@@ -9,9 +9,10 @@ import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { Base } from './base';
 import { BaseService, Page, PageAndSort } from './base-service';
 import { PageVO } from '../model/vo/pagination/page-vo';
-import { SortField, SortOrder } from './sort-field.directive';
+import { SortVO, Direction } from '../model/vo/pagination/sort-vo';
 import { BaseEntity } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
+
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
@@ -45,8 +46,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
 
     public form: FormGroup;
 
-    private _sortField = <SortField>{fieldName: 'id', order: SortOrder.DESC};
-    private sortFields = new Map<string, SortOrder>();
+    private _sortField = <SortVO>{property: 'id', direction: Direction.DESC};
+    private sortFields = new Map<string, Direction>();
 
     private deletedEntitySubject = new BehaviorSubject<number>(undefined);
     private deletedEntities = new Array<number>();
@@ -89,8 +90,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             const pageAndSort = <PageAndSort>{
                 page: this._page.page, 
                 itemsPerPage: itemsPerPage,
-                sort: this._sortField.fieldName,
-                order: this._sortField.order
+                sort: this._sortField.property,
+                order: this._sortField.direction
             };           
             this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
@@ -124,7 +125,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                     if(!Array.from(this.sortFields.keys()).some(fieldName => fieldName == sort)) 
                         return EMPTY;
 
-                    if(order != SortOrder.ASC && order != SortOrder.DESC)
+                    if(order != Direction.ASC && order != Direction.DESC)
                         return EMPTY;
                     
                     return of(<PageAndSort>{
@@ -147,9 +148,9 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                 this._totalItemsPerPage = pagination.content.length;                
                 this.page = pageAndSort;
                 
-                const sortField = <SortField> {
-                    fieldName: pageAndSort.sort,
-                    order: pageAndSort.order
+                const sortField = <SortVO> {
+                    property: pageAndSort.sort,
+                    direction: pageAndSort.order
                 }
                 this.sortField = sortField;
                 return of(pagination);
@@ -190,7 +191,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
     protected abstract getSearchType(): SearchType;
     protected abstract getEntityBySearch(search: string): E;
     protected abstract getSearchByEntity(entitySearch: E): string;
-    protected abstract setSortFields(sortFields: Map<string, SortOrder>): void;
+    protected abstract setSortFields(sortFields: Map<string, Direction>): void;
 
     get totalItems() {
         return this._totalItems;
@@ -201,8 +202,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             const pageAndSort = <PageAndSort>{
                 page: page.page, 
                 itemsPerPage: page.itemsPerPage,
-                sort: this._sortField.fieldName,
-                order: this._sortField.order
+                sort: this._sortField.property,
+                order: this._sortField.direction
             };   
             this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
             this.isAfterChangeEvent = true;
@@ -282,8 +283,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         return this.isAfterChangeEvent || this._page.page != page.page || this._page.itemsPerPage != page.itemsPerPage;
     }
 
-    private isSortFiedChange(sortField: SortField) {
-        return this._sortField.fieldName != sortField.fieldName || this._sortField.order != sortField.order;
+    private isSortFiedChange(sortField: SortVO) {
+        return this._sortField.property != sortField.property || this._sortField.direction != sortField.direction;
     }
 
     get items$() {
@@ -315,36 +316,36 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
     }
 
     private initSortFields() {
-        this.sortFields.set(this._sortField.fieldName, this._sortField.order);
+        this.sortFields.set(this._sortField.property, this._sortField.direction);
         this.setSortFields(this.sortFields);
     }
 
     getSortField(fieldName: string) {
-        const sortField = <SortField>{
-            fieldName: fieldName, 
-            order: this.sortFields.get(fieldName)
+        const sortField = <SortVO>{
+            property: fieldName, 
+            direction: this.sortFields.get(fieldName)
         };  
         return sortField;
     }
 
-    set sortFieldChanged(sortField: SortField) {
+    set sortFieldChanged(sortField: SortVO) {
         if(this.isSortFiedChange(sortField)) {
             const pageAndSort = <PageAndSort>{
                 page: this._page.page, 
                 itemsPerPage: this._page.itemsPerPage,
-                sort: sortField.fieldName,
-                order: sortField.order
+                sort: sortField.property,
+                order: sortField.direction
             };   
             this.router.navigate([], { relativeTo: this.route, queryParams: pageAndSort });
         }    
     }
 
-    private set sortField(sortField: SortField) {
+    private set sortField(sortField: SortVO) {
         if(this.isSortFiedChange(sortField)) {
-            Array.from(this.sortFields.keys()).filter(fieldName => fieldName != sortField.fieldName).forEach(fieldName => 
+            Array.from(this.sortFields.keys()).filter(fieldName => fieldName != sortField.property).forEach(fieldName => 
                 this.sortFields.set(fieldName, undefined)
             );
-            this.sortFields.set(sortField.fieldName, sortField.order);
+            this.sortFields.set(sortField.property, sortField.direction);
             this._sortField = sortField;
         }
     }

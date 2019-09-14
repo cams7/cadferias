@@ -6,12 +6,12 @@ import { filter, switchMap, tap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from './../../shared/common/sort-field.directive';
-import { BaseList } from './../../shared/common/base-list';
+import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
 import { VacationFilterVO } from 'src/app/shared/model/vo/filter/vacation-filter-vo';
 import { Employee } from './../../shared/model/employee';
+
 
 @Component({
   selector: 'app-vacation-list',
@@ -52,7 +52,7 @@ export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> 
     return super.buildMap(vacation).get('employee.id');
   }
 
-  protected setSortFields(sortFields: Map<string, SortOrder>) {
+  protected setSortFields(sortFields: Map<string, Direction>) {
     sortFields.set('startDate', undefined);
     sortFields.set('endDate', undefined);
     sortFields.set('employee.id', undefined);

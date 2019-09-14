@@ -6,12 +6,12 @@ import { filter, tap, flatMap } from 'rxjs/operators';
 
 import { AppEventsService, SearchType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { SortOrder } from './../../shared/common/sort-field.directive';
-import { BaseList } from './../../shared/common/base-list';
+import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';import { BaseList } from './../../shared/common/base-list';
 import { StaffsService } from '../staffs.service';
 import { EmployeesService } from './../../employees/employees.service';
 import { Staff } from './../../shared/model/staff';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
+
 
 @Component({
   selector: 'app-staff-list',
@@ -51,7 +51,7 @@ export class StaffListComponent extends BaseList<Staff, StaffFilterVO> {
     return super.buildMap(staff).get('name');
   }
 
-  protected setSortFields(sortFields: Map<string, SortOrder>) {
+  protected setSortFields(sortFields: Map<string, Direction>) {
     sortFields.set('name', undefined);
   }
 

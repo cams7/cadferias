@@ -9,7 +9,7 @@ import { AuthService } from './shared/auth/auth.service';
 import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
 import { PageAndSort } from './shared/common/base-service';
-import { SortOrder } from './shared/common/sort-field.directive';
+import { Direction } from './shared/model/vo/pagination/sort-vo';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     page: 1, 
     itemsPerPage: 10,
     sort: 'id',
-    order: SortOrder.DESC
+    order: Direction.DESC
   };
 
   private _alerts: AlertMessage[] = [];

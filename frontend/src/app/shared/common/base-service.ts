@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 
 import { Base } from './base';
 import { PageVO } from '../model/vo/pagination/page-vo';
-import { SortOrder } from './../../shared/common/sort-field.directive';
+import { Direction } from '../model/vo/pagination/sort-vo';
 import { BaseEntity } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
 
@@ -29,7 +29,7 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
 
             if(pageAndSort.sort && pageAndSort.order) {
                 params = params.append('_sort', pageAndSort.sort);
-                params = params.append('_order', pageAndSort.order);    
+                params = params.append('_order', pageAndSort.order.toLowerCase());    
             }
         }
         
@@ -81,5 +81,5 @@ export interface Page {
 
 export interface PageAndSort extends Page  {
     sort: string;
-    order: SortOrder    
+    order: Direction    
 }
