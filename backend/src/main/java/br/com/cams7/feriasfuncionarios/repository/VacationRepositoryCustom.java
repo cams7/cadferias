@@ -8,5 +8,6 @@ package br.com.cams7.feriasfuncionarios.repository;
  *
  */
 public interface VacationRepositoryCustom {
-
+	
+	
 }

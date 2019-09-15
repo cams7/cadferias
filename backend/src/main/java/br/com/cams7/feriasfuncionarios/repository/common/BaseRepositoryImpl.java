@@ -26,6 +26,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
+import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
 import br.com.cams7.feriasfuncionarios.model.vo.pagination.PageInputVO;
@@ -189,7 +190,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 			ordersBy.add(getOrderBySort(sort, cb, path));
 		}
-		return ordersBy.toArray(new Order[0]);
+		return ordersBy.toArray(Order[]::new);
 	}
 
 	protected abstract Path<?> getPathByProperty(Root<?> root, String property, Join<?, ?>... join);
@@ -204,6 +205,35 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 	protected static String getLowerValue2Like(String value) {
 		return getValue2Like(value).toLowerCase();
+	}
+
+	/**
+	 * @param search    Filtro de Pequisa
+	 * @param fieldName Nome do campo
+	 * @return Entidades
+	 */
+	protected Iterable<E> findBySearch(SearchBySelectVO search, String fieldName) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<E> selectQuery = cb.createQuery(getEntityType());
+		Root<E> root = selectQuery.from(getEntityType());
+		selectQuery.select(root);
+		Predicate[] and = new Predicate[] { cb.isTrue(root.get(FIELD_ACTIVE)),
+				cb.like(cb.lower(root.get(fieldName)), getLowerValue2Like(search.getSearchValue())) };
+		selectQuery.where(cb.and(and));
+
+		Path<?> path = root.get(fieldName);
+		@SuppressWarnings("preview")
+		Order order = switch (search.getSort().getDirection()) {
+		case DESC -> cb.desc(path);
+		default -> cb.asc(path);
+		};
+		selectQuery.orderBy(order);
+
+		TypedQuery<E> typedQuery = em.createQuery(selectQuery);
+		typedQuery.setFirstResult(0);
+		typedQuery.setMaxResults(search.getSize());
+		List<E> staffs = typedQuery.getResultList();
+		return staffs;
 	}
 
 }

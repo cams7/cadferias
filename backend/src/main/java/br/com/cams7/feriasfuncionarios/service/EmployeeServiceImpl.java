@@ -15,6 +15,7 @@ import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
+import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.EmployeeFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.EmployeeRepository;
 import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
@@ -42,17 +43,15 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		if (employee.getHiringDate() == null)
 			throw new InvalidDataException("A data de contratação não foi informada");
 
-		validateUserId(employee);
 		validateStaffId(employee);
-
-		Long userId = employee.getUser().getId();
-
-		if (reporitory.existsByUserId(userId))
-			throw new InvalidDataException(
-					String.format("O ID do usuário \"%d\" já está relacionado a outro funcionário", userId));
 
 		final String EMPLOYEE_REGISTRATION = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
 		employee.setEmployeeRegistration(EMPLOYEE_REGISTRATION);
+
+		UserEntity user = employee.getUser();
+		user.setPassword("12345");
+		user = userService.create(user);
+		employee.setUser(user);
 
 		return super.create(employee);
 	}
@@ -95,20 +94,11 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		}
 
 		Long[] vacationIds = vacationService.getIdsByEmployeeId(employeeId);
-		vacationService.deleteAllById(Arrays.asList(vacationIds));
+		if (vacationIds.length > 0)
+			vacationService.deleteAllById(Arrays.asList(vacationIds));
 
 		super.delete(employeeId);
 
-	}
-
-	private void validateUserId(EmployeeEntity employee) {
-		Long userId = employee.getUser().getId();
-
-		if (userId == null)
-			throw new InvalidDataException("O ID do usuário não foi informado");
-
-		if (!userService.existsById(userId))
-			throw new ResourceNotFoundException(String.format("O usuário \"%d\" não esta cadastrado", userId));
 	}
 
 	private void validateStaffId(EmployeeEntity employee) {
@@ -125,6 +115,19 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Override
 	public long countByStaffId(Long staffId) {
 		return reporitory.countByStaffId(staffId);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public EmployeeEntity geOnlyEmployeeById(Long id) {
+		return reporitory.findOnlyEmployeeById(id).orElseThrow(() -> new ResourceNotFoundException(
+				String.format("Nenhum funcionário foi encontrada pelo ID: %d", id)));
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Iterable<EmployeeEntity> getByName(SearchBySelectVO search) {
+		return reporitory.findByName(search);
 	}
 
 }

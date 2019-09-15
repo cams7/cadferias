@@ -22,7 +22,6 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
  * @author ceanm
  *
  */
-@Transactional
 public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>, E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO>
 		implements BaseService<E, ID, F> {
 

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
@@ -20,45 +19,36 @@ import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
  * @author ceanm
  *
  */
-@Transactional
 @NoRepositoryBean
 public interface SoftDeleteCrudRepository<E extends Auditable<ID>, ID extends Serializable>
 		extends CrudRepository<E, ID>, BaseRepository<E, ID, AuditableFilterVO> {
 
 	@Override
-	@Transactional(readOnly = true)
 	@Query("SELECT e FROM #{#entityName} e WHERE e.active = true")
 	Iterable<E> findAll();
 
 	@Override
-	@Transactional(readOnly = true)
 	@Query("SELECT e FROM #{#entityName} e WHERE e.id IN ?1 AND e.active = true")
 	Iterable<E> findAllById(Iterable<ID> ids);
 
 	@Override
-	@Transactional(readOnly = true)
 	@Query("SELECT e FROM #{#entityName} e WHERE e.id = ?1 AND e.active = true")
 	Optional<E> findById(ID id);
 
 	@Query("SELECT e FROM #{#entityName} e WHERE e.active = false")
-	@Transactional(readOnly = true)
 	Iterable<E> findInactive();
 
-	@Transactional(readOnly = true)
 	@Query("SELECT new br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO(e.createdBy.id, e.createdDate) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
 	CreationAuditableVO findCreationAuditableById(ID id);
 
 	@Override
-	@Transactional(readOnly = true)
 	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.active = true")
 	long count();
 
-	@Transactional(readOnly = true)
 	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
 	long countById(ID id);
 
 	@Override
-	@Transactional(readOnly = true)
 	@Query("SELECT (COUNT(e) > 0) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
 	boolean existsById(ID id);
 

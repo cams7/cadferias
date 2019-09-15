@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
 import br.com.cams7.feriasfuncionarios.model.StaffEntity;
+import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.StaffFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.common.BaseRepositoryImpl;
 
@@ -72,6 +73,11 @@ public class StaffRepositoryImpl extends BaseRepositoryImpl<StaffEntity, Long, S
 			return join[INDEX_CREATEDBY].get(property.split("\\.")[1]);
 
 		return root.get(property);
+	}
+
+	@Override
+	public Iterable<StaffEntity> findByName(SearchBySelectVO search) {
+		return findBySearch(search, FIELD_NAME);
 	}
 
 }

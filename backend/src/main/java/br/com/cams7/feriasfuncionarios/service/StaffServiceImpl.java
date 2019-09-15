@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.StaffEntity;
+import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.StaffFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.StaffRepository;
 import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
@@ -38,6 +39,19 @@ public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEnti
 					employeesTotal));
 
 		super.delete(staffId);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public StaffEntity geOnlyStaffById(Long id) {
+		return reporitory.findOnlyStaffById(id).orElseThrow(
+				() -> new ResourceNotFoundException(String.format("Nenhuma equipe foi encontrada pelo ID: %d", id)));
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Iterable<StaffEntity> getByName(SearchBySelectVO search) {
+		return reporitory.findByName(search);
 	}
 
 }

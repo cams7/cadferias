@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepository;
@@ -20,16 +19,16 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
  * @author ceanm
  *
  */
-@Transactional
 public interface EmployeeRepository extends EmployeeRepositoryCustom, SoftDeleteCrudRepository<EmployeeEntity, Long> {
 
 	@Override
-	@Transactional(readOnly = true)
 	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF)
 	@Query("SELECT e FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
 	Optional<EmployeeEntity> findById(@Param("id") Long id);
 
-	@Transactional(readOnly = true)
+	@Query("SELECT e FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
+	Optional<EmployeeEntity> findOnlyEmployeeById(@Param("id") Long id);
+
 	@Query("SELECT (COUNT(e) > 0) FROM EmployeeEntity e WHERE e.user.id = :userId AND e.active = true")
 	boolean existsByUserId(@Param("userId") Long userId);
 
@@ -42,7 +41,6 @@ public interface EmployeeRepository extends EmployeeRepositoryCustom, SoftDelete
 	@Query("SELECT e.employeeRegistration FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
 	String findEmployeeRegistrationById(@Param("id") Long id);
 
-	@Transactional(readOnly = true)
 	@Query("SELECT COUNT(e) FROM EmployeeEntity e WHERE e.staff.id = :staffId AND e.active = true")
 	long countByStaffId(@Param("staffId") Long staffId);
 
