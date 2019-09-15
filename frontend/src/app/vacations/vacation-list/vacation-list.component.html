@@ -33,7 +33,8 @@
                             <th [sortField]="getSortField('id')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
                             <th [sortField]="getSortField('startDate')" (sortFieldChanged)="sortFieldChanged = $event">Data inicial</th>
                             <th [sortField]="getSortField('endDate')" (sortFieldChanged)="sortFieldChanged = $event">Data final</th>                        
-                            <th [sortField]="getSortField('employee.id')" (sortFieldChanged)="sortFieldChanged = $event">Funcionário</th>
+                            <th [sortField]="getSortField('employee.name')" (sortFieldChanged)="sortFieldChanged = $event">Funcionário</th>
+                            <th [sortField]="getSortField('employee.staff.name')" (sortFieldChanged)="sortFieldChanged = $event">Equipe</th>
                             <th class="without-order">Ações</th>
                         </tr>
                     </thead>
@@ -42,7 +43,8 @@
                             <td>{{ vacation.id }}</td>
                             <td>{{ vacation.startDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ vacation.endDate | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ vacation.employee.id }}</td>
+                            <td>{{ vacation.employee.name }}</td>
+                            <td>{{ vacation.employee.staff.name }}</td>
                             <td>
                                 <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.id)"><i class="fa fa-edit"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(vacation)"><i class="fa fa-trash"></i></a>

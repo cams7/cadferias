@@ -20,25 +20,5 @@ export class VacationsService extends BaseService<Vacation, VacationFilterVO> {
     private employeesService: EmployeesService
   ) { 
     super(http, `${environment.API}${VACATIONS}`);
-  }
-
-  getById$(id: number) {
-    return super.getById$(id).pipe(
-      flatMap(vacation => {
-        const employee = vacation.employee;
-        const employee$ = this.employeesService.getById$(employee.id);
-        return forkJoin(of(vacation), employee$);
-      }),
-      map(([vacation, employee])=> {
-        vacation.employee = employee;
-        return vacation;
-      })
-    );
-  }
-
-  totalVacations$(employeeId: number) {
-    return this.http.get<Vacation[]>(`${environment.API}${VACATIONS}`, { params: new HttpParams().append('employee.id', <any>employeeId) }).pipe<number>(
-      map(employees => (!!employees && employees.length > 0) ? employees.length : 0)
-    );
-  }
+  }  
 }

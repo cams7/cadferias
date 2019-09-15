@@ -65,7 +65,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     this._employees$ = merge(
       of(this.entity.employee.id).pipe(
         filter(id => !!id),
-        flatMap(id => this.employeesService.getById$(id)),
+        flatMap(id => this.employeesService.getOnlyEmployeeById$(id)),
         filter(employee => !!employee),
         map(employee => [employee])
       ),

@@ -35,7 +35,7 @@
                             <th [sortField]="getSortField('birthDate')" (sortFieldChanged)="sortFieldChanged = $event">Data de Nascimento</th>                        
                             <th [sortField]="getSortField('hiringDate')" (sortFieldChanged)="sortFieldChanged = $event">Data de contratação</th>                        
                             <th [sortField]="getSortField('employeeRegistration')" (sortFieldChanged)="sortFieldChanged = $event">Matricula</th>
-                            <th [sortField]="getSortField('staff.id')" (sortFieldChanged)="sortFieldChanged = $event">Equipe</th>
+                            <th [sortField]="getSortField('staff.name')" (sortFieldChanged)="sortFieldChanged = $event">Equipe</th>
                             <th class="without-order">Ações</th>
                         </tr>
                     </thead>
@@ -46,7 +46,7 @@
                             <td>{{ employee.birthDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ employee.hiringDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ employee.employeeRegistration }}</td>
-                            <td>{{ employee.staff.id }}</td>
+                            <td>{{ employee.staff.name }}</td>
                             <td>
                                 <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(employee.id)"><i class="fa fa-edit"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(employee)"><i class="fa fa-trash"></i></a>

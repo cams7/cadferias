@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, merge, of, Subject, EMPTY, forkJoin } from 'rxjs';
+import { Observable, merge, of, Subject, forkJoin } from 'rxjs';
 import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, debounceTime, flatMap, tap } from 'rxjs/operators';
 
 import { NgBrazilValidators } from 'ng-brazil';
@@ -136,7 +136,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     this._staffs$ = merge(
       of(this.entity.staff.id).pipe(
         filter(id => !!id),
-        flatMap(id => this.staffsService.getById$(id)),
+        flatMap(id => this.staffsService.getOnlyStaffById$(id)),
         filter(staff => !!staff),
         map(staff => [staff])
       ),
@@ -159,26 +159,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
     employee.user.id = this.entity.user.id;
     
-    return (!super.isRegistred ? this.usersService.isRegisteredEmail$(employee.user.email) : of(undefined)).pipe(
-      flatMap(isRegisteredEmail => {
-        let user$: Observable<User>;
-        if(!super.isRegistred) {
-          if(isRegisteredEmail) {
-            this.eventsService.addWarningAlert('E-mail já cadastrado!', `O e-mail "${employee.user.email}" já foi cadastrado anteriormente.`);
-            return EMPTY;
-          }
-          user$ = this.usersService.save$(employee.user);
-        } else 
-          user$ = of(undefined);
-
-        return user$;
-      }),
-      flatMap(user => {
-        if(!!user) 
-          employee.user.id = user.id;
-        employee.user.email = undefined;
-        return this.employeesService.save$(employee);
-      }),
+    return this.employeesService.save$(employee).pipe(      
       tap(employee => {
         if(this.isRegistred)
             this.eventsService.addSuccessAlert('Funcionário(a) atualizado(a)!', `Os dados do(a) funcionário(a) "${employee.name}" foram atualizados com sucesso.`);

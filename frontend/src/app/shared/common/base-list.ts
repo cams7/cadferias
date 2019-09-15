@@ -4,15 +4,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable, BehaviorSubject } from 'rxjs';
 import { filter, delay, concatMap, flatMap, shareReplay, delayWhen, map, distinctUntilChanged, take, debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from '../events.service';
+import { AppEventsService, FilterType } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { Base } from './base';
-import { BaseService, Page, PageAndSort } from './base-service';
+import { BaseService } from './base-service';
 import { PageVO } from '../model/vo/pagination/page-vo';
 import { SortVO, Direction } from '../model/vo/pagination/sort-vo';
 import { BaseEntity } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
-
+import { SearchVO } from './../model/vo/search-vo';
+import { PageInputVO } from './../model/vo/pagination/page-input-vo';
+import { PageParams, PageAndSortParams } from '../model/vo/page-params';
 
 const ITEMS_PER_PAGE_PARAM = 'itemsPerPage';
 const PAGE_PARAM = 'page';
@@ -36,7 +38,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
 
     private _totalItems: number;
     private _totalItemsPerPage: number;
-    private _page = <Page>{};
+    private _page = <PageParams>{};
     private isAfterChangeEvent = false;
 
     private pagination$: Observable<PageVO<E>>;
@@ -72,11 +74,11 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             search: []
         });
 
-        this.eventsService.getEntitySearch$(this.getSearchType()).pipe( 
+        this.eventsService.getFilter$(this.getFilterType()).pipe( 
             take(1),           
-            filter(entitySearch => !!entitySearch)
-        ).subscribe(entitySearch => {
-            const search = this.getSearchByEntity(entitySearch);
+            filter(filter => !!filter)
+        ).subscribe(filter => {
+            const search = this.getSearchByFilter(filter);
             this.form.get(SEARCH_FIELD).setValue(search);    
         });
 
@@ -87,7 +89,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             filter(itemsPerPage => this._page.itemsPerPage && itemsPerPage != this._page.itemsPerPage),
             takeUntil(super.end$)
         ).subscribe(itemsPerPage => {
-            const pageAndSort = <PageAndSort>{
+            const pageAndSort = <PageAndSortParams>{
                 page: this._page.page, 
                 itemsPerPage: itemsPerPage,
                 sort: this._sortField.property,
@@ -102,12 +104,12 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             distinctUntilChanged(),
             takeUntil(super.end$)
         ).subscribe((search: string) => {
-            const entitySearch = this.getEntityBySearch(search);
-            this.addEntitySearch(entitySearch);         
+            const filter = this.getFilterBySearch(search);
+            this.addFilter(filter);         
         });
 
         this.pagination$ = combineLatest(
-            this.eventsService.getEntitySearch$(this.getSearchType()),
+            this.eventsService.getFilter$(this.getFilterType()),
             this.route.queryParams.pipe(
                 filter(params => params[PAGE_PARAM] && params[SORT_PARAM] && params[ORDER_PARAM]),
                 flatMap(params => { 
@@ -128,7 +130,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                     if(order != Direction.ASC && order != Direction.DESC)
                         return EMPTY;
                     
-                    return of(<PageAndSort>{
+                    return of(<PageAndSortParams>{
                         page: super.getNumber(page), 
                         itemsPerPage: super.getNumber(itemsPerPage),
                         sort: sort,
@@ -138,10 +140,10 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             ),
             this.deletedEntitySubject.asObservable()
         ).pipe(
-            switchMap(([entitySearch, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
+            switchMap(([filter, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
                 <number>super.getNumber(itemId), 
                 pageAndSort, 
-                entitySearch
+                filter
             ))),
             flatMap(([pageAndSort, pagination])=> {
                 this._totalItems = pagination.totalElements;
@@ -166,16 +168,16 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         this.deletedEntitySubject.complete();
     }
 
-    private getItems$(entityId: number, pageAndSort: PageAndSort, entitySearch: E) {
-        if(!this._currentItems$ || !entityId || this.deletedEntities.some(id => id == entityId)) {
-            this._currentItems$ = this.service.getBySearch$(pageAndSort, super.buildMap(entitySearch)).pipe(         
+    private getItems$(entityId: number, pageAndSort: PageAndSortParams, filter: F) {
+        if(!this._currentItems$ || !entityId || this.deletedEntities.some(id => id == entityId)) {  
+            this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(         
                 shareReplay()
             );
         } else {            
             this._currentItems$.subscribe(pagination => {                
                 this.deletedEntities.push(entityId);
                 if(pagination.content.length == 1 && Number(this.page.page) < Number(this.numPages)) {
-                    this._currentItems$ = this.service.getBySearch$(pageAndSort, super.buildMap(entitySearch)).pipe(         
+                    this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(         
                         shareReplay()
                     );    
                 } else {
@@ -187,19 +189,35 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         return this._currentItems$;
     }
 
-    protected abstract addEntitySearch(entitySearch: E): void;
-    protected abstract getSearchType(): SearchType;
-    protected abstract getEntityBySearch(search: string): E;
-    protected abstract getSearchByEntity(entitySearch: E): string;
+    private getSearch(pageAndSort: PageAndSortParams, filter: F) {
+        const search = <SearchVO<F>>{};
+        search.globalFilter = true;
+        search.searchFilter = filter;
+        search.pageInput = <PageInputVO>{};
+        search.pageInput.pageNumber = pageAndSort.page - 1;
+        search.pageInput.size = pageAndSort.itemsPerPage;
+        search.pageInput.changedQuery = true;
+        search.pageInput.totalElements = 0;
+        const sort = <SortVO>{};
+        sort.property = pageAndSort.sort;
+        sort.direction = pageAndSort.order;
+        search.pageInput.sort = [sort];
+        return search;
+    }
+
+    protected abstract addFilter(filter: F): void;
+    protected abstract getFilterType(): FilterType;
+    protected abstract getFilterBySearch(search: string): F;
+    protected abstract getSearchByFilter(filter: F): string;
     protected abstract setSortFields(sortFields: Map<string, Direction>): void;
 
     get totalItems() {
         return this._totalItems;
     }
 
-    set pageChanged(page: Page) {
+    set pageChanged(page: PageParams) {
         if(this.isPageChange(page)) {
-            const pageAndSort = <PageAndSort>{
+            const pageAndSort = <PageAndSortParams>{
                 page: page.page, 
                 itemsPerPage: page.itemsPerPage,
                 sort: this._sortField.property,
@@ -214,7 +232,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         return this._page;
     }
     
-    set page(page: Page) {
+    set page(page: PageParams) {
         const MILLIS_VALUE = 50;
         const PAGELINK_CLASS = 'li.pagination-page>a.page-link';
 
@@ -271,15 +289,15 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         }  
     }
 
-    private isChangeOfPaginationStyle(page: Page) {
+    private isChangeOfPaginationStyle(page: PageParams) {
         return this._totalItemsPerPage > 0 && this.isMultiplePages(page) &&  this.isPageChange(page);
     }
 
-    private isMultiplePages(page: Page) {        
+    private isMultiplePages(page: PageParams) {        
         return this._totalItems > page.itemsPerPage;
     }
 
-    private isPageChange(page: Page) {
+    private isPageChange(page: PageParams) {
         return this.isAfterChangeEvent || this._page.page != page.page || this._page.itemsPerPage != page.itemsPerPage;
     }
 
@@ -330,7 +348,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
 
     set sortFieldChanged(sortField: SortVO) {
         if(this.isSortFiedChange(sortField)) {
-            const pageAndSort = <PageAndSort>{
+            const pageAndSort = <PageAndSortParams>{
                 page: this._page.page, 
                 itemsPerPage: this._page.itemsPerPage,
                 sort: sortField.property,

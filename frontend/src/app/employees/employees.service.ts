@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { forkJoin, of } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 
 import { StateVO } from './../shared/model/vo/state-vo';
@@ -11,6 +9,8 @@ import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';
 import { Employee } from '../shared/model/employee';
 import { EmployeeFilterVO } from '../shared/model/vo/filter/employee-filter-vo';
+import { SearchBySelectVO } from '../shared/model/vo/search-by-select-vo';
+import { SortVO, Direction } from '../shared/model/vo/pagination/sort-vo';
 
 const EMPLOYEES='employees';
 @Injectable({
@@ -26,24 +26,6 @@ export class EmployeesService extends BaseService<Employee, EmployeeFilterVO> {
     super(http, `${environment.API}${EMPLOYEES}`);
   }
 
-  getById$(id: number) {
-    return super.getById$(id).pipe(
-      flatMap(employee => {
-        const user = employee.user;
-        const staff = employee.staff;
-
-        const user$ = this.usersService.getById$(user.id);
-        const staff$ = this.staffsService.getById$(staff.id);
-        return forkJoin(of(employee), user$, staff$);
-      }),
-      map(([employee, user, staff])=> {
-        employee.user = user;
-        employee.staff = staff;
-        return employee;
-      })
-    );
-  }
-
   get allStates$() {
     return this.http.get<StateVO[]>('assets/data/brazilian-states.json');
   }
@@ -52,15 +34,15 @@ export class EmployeesService extends BaseService<Employee, EmployeeFilterVO> {
     return this.http.get<CityVO[]>('assets/data/brazilian-cities.json');  
   }
 
-  totalEmployees$(staffId: number) {
-    return this.http.get<Employee[]>(`${environment.API}${EMPLOYEES}`, { params: new HttpParams().append('staff.id', <any>staffId) }).pipe<number>(
-      map(employees => (!!employees && employees.length > 0) ? employees.length : 0)
-    );
+  getOnlyEmployeeById$(id: number) {
+    return this.http.get<Employee>(`${this.API_URL}/only/${id}`);
   }
 
   getByName$(name: string) {
-    return this.http.get<Employee[]>(`${environment.API}${EMPLOYEES}`, { 
-      params: new HttpParams().append('name_like', name).append('_sort', 'name').append('_order', 'asc').append('_limit', "7") 
-    });
+    const search = <SearchBySelectVO>{};
+    search.searchValue = name;
+    search.sort = <SortVO>{property: 'name', direction: Direction.ASC};
+    search.size = this.searchSize;
+    return this.http.post<Employee[]>(`${this.API_URL}/searchByName`, search);
   }
 }

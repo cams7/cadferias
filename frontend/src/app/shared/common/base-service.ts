@@ -1,14 +1,14 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 
 import { Base } from './base';
 import { PageVO } from '../model/vo/pagination/page-vo';
-import { Direction } from '../model/vo/pagination/sort-vo';
 import { BaseEntity } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
+import { SearchVO } from '../model/vo/search-vo';
 
 export abstract class BaseService<E extends BaseEntity, F extends AuditableFilterVO> extends Base {
+
+    protected readonly searchSize = 7;
 
     constructor(
         protected http: HttpClient,
@@ -17,33 +17,8 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
         super();
     }
 
-    getBySearch$(pageAndSort?: PageAndSort, searchParams?:  Map<string, any>): Observable<PageVO<E>> {
-        let params = new HttpParams();   
-
-        if(pageAndSort) {
-            if(pageAndSort.page)
-                params = params.append('_page', <any>pageAndSort.page);
-
-            if(pageAndSort.itemsPerPage)
-                params = params.append('_limit', <any>pageAndSort.itemsPerPage);
-
-            if(pageAndSort.sort && pageAndSort.order) {
-                params = params.append('_sort', pageAndSort.sort);
-                params = params.append('_order', pageAndSort.order.toLowerCase());    
-            }
-        }
-        
-        if(searchParams && searchParams.size > 0)
-            params = Array.from(searchParams.keys()).reduce((params, key)=>{
-                return params.append(`${key}_like`, searchParams.get(key));
-            }, params);
-        
-        return this.http.get(this.API_URL, { params: params, observe: 'response' }).pipe<PageVO<E>>(
-            map(response => <PageVO<E>>{
-                totalElements: Number(response.headers.get('X-Total-Count')), 
-                content: response.body as E[]
-            })
-        );
+    getBySearch$(search: SearchVO<F>) {
+        return this.http.post<PageVO<E>>(`${this.API_URL}/search`, search);
     }
     
     getById$(id: number) {
@@ -55,7 +30,7 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
     }
 
     protected update$(entity: E) {
-        return this.http.put<E>(`${this.API_URL}/${entity.id}`, entity);
+        return this.http.put<E>(this.API_URL, entity);
     }
 
     save$(entity: E) {
@@ -72,14 +47,5 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
     get shortApiUrl() {
         return this.API_URL.substring(this.API_URL.search(/\/(\w+)$/));
     }
-}
-
-export interface Page {
-    page: number; 
-    itemsPerPage: number;   
-}
-
-export interface PageAndSort extends Page  {
-    sort: string;
-    order: Direction    
+    
 }

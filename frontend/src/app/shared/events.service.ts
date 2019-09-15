@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Employee } from './model/employee';
-import { Vacation } from './model/vacation';
-import { Staff } from './model/staff';
+import { AuditableFilterVO } from './model/vo/filter/auditable-filter-vo';
+import { EmployeeFilterVO } from './model/vo/filter/employee-filter-vo';
+import { VacationFilterVO } from './model/vo/filter/vacation-filter-vo';
+import { StaffFilterVO } from './model/vo/filter/staff-filter-vo';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppEventsService {
 
-  private searchSubject = new Map<SearchType, BehaviorSubject<any>>();
+  private filterSubject = new Map<FilterType, BehaviorSubject<any>>();
   private eventSubject = new Subject<AppEvent>();
   private alertSubject = new Subject<AlertMessage>();
 
@@ -18,42 +19,42 @@ export class AppEventsService {
   }
 
   private initSearchSubject() {
-    Object.keys(SearchType).filter(key => isNaN(Number(key))).map(key => SearchType[key]).forEach(searchType => {
-      this.searchSubject.set(searchType, new BehaviorSubject<any>(undefined));  
+    Object.keys(FilterType).filter(key => isNaN(Number(key))).map(key => FilterType[key]).forEach(searchType => {
+      this.filterSubject.set(searchType, new BehaviorSubject<any>(undefined));  
     });
   }
 
-  addEmployeeSearch(employee?: Employee) {
-    this.addEntitySearch(SearchType.EMPLOYEE, employee);
+  addEmployeeFilter(employee?: EmployeeFilterVO) {
+    this.addFilter(FilterType.EMPLOYEE, employee);
   }
 
-  addVacationSearch(vacation?: Vacation) {
-    this.addEntitySearch(SearchType.VACATION, vacation);
+  addVacationFilter(vacation?: VacationFilterVO) {
+    this.addFilter(FilterType.VACATION, vacation);
   }
 
-  addStaffSearch(staff?: Staff) {
-    this.addEntitySearch(SearchType.STAFF, staff);
+  addStaffFilter(staff?: StaffFilterVO) {
+    this.addFilter(FilterType.STAFF, staff);
   }
 
-  private addEntitySearch(searchType: SearchType, entitySearch: any) {
-    this.searchSubject.get(searchType).next(entitySearch);
+  private addFilter(searchType: FilterType, filter: AuditableFilterVO) {
+    this.filterSubject.get(searchType).next(filter);
   }
 
-  getEntitySearch$(searchType: SearchType) {
-    return this.searchSubject.get(searchType).asObservable();
+  getFilter$(filterType: FilterType) {
+    return this.filterSubject.get(filterType).asObservable();
   }
 
   resetAllSearchs() {
-    this.addEmployeeSearch();
-    this.addVacationSearch();
-    this.addStaffSearch();
+    this.addEmployeeFilter();
+    this.addVacationFilter();
+    this.addStaffFilter();
   }
 
   endAllEvents() {
-    Array.from(this.searchSubject.keys()).forEach(searchType => 
-      this.searchSubject.get(searchType).complete()
+    Array.from(this.filterSubject.keys()).forEach(searchType => 
+      this.filterSubject.get(searchType).complete()
     );
-    this.searchSubject.clear();
+    this.filterSubject.clear();
     this.eventSubject.complete();
     this.alertSubject.complete();
   }
@@ -97,7 +98,7 @@ export class AppEventsService {
   }
 }
 
-export enum SearchType {
+export enum FilterType {
   EMPLOYEE,
   VACATION,
   STAFF

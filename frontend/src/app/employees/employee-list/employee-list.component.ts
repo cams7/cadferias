@@ -1,17 +1,20 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { Observable, EMPTY } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, tap, flatMap } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from './../../shared/events.service';
+import { AppEventsService, FilterType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';import { BaseList } from './../../shared/common/base-list';
+import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
+import { BaseList } from './../../shared/common/base-list';
 import { UsersService } from './../../users/users.service';
 import { EmployeesService } from '../employees.service';
 import { VacationsService } from './../../vacations/vacations.service';
 import { Employee } from './../../shared/model/employee';
-import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
+import { EmployeeFilterVO, AddressFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
+import { UserFilterVO } from 'src/app/shared/model/vo/filter/user-filter-vo';
+import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
 
 
 @Component({
@@ -35,31 +38,32 @@ export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> 
     super(renderer, route, router, fb, eventsService, confirmModalService, employeesService);
   }
 
-  protected addEntitySearch(employee: Employee) {
-    this.eventsService.addEmployeeSearch(employee);
+  protected addFilter(employee: EmployeeFilterVO) {
+    this.eventsService.addEmployeeFilter(employee);
   }  
 
-  protected getSearchType() {
-    return SearchType.EMPLOYEE;
+  protected getFilterType() {
+    return FilterType.EMPLOYEE;
   }
 
-  protected getEntityBySearch(search: string): Employee {
-    const employee = <Employee>{};  
-    //employee.employeeRegistration =search;
-    employee.name=search;
-    //employee.phoneNumber=search; 
-    //employee.address = <Address>{};  
+  protected getFilterBySearch(search: string): EmployeeFilterVO {
+    const employee = <EmployeeFilterVO>{};
+    employee.employeeRegistration = search;
+    employee.name = search;
+    //employee.phoneNumber = search;
+    //employee.address = <AddressFilterVO>{};
     //employee.address.street = search;
     //employee.address.neighborhood = search;
     //employee.address.city = search;
-    //if(this.isNumber(search))
-    //    employee.address.houseNumber = Number(search);
-
+    //employee.user = <UserFilterVO>{};
+    //employee.user.email = search;
+    employee.staff = <StaffFilterVO>{};
+    employee.staff.name = search;
     return employee;
   }
 
-  protected getSearchByEntity(employee: Employee): string {
-    return super.buildMap(employee).get('name');
+  protected getSearchByFilter(employee: EmployeeFilterVO): string {
+    return employee.name;
   }
 
   protected setSortFields(sortFields: Map<string, Direction>) {    
@@ -67,20 +71,12 @@ export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> 
     sortFields.set('birthDate', undefined);
     sortFields.set('hiringDate', undefined);
     sortFields.set('employeeRegistration', undefined);
-    sortFields.set('staff.id', undefined);
+    sortFields.set('staff.name', undefined);
   }
 
   protected delete$(employee: Employee): Observable<void> {
     return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover o(a) funcionário(a) "${employee.name}"?`).pipe(
       filter(confirmed => confirmed),
-      flatMap(_ => this.vacationsService.totalVacations$(employee.id)),
-      flatMap(totalVacations => {
-        if(totalVacations > 0) {
-          this.eventsService.addWarningAlert('Tem férias!', `O(A) funcionário(a) "${employee.name}" não pode ser excluído(a), porque esse(a) tem ${totalVacations} férias cadastrada(s).`)
-          return EMPTY;
-        }
-        return this.usersService.remove$(employee.user.id)
-      }),
       flatMap(_ => this.employeesService.remove$(employee.id)),
       tap(_ => this.eventsService.addSuccessAlert('Funcionário(a) excluído(a)!', `O(A) funcionário(a) "${employee.name}" foi excluido(a) com sucesso.`))
     );

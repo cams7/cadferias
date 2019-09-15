@@ -4,13 +4,15 @@ import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 
-import { AppEventsService, SearchType } from './../../shared/events.service';
+import { AppEventsService, FilterType } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';import { BaseList } from './../../shared/common/base-list';
+import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
+import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
 import { VacationFilterVO } from 'src/app/shared/model/vo/filter/vacation-filter-vo';
-import { Employee } from './../../shared/model/employee';
+import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
+import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
 
 
 @Component({
@@ -32,30 +34,40 @@ export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> 
     super(renderer, route, router, fb, eventsService, confirmModalService, vacationsService);
   }
   
-  protected addEntitySearch(vacation: Vacation) {
-    this.eventsService.addVacationSearch(vacation);
+  protected addFilter(vacation: VacationFilterVO) {
+    this.eventsService.addVacationFilter(vacation);
   } 
   
-  protected getSearchType() {
-    return SearchType.VACATION;
+  protected getFilterType() {
+    return FilterType.VACATION;
   }
 
-  protected getEntityBySearch(search: string): Vacation {
-    const vacation = <Vacation>{};
-    vacation.employee = <Employee>{};
-    if(this.isNumber(search))
-      vacation.employee.id = Number(search);
+  protected getFilterBySearch(search: string): VacationFilterVO {
+    const vacation = <VacationFilterVO>{};
+    vacation.employee = <EmployeeFilterVO>{};
+    //vacation.employee.employeeRegistration = search;
+    vacation.employee.name = search;
+    //vacation.employee.phoneNumber = search;
+    //vacation.employee.address = <AddressFilterVO>{};
+    //vacation.employee.address.street = search;
+    //vacation.employee.address.neighborhood = search;
+    //vacation.employee.address.city = search;
+    //vacation.employee.user = <UserFilterVO>{};
+    //vacation.employee.user.email = search;
+    vacation.employee.staff = <StaffFilterVO>{};
+    vacation.employee.staff.name = search;
     return vacation;
   }
 
-  protected getSearchByEntity(vacation: Vacation): string {
-    return super.buildMap(vacation).get('employee.id');
+  protected getSearchByFilter(vacation: VacationFilterVO): string {
+    return vacation.employee.name;
   }
 
   protected setSortFields(sortFields: Map<string, Direction>) {
     sortFields.set('startDate', undefined);
     sortFields.set('endDate', undefined);
-    sortFields.set('employee.id', undefined);
+    sortFields.set('employee.name', undefined);
+    sortFields.set('employee.staff.name', undefined);
   }
 
   protected delete$(vacation: Vacation): Observable<void> {

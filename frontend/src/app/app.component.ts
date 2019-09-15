@@ -8,8 +8,8 @@ import { AppEventsService, AlertMessage } from './shared/events.service';
 import { AuthService } from './shared/auth/auth.service';
 import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
-import { PageAndSort } from './shared/common/base-service';
 import { Direction } from './shared/model/vo/pagination/sort-vo';
+import { PageAndSortParams } from './shared/model/vo/page-params';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ import { Direction } from './shared/model/vo/pagination/sort-vo';
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {  
 
-  readonly queryParams = <PageAndSort>{
+  readonly queryParams = <PageAndSortParams>{
     page: 1, 
     itemsPerPage: 10,
     sort: 'id',

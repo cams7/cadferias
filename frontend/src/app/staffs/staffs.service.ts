@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 
 import { BaseService } from '../shared/common/base-service';
 import { Staff } from './../shared/model/staff';
 import { StaffFilterVO } from '../shared/model/vo/filter/staff-filter-vo';
+import { SearchBySelectVO } from '../shared/model/vo/search-by-select-vo';
+import { SortVO, Direction } from './../shared/model/vo/pagination/sort-vo';
 
 const STAFFS = 'staffs';
 @Injectable({
@@ -18,9 +20,15 @@ export class StaffsService extends BaseService<Staff, StaffFilterVO> {
     super(http, `${environment.API}${STAFFS}`);
   }
 
+  getOnlyStaffById$(id: number) {
+    return this.http.get<Staff>(`${this.API_URL}/only/${id}`);
+  }
+
   getByName$(name: string) {
-    return this.http.get<Staff[]>(`${environment.API}${STAFFS}`, { 
-      params: new HttpParams().append('name_like', name).append('_sort', 'name').append('_order', 'asc').append('_limit', "7") 
-    });
+    const search = <SearchBySelectVO>{};
+    search.searchValue = name;
+    search.sort = <SortVO>{property: 'name', direction: Direction.ASC};
+    search.size = this.searchSize;
+    return this.http.post<Staff[]>(`${this.API_URL}/searchByName`, search);
   }
 }
