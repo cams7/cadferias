@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
-import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
+import br.com.cams7.feriasfuncionarios.error.AppFieldErrorException;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.UserFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.UserRepository;
@@ -20,25 +19,23 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
  */
 @Service
 @Transactional
-public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity, Long, UserFilterVO> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity, Long, UserFilterVO>
+		implements UserService {
 
 	@Autowired
 	private EmployeeService employeeService;
 
 	@Override
-	public UserEntity create(UserEntity user) {
+	public UserEntity create(String prefix, UserEntity user) {
 
-		validateEmail(user);
+		validateEmail(prefix, user);
 
 		return super.create(user);
 	}
 
 	@Override
-	public UserEntity update(UserEntity user) {
-		if (user.getId() == null)
-			throw new InvalidDataException("O ID do usuário não foi informado");
-
-		validateEmail(user);
+	public UserEntity update(String prefix, UserEntity user) {
+		validateEmail(prefix, user);
 
 		return super.update(user);
 	}
@@ -50,19 +47,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity,
 
 	@Override
 	public void delete(Long userId, boolean deleteEmployee) {
-		if (!reporitory.existsById(userId))
-			throw new ResourceNotFoundException(String.format("Nenhum usuário foi encontrado pelo ID: %d", userId));
-
 		if (deleteEmployee) {
 			Long employeeId = reporitory.findEmployeeIdById(userId);
-			employeeService.delete(employeeId, false);
+			if (employeeId != null)
+				employeeService.delete(employeeId, false);
 		}
 
 		super.delete(userId);
-
 	}
 
-	private void validateEmail(UserEntity user) {
+	private void validateEmail(String prefix, UserEntity user) {
 		Long userId = user.getId();
 		String email = user.getEmail();
 
@@ -70,7 +64,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity,
 				: reporitory.existsByEmail(email);
 
 		if (registeredUser)
-			throw new InvalidDataException(String.format("O usuário \"%s\" já foi cadastrado anteriormente", email));
+			throw new AppFieldErrorException(prefix, getFieldError("email", email, "User.emailRegistered", email));
 
 	}
 

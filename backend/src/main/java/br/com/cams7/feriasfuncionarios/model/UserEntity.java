@@ -15,10 +15,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import br.com.cams7.feriasfuncionarios.common.Validations;
 import br.com.cams7.feriasfuncionarios.common.Views;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import io.swagger.annotations.ApiModel;
@@ -48,30 +51,30 @@ import lombok.ToString;
 @Entity
 @Table(name = "TB_USUARIO")
 public class UserEntity extends Auditable<Long> {
-	
+
 	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "User.withCreatedByAndLastModifiedBy";
 
 	@ApiModelProperty(notes = "Identificador único do usuário.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
+	@Null(groups = Validations.OnCreate.class, message = "{User.id.null}")
+	@NotNull(groups = Validations.OnUpdate.class, message = "{User.id.notNull}")
 	@Id
 	@SequenceGenerator(name = "SQ_USUARIO", sequenceName = "SQ_USUARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_USUARIO")
-	@Column(name = "ID_USUARIO", nullable = false)
+	@Column(name = "ID_USUARIO", nullable = false, updatable = false)
 	private Long id;
 
 	@ApiModelProperty(notes = "E-mail do usuário.", example = "usuario@teste.com", required = true, position = 6)
 	@JsonView(Views.Public.class)
-	@NotBlank
-	@Size(min = 3, max = 30)
-	@Email
-	@Column(name = "EMAIL")
+	@NotBlank(message = "{User.email.notBlank}")
+	@Size(min = 3, max = 30, message = "{User.email.size}")
+	@Email(message = "{User.email.email}")
+	@Column(name = "EMAIL", nullable = false)
 	private String email;
 
 	@ApiModelProperty(notes = "Senha do usuário.", example = "S&nh@123", required = true, position = 7)
 	@JsonView(Views.Public.class)
-	@NotBlank
-	@Size(min = 3, max = 30)
-	@Column(name = "SENHA")
+	@Column(name = "SENHA", nullable = false, length = 30)
 	private String password;
 
 	public UserEntity(Long id) {
@@ -83,7 +86,5 @@ public class UserEntity extends Auditable<Long> {
 //	@LazyToOne(LazyToOneOption.NO_PROXY)
 //	@OneToOne(mappedBy = "user", fetch = LAZY)
 //	private EmployeeEntity Employee;
-	
-	
 
 }

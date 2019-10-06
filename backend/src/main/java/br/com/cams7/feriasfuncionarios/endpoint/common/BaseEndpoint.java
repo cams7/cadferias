@@ -11,6 +11,7 @@ import java.io.Serializable;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import br.com.cams7.feriasfuncionarios.common.Validations;
 import br.com.cams7.feriasfuncionarios.common.Views;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchVO;
@@ -34,6 +36,7 @@ import io.swagger.annotations.ApiParam;
  * @author ceanm
  *
  */
+@Validated
 public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO> {
 
 	@Autowired
@@ -51,8 +54,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 	@JsonView(Views.Details.class)
 	@ResponseStatus(value = OK)
 	@PostMapping(path = "search")
-	public PageVO<E, ID> getBySearch(
-			@ApiParam("Filtro de busca informado.") @Valid @RequestBody SearchVO<F> search) {
+	public PageVO<E, ID> getBySearch(@ApiParam("Filtro de busca informado.") @Valid @RequestBody SearchVO<F> search) {
 		return service.getBySearch(search);
 	}
 
@@ -66,6 +68,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 
 	@ApiOperation("Cadastra uma nova entidade.")
 	@JsonView(Views.Details.class)
+	@Validated(Validations.OnCreate.class)
 	@ResponseStatus(value = CREATED)
 	@PostMapping
 	public E create(@ApiParam("Entidade informada.") @Valid @RequestBody E entity) {
@@ -74,6 +77,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 
 	@ApiOperation("Atualiza a entidade pelo ID.")
 	@JsonView(Views.Details.class)
+	@Validated(Validations.OnUpdate.class)
 	@ResponseStatus(value = OK)
 	@PutMapping
 	public E update(@ApiParam("Entidade informada.") @Valid @RequestBody E entity) {

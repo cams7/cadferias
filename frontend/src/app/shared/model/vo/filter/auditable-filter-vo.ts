@@ -9,3 +9,9 @@ export interface AuditableFilterVO {
     //Data da última alteração da entidade.
     lastModifiedDate: Date[];
 }
+
+export enum FilterType {
+    EMPLOYEE,
+    VACATION,
+    STAFF
+}

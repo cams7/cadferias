@@ -4,12 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { AppEventsService, AppEvent, AppEventFrom, AppEventType } from '../shared/events.service';
+import { EventsService } from '../shared/events.service';
+import { ErrorsService } from '../shared/errors.service';
+import { EventVO, EventFrom, EventType } from '../shared/model/vo/event-vo';
 import { ConfirmModalService } from './../shared/confirm-modal/confirm-modal.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from './../shared/common/base-form';
 import { User } from '../shared/model/user';
-
 
 @Component({
   selector: 'app-signin-modal',
@@ -21,11 +22,12 @@ export class SigninModalComponent extends BaseForm<User> {
   constructor(   
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: AppEventsService,
+    protected eventsService: EventsService,
+    protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super(route, eventsService, confirmModalService);
+    super(route, eventsService, errorsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -43,32 +45,34 @@ export class SigninModalComponent extends BaseForm<User> {
   }
 
   submit$() {
-    const user = <User>this.form.value;
+    if(this.form.status == 'VALID') {       
+      const user = <User>this.form.value;
 
-    this.authService.signIn$(user).pipe(
-      take(1)
-    ).subscribe(
-      user => console.log(`O usuário "${user.email}" foi autenticado com sucesso!!!`)
-    );
+      this.authService.signIn$(user).pipe(
+        take(1)
+      ).subscribe(
+        user => console.log(`O usuário "${user.email}" foi autenticado com sucesso!!!`)
+      );
 
-    this.authService.loggedIn$.pipe(
-      filter(loggedIn => loggedIn),
-      take(1)
-    ).subscribe(_ => {
-      this.eventsService.resetAllSearchs();
-      this.eventsService.addEvent(<AppEvent> {
-        from: AppEventFrom.SIGNIN_MODAL, 
-        type: AppEventType.MODAL_CONFIRM_AND_CLOSE
+      this.authService.loggedIn$.pipe(
+        filter(loggedIn => loggedIn),
+        take(1)
+      ).subscribe(_ => {
+        this.eventsService.resetAllSearchs();
+        this.eventsService.addEvent(<EventVO> {
+          from: EventFrom.SIGNIN_MODAL, 
+          type: EventType.MODAL_CONFIRM_AND_CLOSE
+        });
       });
-    });
+    }
 
     return EMPTY;
   }
   
   onClose() {
-    this.eventsService.addEvent(<AppEvent> {
-      from: AppEventFrom.SIGNIN_MODAL, 
-      type: AppEventType.MODAL_CLOSE
+    this.eventsService.addEvent(<EventVO> {
+      from: EventFrom.SIGNIN_MODAL, 
+      type: EventType.MODAL_CLOSE
     });
   }
 

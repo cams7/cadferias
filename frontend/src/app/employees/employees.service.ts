@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 
-import { StateVO } from './../shared/model/vo/state-vo';
-import { CityVO } from '../shared/model/vo/city-vo';
+import { StateVO } from '../shared/model/vo/address/state-vo';
+import { CityVO } from '../shared/model/vo/address/city-vo';
 import { UsersService } from './../users/users.service';
 import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';

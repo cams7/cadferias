@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AppEventsService, AppEvent, AppEventFrom, AppEventType } from '../events.service';
+import { EventsService } from '../events.service';
+import { EventVO, EventFrom, EventType } from '../model/vo/event-vo';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -14,23 +15,23 @@ export class ConfirmModalComponent implements OnInit {
   @Input() okTxt = 'Sim';
 
   constructor(
-    private eventsService: AppEventsService
+    private eventsService: EventsService
   ) { }
 
   ngOnInit() {
   }
 
   onConfirm() {
-    this.eventsService.addEvent(<AppEvent> {
-      from: AppEventFrom.CONFIRM_MODAL, 
-      type: AppEventType.MODAL_CONFIRM_AND_CLOSE
+    this.eventsService.addEvent(<EventVO> {
+      from: EventFrom.CONFIRM_MODAL, 
+      type: EventType.MODAL_CONFIRM_AND_CLOSE
     });
   }
 
   onClose() {
-    this.eventsService.addEvent(<AppEvent> {
-      from: AppEventFrom.CONFIRM_MODAL, 
-      type: AppEventType.MODAL_CLOSE
+    this.eventsService.addEvent(<EventVO> {
+      from: EventFrom.CONFIRM_MODAL, 
+      type: EventType.MODAL_CLOSE
     });
   }
 

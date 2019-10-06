@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
-import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
+import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
+import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.StaffEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.StaffFilterVO;
@@ -29,14 +29,9 @@ public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEnti
 
 	@Override
 	public void delete(Long staffId) {
-		if (!reporitory.existsById(staffId))
-			throw new ResourceNotFoundException(String.format("Nenhuma equipe foi encontrado pelo ID: %d", staffId));
-
 		long employeesTotal = employeeService.countByStaffId(staffId);
 		if (employeesTotal > 0)
-			throw new InvalidDataException(String.format(
-					"A equipe \"%d\" não pode ser removida por que essa tem \"%d\" funcionários cadastrados", staffId,
-					employeesTotal));
+			throw new AppInvalidDataException("Staff.haveEmployees", staffId, employeesTotal);
 
 		super.delete(staffId);
 	}
@@ -44,8 +39,8 @@ public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEnti
 	@Transactional(readOnly = true)
 	@Override
 	public StaffEntity geOnlyStaffById(Long id) {
-		return reporitory.findOnlyStaffById(id).orElseThrow(
-				() -> new ResourceNotFoundException(String.format("Nenhuma equipe foi encontrada pelo ID: %d", id)));
+		return reporitory.findOnlyStaffById(id)
+				.orElseThrow(() -> new AppResourceNotFoundException("Staff.notFound", id));
 	}
 
 	@Transactional(readOnly = true)

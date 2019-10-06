@@ -30,11 +30,4 @@ export class UsersService extends BaseService<User, UserFilterVO> {
     );*/
     return of("{\"id\": 1,\"email\": \"jorge78@teste.com\"}");
   }
-
-  isRegisteredEmail$(email: string) {
-    /*return this.http.get<User[]>(`${environment.API}${USERS}`, { params: new HttpParams().append('email', email) }).pipe<boolean>(
-      map(users => !!users && users.length > 0)
-    );*/
-    return of(true);
-  }
 }

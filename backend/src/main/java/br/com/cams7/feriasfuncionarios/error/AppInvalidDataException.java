@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @SuppressWarnings("serial")
 @ResponseStatus(BAD_REQUEST)
-public class InvalidDataException extends RuntimeException {
+public class AppInvalidDataException extends AppException {
 
-	public InvalidDataException(String message) {
-		super(message);
+	public AppInvalidDataException(String codeMessage, Object... args) {
+		super(codeMessage, args);
 	}
 
 }

@@ -13,5 +13,7 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseService;
  */
 public interface UserService extends BaseService<UserEntity, Long, UserFilterVO> {
 
+	UserEntity create(String prefix, UserEntity user);
+	UserEntity update(String prefix, UserEntity user);
 	void delete(Long userId, boolean deleteEmployee);
 }

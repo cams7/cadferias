@@ -5,45 +5,35 @@
             <div class="col-md-8 mb-3">
                 <label for="name" class="control-label">Nome</label>
                 <input id="name" type="text" class="form-control" formControlName="name" [ngClass]="classError('name')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('name')">
-                    Por favor, informe o nome do funcionário.
-                </div>          
+                <field-error-display fieldName="name" (validation)="validation=$event"></field-error-display>          
             </div>
             <div class="col-md-4 mb-3">
                 <label for="birthDate" class="control-label">Data de nascimento</label>
                 <input id="birthDate" type="text" class="form-control" formControlName="birthDate" [ngClass]="classError('birthDate')" 
                     bsDatepicker [bsConfig]="bsConfig">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('birthDate')">
-                    Por favor, informe a data de nascimento.
-                </div> 
+                <field-error-display fieldName="birthDate" (validation)="validation=$event"></field-error-display>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3" formGroupName="staff">
                 <label for="staffName" class="control-label">Equipe</label>
-                <ng-select id="staffName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('staff.id')"
+                <ng-select id="staffName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('staff')"
                     [items]="staffs$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackById" [typeahead]="staffName$"
                     [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
                     notFoundText="Nenhuma equipe foi encontrada" typeToSearchText="Informe o nome da equipe">
                 </ng-select>
-                <div class="invalid-feedback" *ngIf="hasRequiredError('staff.id')">
-                    Por favor, informe a equipe.
-                </div>
+                <field-error-display fieldName="staff" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="employeeRegistration" class="col-form-label">Matricula</label>
                 <input id="employeeRegistration" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control"  formControlName="employeeRegistration" [ngClass]="classError('employeeRegistration')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('employeeRegistration')">
-                    Por favor, informe a matricula.
-                </div>
+                <field-error-display fieldName="employeeRegistration" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="hiringDate" class="col-form-label">Data de contratação</label>
                 <input id="hiringDate" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control" formControlName="hiringDate"
                     bsDatepicker [bsConfig]="bsConfig" [isDisabled]="isRegistred" [ngClass]="classError('hiringDate')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('hiringDate')">
-                    Por favor, informe a data de contratação.
-                </div>
+                <field-error-display fieldName="hiringDate" (validation)="validation=$event"></field-error-display>
             </div>            
         </div>
     </fieldset>
@@ -53,17 +43,13 @@
             <div class="col-md-8 mb-3" formGroupName="user">
                 <label for="userEmail" class="control-label">E-mail</label>
                 <input id="userEmail" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control" formControlName="email" [ngClass]="classError('user.email')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('user.email')">
-                    Por favor, informe o e-mail.
-                </div>
+                <field-error-display fieldName="user.email" (validation)="validation=$event"></field-error-display>
             </div>            
             <div class="col-md-4 mb-3">
                 <label for="phoneNumber" class="control-label">Telefone</label>
                 <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" [ngClass]="classError('phoneNumber')"
                     telefone [textMask]="{mask: brazilMasks.telefone.textMaskFunction}">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('phoneNumber')">
-                    Por favor, informe o telefone.
-                </div>          
+                <field-error-display fieldName="phoneNumber" (validation)="validation=$event"></field-error-display>         
             </div>
         </div>  
     </fieldset>        
@@ -71,27 +57,21 @@
         <legend  class="w-auto">Endereço</legend>
         <div class="row">
             <div class="col-md-10 mb-3">
-                <label for="addressStreet" class="control-label">Rua</label>
+                <label for="addressStreet" class="control-label">Logradouro</label>
                 <input id="addressStreet" type="text" class="form-control" formControlName="street" [ngClass]="classError('address.street')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('address.street')">
-                    Por favor, informe a rua.
-                </div>          
+                <field-error-display fieldName="address.street" (validation)="validation=$event"></field-error-display>          
             </div>
             <div class="col-md-2 mb-3">
                 <label for="addressHouseNumber" class="control-label">Numero</label>
-                <input id="addressHouseNumber" type="text" class="form-control" formControlName="houseNumber" [ngClass]="classError('address.houseNumber')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('address.houseNumber')">
-                    Por favor, informe o número da residência.
-                </div>          
+                <input id="addressHouseNumber" type="text" class="form-control" formControlName="houseNumber" [ngClass]="classError('address.houseNumber')" numeric="number">
+                <field-error-display fieldName="address.houseNumber" (validation)="validation=$event"></field-error-display>          
             </div>
         </div>
         <div class="row">
             <div class="col-md-5 mb-3">
                 <label for="addressNeighborhood">Bairro</label>
                 <input id="addressNeighborhood" type="text" class="form-control" formControlName="neighborhood" [ngClass]="classError('address.neighborhood')">
-                <div class="invalid-feedback" *ngIf="hasRequiredError('address.neighborhood')">
-                    Por favor, informe o bairro.
-                </div>
+                <field-error-display fieldName="address.neighborhood" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="addressCity">Cidade</label>
@@ -99,9 +79,7 @@
                     [items]="cities$ | async" bindLabel="name" bindValue="name" [multiple]="false" [trackByFn]="trackById" [typeahead]="cityName$"
                     [openOnEnter]="false" notFoundText="Nenhuma cidade foi encontrada" typeToSearchText="Informe o nome da cidade">
                 </ng-select>
-                <div class="invalid-feedback" *ngIf="hasRequiredError('address.city')">
-                    Por favor, informe a cidade.
-                </div>
+                <field-error-display fieldName="address.city" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="addressState">Estado</label>
@@ -109,9 +87,7 @@
                     [items]="states$ | async" bindLabel="name" bindValue="acronym" [multiple]="false" [trackByFn]="trackByAcronym" [typeahead]="stateName$"
                     [openOnEnter]="false" notFoundText="Nenhum estado foi encontrado" typeToSearchText="Informe o nome do estado">
                 </ng-select>
-                <div class="invalid-feedback" *ngIf="hasRequiredError('address.state')">
-                    Por favor, informe o estado.
-                </div>
+                <field-error-display fieldName="address.state" (validation)="validation=$event"></field-error-display>
             </div>
         </div>
     </fieldset>

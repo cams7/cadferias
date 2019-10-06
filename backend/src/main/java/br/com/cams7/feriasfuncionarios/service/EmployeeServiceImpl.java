@@ -3,7 +3,6 @@
  */
 package br.com.cams7.feriasfuncionarios.service;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.error.InvalidDataException;
-import br.com.cams7.feriasfuncionarios.error.ResourceNotFoundException;
+import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
@@ -28,53 +26,28 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 @Transactional
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, EmployeeEntity, Long, EmployeeFilterVO>
 		implements EmployeeService {
+	
+	private static final String EMPLOYEE_PREFIX = "employee.";
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private StaffService staffService;
 
 	@Autowired
 	private VacationService vacationService;
 
 	@Override
 	public EmployeeEntity create(EmployeeEntity employee) {
-		if (employee.getHiringDate() == null)
-			throw new InvalidDataException("A data de contratação não foi informada");
+		UserEntity user = employee.getUser();
 
-		validateStaffId(employee);
+		userService.checkViolations(EMPLOYEE_PREFIX, user);
+
+		user.setPassword("12345");
+		employee.setUser(userService.create(EMPLOYEE_PREFIX, user));
 
 		final String EMPLOYEE_REGISTRATION = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
 		employee.setEmployeeRegistration(EMPLOYEE_REGISTRATION);
 
-		UserEntity user = employee.getUser();
-		user.setPassword("12345");
-		user = userService.create(user);
-		employee.setUser(user);
-
 		return super.create(employee);
-	}
-
-	@Override
-	public EmployeeEntity update(EmployeeEntity employee) {
-		Long employeeId = employee.getId();
-
-		if (employeeId == null)
-			throw new InvalidDataException("O ID do funcionário não foi informado");
-
-		validateStaffId(employee);
-
-		Long userId = reporitory.findUserIdById(employeeId);
-		employee.setUser(new UserEntity(userId));
-
-		String employeeRegistration = reporitory.findEmployeeRegistrationById(employeeId);
-		employee.setEmployeeRegistration(employeeRegistration);
-
-		LocalDate hiringDate = reporitory.findHiringDateById(employeeId);
-		employee.setHiringDate(hiringDate);
-
-		return super.update(employee);
 	}
 
 	@Override
@@ -84,13 +57,10 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 
 	@Override
 	public void delete(Long employeeId, boolean deleteUser) {
-		if (!reporitory.existsById(employeeId))
-			throw new ResourceNotFoundException(
-					String.format("Nenhum funcionário foi encontrado pelo ID: %d", employeeId));
-
 		if (deleteUser) {
 			Long userId = reporitory.findUserIdById(employeeId);
-			userService.delete(userId, false);
+			if (userId != null)
+				userService.delete(userId, false);
 		}
 
 		Long[] vacationIds = vacationService.getIdsByEmployeeId(employeeId);
@@ -99,16 +69,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 
 		super.delete(employeeId);
 
-	}
-
-	private void validateStaffId(EmployeeEntity employee) {
-		Long staffId = employee.getStaff().getId();
-
-		if (staffId == null)
-			throw new InvalidDataException("O ID da equipe não foi informado");
-
-		if (!staffService.existsById(staffId))
-			throw new ResourceNotFoundException(String.format("A equipe \"%d\" não esta cadastrada", staffId));
 	}
 
 	@Transactional(readOnly = true)
@@ -120,8 +80,10 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Transactional(readOnly = true)
 	@Override
 	public EmployeeEntity geOnlyEmployeeById(Long id) {
-		return reporitory.findOnlyEmployeeById(id).orElseThrow(() -> new ResourceNotFoundException(
-				String.format("Nenhum funcionário foi encontrada pelo ID: %d", id)));
+
+		return reporitory.findOnlyEmployeeById(id).orElseThrow(() -> {
+			return new AppResourceNotFoundException("Employee.notFound", id);
+		});
 	}
 
 	@Transactional(readOnly = true)

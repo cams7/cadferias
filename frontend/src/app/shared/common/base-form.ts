@@ -7,9 +7,11 @@ import { flatMap } from 'rxjs/operators';
 import { MASKS } from 'ng-brazil';
 
 import { Base, BR_DATE_FORMAT } from './base';
-import { AppEventsService } from '../events.service';
+import { EventsService } from '../events.service';
+import { ErrorsService } from '../errors.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { BaseEntity } from '../model/base-entity';
+import { FieldValidationVO } from './field-error-message/field-error-display.component';
 
 const DEBOUNCE_TIME = 500;
 export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {
@@ -21,9 +23,12 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     private _entity: E;
 
+    private _validation = new Map<string, boolean>();
+
     constructor(
         protected route: ActivatedRoute,
-        protected eventsService: AppEventsService,
+        protected eventsService: EventsService,
+        protected errorsService: ErrorsService,
         protected confirmModalService: ConfirmModalService
     ) { 
         super();
@@ -38,10 +43,9 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     onSubmit() {        
         this._submitted = true;
     
-        if (this.form.invalid || !(this.form.touched && this.form.dirty)) 
-          return;
-
         this.submit$().subscribe(entity => {
+            this._submitted = false;
+            this.errorsService.addError();
             this.form.markAsPristine();
             this.form.markAsUntouched();
 
@@ -60,29 +64,25 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
         );
     }
 
-    classError(fieldName: string) {
-        return { 'is-invalid': this._submitted && this.hasError(fieldName)};
+    classError(fieldNames: string | string[]) {
+        if(!this.submitted || !fieldNames)
+            return { 'is-invalid': false };
+        
+        if(typeof fieldNames == 'string')
+            return { 'is-invalid': this.hasError(fieldNames)};
+        
+        for(let fieldName in fieldNames)
+            if(this.hasError(fieldName))
+                return { 'is-invalid': true};        
     }
 
-    hasRequiredError(fieldName: string) {
-        return this.hasFieldError(fieldName, 'required');
-    }
-
-    hasEmailError(fieldName: string) {
-        return this.hasFieldError(fieldName, 'email');
-    }
-
-    hasFieldError(fieldName: string, typeError: string) {
-        return this.hasError(fieldName) && this.hasError(fieldName)[typeError];
+    private hasError(fieldName: string) {
+        return this._validation.size > 0 && this._validation.get(fieldName);
     }
 
     trackById(entity: BaseEntity) {
         return entity.id;
-    }
-
-    private hasError(field: string) {
-        return this.form.get(field).errors;
-    }
+    }    
 
     get submitted() {
         return this._submitted;
@@ -120,5 +120,9 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     get debounceTime() {
         return DEBOUNCE_TIME;
+    }
+
+    set validation(validation: FieldValidationVO) {
+        this._validation.set(validation.fieldName, validation.hasErros);
     }
 }

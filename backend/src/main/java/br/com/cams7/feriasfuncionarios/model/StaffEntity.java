@@ -17,10 +17,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import br.com.cams7.feriasfuncionarios.common.Validations;
 import br.com.cams7.feriasfuncionarios.common.Views;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import io.swagger.annotations.ApiModel;
@@ -55,17 +58,19 @@ public class StaffEntity extends Auditable<Long> {
 
 	@ApiModelProperty(notes = "Identificador único da equipe.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
+	@Null(groups = Validations.OnCreate.class, message = "{Staff.id.null}")
+	@NotNull(groups = Validations.OnUpdate.class, message = "{Staff.id.notNull}")
 	@Id
 	@SequenceGenerator(name = "SQ_EQUIPE", sequenceName = "SQ_EQUIPE", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_EQUIPE")
-	@Column(name = "ID_EQUIPE", nullable = false)
+	@Column(name = "ID_EQUIPE", nullable = false, updatable = false)
 	private Long id;
 
 	@ApiModelProperty(notes = "Nome da equipe.", example = "Equipe 1", required = true, position = 6)
 	@JsonView(Views.Public.class)
-	@NotBlank
-	@Size(min = 3, max = 30)
-	@Column(name = "NOME")
+	@NotBlank(message = "{Staff.name.notBlank}")
+	@Size(min = 3, max = 30, message = "{Staff.name.size}")
+	@Column(name = "NOME", nullable = false)
 	private String name;
 
 	@ApiModelProperty(notes = "Funcionários que pertence a equipe.", required = false, position = 7)

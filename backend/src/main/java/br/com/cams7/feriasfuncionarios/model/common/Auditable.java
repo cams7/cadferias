@@ -39,18 +39,18 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public abstract class Auditable<ID extends Serializable> extends SoftDeleteEntity<ID> {
-	
+
 	@ApiModelProperty(notes = "Usuário que criou a entidade.", required = false, position = 1)
 	@JsonView(Views.Details.class)
 	@CreatedBy
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "ID_USUARIO_CRIACAO", nullable = true)
+	@JoinColumn(name = "ID_USUARIO_CRIACAO", nullable = true, updatable = false)
 	private UserEntity createdBy;
 
 	@ApiModelProperty(notes = "Data de criação da entidade.", required = false, position = 2)
 	@JsonView(Views.Details.class)
 	@CreatedDate
-	@Column(name = "DATA_HORA_CRIACAO", nullable = false)
+	@Column(name = "DATA_HORA_CRIACAO", nullable = false, updatable = false)
 	private LocalDateTime createdDate;
 
 	@ApiModelProperty(notes = "Usuário que realizou a última alteração na entidade.", required = false, position = 3)

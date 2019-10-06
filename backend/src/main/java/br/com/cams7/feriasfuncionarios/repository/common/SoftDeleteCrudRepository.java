@@ -12,7 +12,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
-import br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
 
 /**
@@ -37,9 +36,6 @@ public interface SoftDeleteCrudRepository<E extends Auditable<ID>, ID extends Se
 
 	@Query("SELECT e FROM #{#entityName} e WHERE e.active = false")
 	Iterable<E> findInactive();
-
-	@Query("SELECT new br.com.cams7.feriasfuncionarios.model.vo.CreationAuditableVO(e.createdBy.id, e.createdDate) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
-	CreationAuditableVO findCreationAuditableById(ID id);
 
 	@Override
 	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.active = true")

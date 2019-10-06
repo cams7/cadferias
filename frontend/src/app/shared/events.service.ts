@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { AuditableFilterVO } from './model/vo/filter/auditable-filter-vo';
+import { EventVO } from './model/vo/event-vo';
+import { MessageType } from './model/vo/message/message-vo';
+import { AlertMessageVO } from './model/vo/message/alert-message-vo';
+import { AuditableFilterVO, FilterType } from './model/vo/filter/auditable-filter-vo';
 import { EmployeeFilterVO } from './model/vo/filter/employee-filter-vo';
 import { VacationFilterVO } from './model/vo/filter/vacation-filter-vo';
 import { StaffFilterVO } from './model/vo/filter/staff-filter-vo';
@@ -8,11 +11,11 @@ import { StaffFilterVO } from './model/vo/filter/staff-filter-vo';
 @Injectable({
   providedIn: 'root'
 })
-export class AppEventsService {
+export class EventsService {
 
   private filterSubject = new Map<FilterType, BehaviorSubject<any>>();
-  private eventSubject = new Subject<AppEvent>();
-  private alertSubject = new Subject<AlertMessage>();
+  private eventSubject = new Subject<EventVO>();
+  private alertSubject = new Subject<AlertMessageVO>();
 
   constructor() { 
     this.initSearchSubject();
@@ -59,7 +62,7 @@ export class AppEventsService {
     this.alertSubject.complete();
   }
   
-  addEvent(event: AppEvent) {
+  addEvent(event: EventVO) {
     this.eventSubject.next(event);
   }
 
@@ -68,23 +71,23 @@ export class AppEventsService {
   }
 
   addSuccessAlert(title: string, message: string, timeout?: number) {
-    this.addAlert(AlertType.SUCCESS, title, message, timeout);
+    this.addAlert(MessageType.SUCCESS, title, message, timeout);
   }
 
   addInfoAlert(title: string, message: string, timeout?: number) {
-    this.addAlert(AlertType.INFO, title, message, timeout);
+    this.addAlert(MessageType.INFO, title, message, timeout);
   }
 
   addWarningAlert(title: string, message: string, timeout?: number) {
-    this.addAlert(AlertType.WARNING, title, message, timeout);
+    this.addAlert(MessageType.WARNING, title, message, timeout);
   }
 
   addDangerAlert(title: string, message: string, timeout?: number) {
-    this.addAlert(AlertType.DANGER, title, message, timeout);
+    this.addAlert(MessageType.DANGER, title, message, timeout);
   }
 
-  private addAlert(type: AlertType, title: string, message: string, timeout?: number) {
-    const alert = <AlertMessage> {
+  private addAlert(type: MessageType, title: string, message: string, timeout?: number) {
+    const alert = <AlertMessageVO> {
       type: type,
       title: title,
       message: message,
@@ -96,39 +99,4 @@ export class AppEventsService {
   get alert$() {
     return this.alertSubject.asObservable();
   }
-}
-
-export enum FilterType {
-  EMPLOYEE,
-  VACATION,
-  STAFF
-}
-
-export interface AppEvent {
-  from: AppEventFrom,
-  type: AppEventType
-}
-
-export enum AppEventFrom {
-  CONFIRM_MODAL,
-  SIGNIN_MODAL
-}
-
-export enum AppEventType {
-  MODAL_CLOSE,
-  MODAL_CONFIRM_AND_CLOSE
-}
-
-export interface AlertMessage {
-  type: AlertType;
-  title: string;
-  message: string;  
-  timeout: number;
-}
-
-export enum AlertType {
-  SUCCESS='success',
-  INFO='info',
-  WARNING='warning',
-  DANGER='danger'
 }

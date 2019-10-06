@@ -4,22 +4,19 @@
             <div class="row">
                 <div class="col-md-8 mb-3" formGroupName="employee">
                     <label for="employeeName" class="control-label">Nome</label>
-                    <ng-select id="employeeName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('employee.id')"
+                    <ng-select id="employeeName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('employee')"
                         [items]="employees$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackById" [typeahead]="employeeName$"
                         [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
                         notFoundText="Nenhum funcionário foi encontrado" typeToSearchText="Informe o nome do funcionário">
                     </ng-select>
-                    <div class="invalid-feedback" *ngIf="hasRequiredError('employee.id')">
-                        Por favor, informe o funcionário.
-                    </div>     
+                    <field-error-display fieldName="employee" (validation)="validation=$event"></field-error-display>  
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="vacationDate" class="control-label">Data da férias</label>
-                    <input id="vacationDate" type="text" class="form-control" formControlName="vacationDate" [ngClass]="classError('vacationDate')" 
+                    <input id="vacationDate" type="text" class="form-control" formControlName="vacationDate" [ngClass]="classError(['startDate','endDate'])" 
                         bsDaterangepicker [bsConfig]="bsDaterangeConfig">
-                    <div class="invalid-feedback" *ngIf="hasRequiredError('vacationDate')">
-                        Por favor, informe a data inicial e final das férias.
-                    </div> 
+                    <field-error-display fieldName="startDate" (validation)="validation=$event"></field-error-display>
+                    <field-error-display fieldName="endDate" (validation)="validation=$event"></field-error-display>
                 </div>
             </div>
             <div class="row" formGroupName="employee">

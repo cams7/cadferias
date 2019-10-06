@@ -16,12 +16,16 @@ import { NgBrazil } from 'ng-brazil';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SortFieldDirective } from './common/sort-field.directive';
+import { FieldErrorDisplayComponent } from './common/field-error-message/field-error-display.component';
+import { NumericDirective } from './common/numeric-directive';
 
 @NgModule({
   declarations: [
     PageNotFoundComponent, 
     ConfirmModalComponent,
-    SortFieldDirective
+    SortFieldDirective,
+    FieldErrorDisplayComponent,
+    NumericDirective
   ],
   imports: [
     CommonModule, 
@@ -49,7 +53,9 @@ import { SortFieldDirective } from './common/sort-field.directive';
     NgSelectModule,
     TextMaskModule,
     NgBrazil,
-    SortFieldDirective    
+    SortFieldDirective,
+    FieldErrorDisplayComponent,
+    NumericDirective    
   ]
 })
 export class SharedModule {

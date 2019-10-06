@@ -1,22 +1,19 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, merge, of, Subject, forkJoin } from 'rxjs';
 import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, debounceTime, flatMap, tap } from 'rxjs/operators';
 
-import { NgBrazilValidators } from 'ng-brazil';
-
-import { AppEventsService } from './../../shared/events.service';
+import { EventsService } from './../../shared/events.service';
+import { ErrorsService } from 'src/app/shared/errors.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
-import { CityVO } from './../../shared/model/vo/city-vo';
-import { StateVO } from './../../shared/model/vo/state-vo';
+import { CityVO } from '../../shared/model/vo/address/city-vo';
+import { StateVO } from '../../shared/model/vo/address/state-vo';
 import { BaseForm } from './../../shared/common/base-form';
-import { UsersService } from './../../users/users.service';
 import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
 import { Employee } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
-import { User } from './../../shared/model/user';
 
 @Component({
   selector: 'app-employee-form',
@@ -37,37 +34,37 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: AppEventsService,
+    protected eventsService: EventsService,
+    protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
-    private usersService: UsersService,
     private staffsService: StaffsService,
     private employeesService: EmployeesService    
   ) { 
-    super(route, eventsService, confirmModalService);
+    super(route, eventsService, errorsService, confirmModalService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-
+    
     super.form = this.fb.group({
-      hiringDate: [super.getDate(<any>this.entity.hiringDate), Validators.required], 
-      //employeePhoto: [undefined, Validators.required],
-      employeeRegistration: [this.entity.employeeRegistration, Validators.required],
-      name: [this.entity.name, Validators.required],
-      birthDate: [super.getDate(<any>this.entity.birthDate), Validators.required],
-      phoneNumber: [this.entity.phoneNumber, [Validators.required, NgBrazilValidators.telefone]],
+      hiringDate: [super.getDate(<any>this.entity.hiringDate)], 
+      //employeePhoto: [undefined],
+      employeeRegistration: [this.entity.employeeRegistration],
+      name: [this.entity.name],
+      birthDate: [super.getDate(<any>this.entity.birthDate)],
+      phoneNumber: [this.entity.phoneNumber],
       address: this.fb.group({
-        street: [this.entity.address.street, Validators.required],
-        houseNumber: [this.entity.address.houseNumber, Validators.required],
-        neighborhood: [this.entity.address.neighborhood, Validators.required],
-        city: [this.entity.address.city, Validators.required],
-        state: [this.entity.address.state, Validators.required]
+        street: [this.entity.address.street],
+        houseNumber: [this.entity.address.houseNumber],
+        neighborhood: [this.entity.address.neighborhood],
+        city: [this.entity.address.city],
+        state: [this.entity.address.state]
       }),
       user: this.fb.group({
-        email: [this.entity.user.email, Validators.required]
+        email: [this.entity.user.email]
       }),
       staff: this.fb.group({
-        id: [this.entity.staff.id, Validators.required]
+        id: [this.entity.staff.id]
       })
     });
 
@@ -157,7 +154,8 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
     employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
     employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
-    employee.user.id = this.entity.user.id;
+    employee.user.id = this.userId;
+    employee.staff = this.staff;
     
     return this.employeesService.save$(employee).pipe(      
       tap(employee => {
@@ -167,6 +165,18 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
             this.eventsService.addSuccessAlert('Funcionário(a) cadastrado(a)!', `O(A) funcionário(a) "${employee.name}" foi cadastrado(a) com sucesso.`);  
       })
     ); 
+  }
+
+  get userId() {
+    return this.entity.user.id;
+  }
+
+  get staff() {
+    const employee = <Employee>this.form.value;
+    if(!employee.staff || !employee.staff.id)
+      return undefined;
+    
+    return employee.staff;
   }
 
   trackByAcronym(state: StateVO) {

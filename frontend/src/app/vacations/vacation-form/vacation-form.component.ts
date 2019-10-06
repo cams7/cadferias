@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Observable, merge, of } from 'rxjs';
 import { tap, filter, flatMap, map, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 
-import { AppEventsService } from './../../shared/events.service';
+import { EventsService } from './../../shared/events.service';
+import { ErrorsService } from 'src/app/shared/errors.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
 import { BaseForm } from './../../shared/common/base-form';
 import { EmployeesService } from './../../employees/employees.service';
@@ -25,21 +26,22 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: AppEventsService,
+    protected eventsService: EventsService,
+    protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService,
     private vacationsService: VacationsService
   ) { 
-    super(route, eventsService, confirmModalService);
+    super(route, eventsService, errorsService, confirmModalService);
   }
 
   ngOnInit() {
     super.ngOnInit();
 
     super.form = this.fb.group({
-      vacationDate: [this.vacationDate, Validators.required],
+      vacationDate: [this.vacationDate],
       employee: this.fb.group({
-        id: [this.entity.employee.id, Validators.required],
+        id: [this.entity.employee.id],
         employeeRegistration: [this.entity.employee.employeeRegistration],
         phoneNumber: [this.entity.employee.phoneNumber],
         user: this.fb.group({
@@ -82,28 +84,24 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   }
 
   private get vacationDate(): Date[] {
-    if (!this.entity.startDate || !this.entity.endDate)
-      return undefined;
+    const vacationDate: Date[] = [undefined, undefined];
+    if (!!this.entity.startDate)
+      vacationDate[0]= <Date>super.getDate(<any>this.entity.startDate);
 
-    return  [
-      <Date>super.getDate(<any>this.entity.startDate),
-      <Date>super.getDate(<any>this.entity.endDate)
-    ]
+    if (!!this.entity.endDate)
+    vacationDate[1]= <Date>super.getDate(<any>this.entity.endDate);
+
+    return vacationDate;
   }
 
   submit$() {
-    const vacationDate: Date[] = this.form.get('vacationDate').value;
-
     const vacation = <Vacation>this.form.value;       
-    vacation.startDate = <any>super.getFormattedDate(vacationDate[0]);
-    vacation.endDate = <any>super.getFormattedDate(vacationDate[1]);
+    vacation.startDate = this.startDate;
+    vacation.endDate = this.endDate;
     (<any>vacation).vacationDate = undefined; 
     vacation.id = this.entity.id;
-    vacation.employee.employeeRegistration = undefined;
-    vacation.employee.phoneNumber = undefined;
-    vacation.employee.user = undefined;
-    vacation.employee.staff = undefined;    
-
+    vacation.employee = this.employee;
+        
     return this.vacationsService.save$(vacation).pipe(
       tap(vacation => {
         if(this.isRegistred)
@@ -112,6 +110,37 @@ export class VacationFormComponent extends BaseForm<Vacation> {
             this.eventsService.addSuccessAlert('Férias cadastrada!', `A férias foi cadastrada com sucesso.`);  
       })
     );
+  }
+
+  get startDate(): Date {
+    const vacationDate: Date[] = this.form.get('vacationDate').value;
+    if(!vacationDate[0])
+      return undefined;
+
+    return <any>super.getFormattedDate(vacationDate[0]);
+  }
+
+  get endDate(): Date {
+    const vacationDate: Date[] = this.form.get('vacationDate').value;
+    if(!vacationDate[1])
+      return undefined;
+
+    return <any>super.getFormattedDate(vacationDate[1]);
+  }
+
+  get employee() {
+    const vacation = <Vacation>this.form.value;
+    const employee = vacation.employee;
+
+    if(!employee || !employee.id)
+      return undefined;
+    
+    employee.employeeRegistration = undefined;
+    employee.phoneNumber = undefined;
+    employee.user = undefined;
+    employee.staff = undefined;
+
+    return employee;
   }
 
   get employees$() {

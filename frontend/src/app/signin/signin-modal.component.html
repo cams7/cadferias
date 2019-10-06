@@ -9,15 +9,15 @@
           <form class="form-signin needs-validation" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">            
             <div class="input-group form-group">
               <label for="email" class="sr-only">E-mail</label>
-              <input formControlName="email" [ngClass]="classError('email')" type="email" id="email" class="form-control" placeholder="E-mail" autofocus>
-              <div class="invalid-feedback" *ngIf="hasRequiredError('email')" >
+              <input formControlName="email" [ngClass]="{'is-invalid': submitted && form.get('email').errors}" type="email" id="email" class="form-control" placeholder="E-mail" autofocus>
+              <div class="invalid-feedback" *ngIf="form.get('email').errors && form.get('email').errors['required']" >
                   Por favor, informe um e-mail.
               </div>             
             </div>
             <div class="input-group form-group">
               <label for="password" class="sr-only">Senha</label>
-              <input formControlName="password" [ngClass]="classError('password')" type="password" id="password" class="form-control" placeholder="Senha">
-              <div class="invalid-feedback" *ngIf="hasRequiredError('password')" >
+              <input formControlName="password" [ngClass]="{'is-invalid': submitted && form.get('password').errors}" type="password" id="password" class="form-control" placeholder="Senha">
+              <div class="invalid-feedback" *ngIf="form.get('password').errors && form.get('password').errors['required']" >
                   Por favor, informe uma senha.
               </div>
             </div>

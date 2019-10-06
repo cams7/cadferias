@@ -29,12 +29,17 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import br.com.cams7.feriasfuncionarios.common.Validations;
 import br.com.cams7.feriasfuncionarios.common.Views;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
+import br.com.cams7.feriasfuncionarios.model.validator.Phone;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
@@ -69,60 +74,65 @@ public class EmployeeEntity extends Auditable<Long> {
 
 	@ApiModelProperty(notes = "Identificador único do funcionário.", example = "1", required = true, position = 5)
 	@JsonView(Views.Public.class)
+	@Null(groups = Validations.OnCreate.class, message = "{Employee.id.null}")
+	@NotNull(groups = Validations.OnUpdate.class, message = "{Employee.id.notNull}")
 	@Id
 	@SequenceGenerator(name = "SQ_FUNCIONARIO", sequenceName = "SQ_FUNCIONARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_FUNCIONARIO")
-	@Column(name = "ID_FUNCIONARIO", nullable = false)
+	@Column(name = "ID_FUNCIONARIO", nullable = false, updatable = false)
 	private Long id;
 
 	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = true, position = 6)
 	@JsonView(Views.Public.class)
-	@NotNull
+	@NotNull(message = "{Employee.user.notNull}")
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "ID_USUARIO")
 	private UserEntity user;
 
 	@ApiModelProperty(notes = "Equipe a qual o funcionário é membro.", required = true, position = 7)
 	@JsonView(Views.Public.class)
-	@NotNull
+	@NotNull(message = "{Employee.staff.notNull}")
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "ID_EQUIPE")
 	private StaffEntity staff;
 
 	@ApiModelProperty(notes = "Data da contratação do funcionário.", example = "01/01/2019", required = true, position = 8)
 	@JsonView(Views.Public.class)
+	@PastOrPresent(message = "{Employee.hiringDate.pastOrPresent}")
+	@NotNull(message = "{Employee.hiringDate.notNull}")
 	@Column(name = "DATA_CONTRATACAO", nullable = false)
 	private LocalDate hiringDate;
 
 	@ApiModelProperty(notes = "Matricula do funcionário.", example = "123456789abc", required = true, position = 9)
 	@JsonView(Views.Public.class)
-	@Column(name = "MATRICULA", nullable = false, length = 20)
+	@Column(name = "MATRICULA", nullable = false, length = 20, updatable = false)
 	private String employeeRegistration;
 
 	@ApiModelProperty(notes = "Nome do funcionário.", example = "José Silva Pinheiro", required = true, position = 10)
 	@JsonView(Views.Public.class)
-	@NotBlank
-	@Size(min = 3, max = 50)
-	@Column(name = "NOME")
+	@NotBlank(message = "{Employee.name.notBlank}")
+	@Size(min = 3, max = 50, message = "{Employee.name.size}")
+	@Column(name = "NOME", nullable = false)
 	private String name;
 
 	@ApiModelProperty(notes = "Data de nascimento do funcionário.", example = "08/03/1984", required = true, position = 11)
 	@JsonView(Views.Public.class)
-	@NotNull
+	@Past(message = "{Employee.birthDate.past}")
+	@NotNull(message = "{Employee.birthDate.notNull}")
 	@Column(name = "DATA_NASCIMENTO")
 	private LocalDate birthDate;
 
 	@ApiModelProperty(notes = "Número de telefone do funcionário.", example = "3136457856", required = true, position = 12)
 	@JsonView(Views.Public.class)
-	@NotBlank
-	@Size(min = 10, max = 11)
-	@Column(name = "TELEFONE")
+	@Phone(message = "{Employee.phoneNumber.phone}")
+	@NotBlank(message = "{Employee.phoneNumber.notBlank}")
+	@Column(name = "TELEFONE", nullable = false)
 	private String phoneNumber;
 
 	@ApiModelProperty(notes = "Endereço do funcionário.", required = true, position = 13)
 	@JsonView(Views.Public.class)
 	@Valid
-	@NotNull
+	@NotNull(message = "{Employee.address.notNull}")
 	@Embedded
 	private Address address;
 
@@ -145,34 +155,34 @@ public class EmployeeEntity extends Auditable<Long> {
 
 		@ApiModelProperty(notes = "Rua onde onde residi o funcionário.", example = "Av. Francisco Sales", required = true, position = 0)
 		@JsonView(Views.Public.class)
-		@NotBlank
-		@Size(min = 3, max = 50)
+		@NotBlank(message = "{Employee.address.street.notBlank}")
+		@Size(min = 3, max = 50, message = "{Employee.address.street.size}")
 		@Column(name = "LOGRADOURO", length = 50, nullable = false)
 		private String street;
 
 		@ApiModelProperty(notes = "Número da residência do funcionário.", example = "123", required = true, position = 1)
 		@JsonView(Views.Public.class)
-		@NotNull
+		@NotNull(message = "{Employee.address.houseNumber.notNull}")
 		@Column(name = "NUMERO_RESIDENCIAL", nullable = false)
 		private Integer houseNumber;
 
 		@ApiModelProperty(notes = "Bairro onde onde residi o funcionário.", example = "Floresta", required = true, position = 2)
 		@JsonView(Views.Public.class)
-		@NotBlank
-		@Size(min = 3, max = 50)
+		@NotBlank(message = "{Employee.address.neighborhood.notBlank}")
+		@Size(min = 3, max = 50, message = "{Employee.address.neighborhood.size}")
 		@Column(name = "BAIRRO", length = 50, nullable = false)
 		private String neighborhood;
 
 		@ApiModelProperty(notes = "Cidade onde onde residi o funcionário.", example = "Belo Horizonte", required = true, position = 3)
 		@JsonView(Views.Public.class)
-		@NotBlank
-		@Size(min = 3, max = 30)
+		@NotBlank(message = "{Employee.address.city.notBlank}")
+		@Size(min = 3, max = 30, message = "{Employee.address.city.size}")
 		@Column(name = "CIDADE", length = 30, nullable = false)
 		private String city;
 
 		@ApiModelProperty(notes = "Estado onde onde residi o funcionário.", example = "MG", required = true, position = 4)
 		@JsonView(Views.Public.class)
-		@NotNull
+		@NotNull(message = "{Employee.address.state.notNull}")
 		@Column(name = "UF", nullable = false, columnDefinition = "CHAR(2)")
 		@Enumerated(STRING)
 		private State state;

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
 
-import { AppEventsService } from './../../shared/events.service';
+import { EventsService } from './../../shared/events.service';
+import { ErrorsService } from 'src/app/shared/errors.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
 import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from '../staffs.service';
@@ -19,18 +20,19 @@ export class StaffFormComponent extends BaseForm<Staff> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: AppEventsService,
+    protected eventsService: EventsService,
+    protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super(route, eventsService, confirmModalService);
+    super(route, eventsService, errorsService, confirmModalService);
   }
 
   ngOnInit() {
     super.ngOnInit();
 
     super.form = this.fb.group({
-      name: [this.entity.name, Validators.required]
+      name: [this.entity.name]
     });
   }
 

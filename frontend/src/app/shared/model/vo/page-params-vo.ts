@@ -1,11 +1,11 @@
 import { Direction } from './pagination/sort-vo';
 
-export interface PageParams {
+export interface PageParamsVO {
     page: number; 
     itemsPerPage: number;   
 }
 
-export interface PageAndSortParams extends PageParams  {
+export interface PageAndSortParamsVO extends PageParamsVO  {
     sort: string;
     order: Direction    
 }

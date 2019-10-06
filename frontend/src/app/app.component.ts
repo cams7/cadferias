@@ -4,12 +4,15 @@ import { Subscription } from 'rxjs';
 
 import * as $ from 'jquery';
 
-import { AppEventsService, AlertMessage } from './shared/events.service';
+import { EventsService } from './shared/events.service';
+import { AlertMessageVO } from './shared/model/vo/message/alert-message-vo';
+import { ErrorsService } from './shared/errors.service';
 import { AuthService } from './shared/auth/auth.service';
 import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
 import { Direction } from './shared/model/vo/pagination/sort-vo';
-import { PageAndSortParams } from './shared/model/vo/page-params';
+import { PageAndSortParamsVO } from './shared/model/vo/page-params-vo';
+import { MessageType } from './shared/model/vo/message/message-vo';
 
 @Component({
   selector: 'app-root',
@@ -18,14 +21,14 @@ import { PageAndSortParams } from './shared/model/vo/page-params';
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {  
 
-  readonly queryParams = <PageAndSortParams>{
+  readonly queryParams = <PageAndSortParamsVO>{
     page: 1, 
     itemsPerPage: 10,
     sort: 'id',
     order: Direction.DESC
   };
 
-  private _alerts: AlertMessage[] = [];
+  private _alerts: AlertMessageVO[] = [];
   private subscriptions: Subscription[] = [];
 
   private _loading: ElementRef;
@@ -36,7 +39,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private renderer: Renderer2,
     private router: Router,
-    private eventsService: AppEventsService,
+    private eventsService: EventsService,
+    private errorsService: ErrorsService,
     private authService: AuthService,
     private httpIndicatorService: HttpIndicatorService,
     private signinService: SigninService
@@ -48,6 +52,24 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.eventsService.resetAllSearchs();
 
     this.subscriptions.push(
+      this.errorsService.erros$.subscribe(error => {
+        switch (error.type) {
+          case MessageType.DANGER:
+            this.eventsService.addDangerAlert(error.title, error.message);
+            break;
+          case MessageType.WARNING:
+            this.eventsService.addWarningAlert(error.title, error.message);
+            break;
+          case MessageType.SUCCESS:
+            this.eventsService.addSuccessAlert(error.title, error.message);
+            break;
+          case MessageType.INFO:
+            this.eventsService.addInfoAlert(error.title, error.message);
+            break;
+          default:
+            break;
+        }
+      }),
       this.eventsService.alert$.subscribe(alert => {
         this._alerts.push(alert);
         this.scrollToTop();
@@ -71,6 +93,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.authService.signOut();
     this.eventsService.endAllEvents();
+    this.errorsService.end();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
@@ -94,7 +117,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     return baseUrl === url;
   }
 
-  onClosed(dismissedAlert: AlertMessage) {
+  onClosed(dismissedAlert: AlertMessageVO) {
     this._alerts = this._alerts.filter(alert => alert !== dismissedAlert);
   }
 

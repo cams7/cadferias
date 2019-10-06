@@ -4,12 +4,13 @@ import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 
-import { AppEventsService, FilterType } from './../../shared/events.service';
+import { EventsService } from './../../shared/events.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
 import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
 import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
 import { Vacation } from './../../shared/model/vacation';
+import { FilterType } from 'src/app/shared/model/vo/filter/auditable-filter-vo';
 import { VacationFilterVO } from 'src/app/shared/model/vo/filter/vacation-filter-vo';
 import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
@@ -27,7 +28,7 @@ export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> 
     protected route: ActivatedRoute,
     protected router: Router,
     protected fb: FormBuilder,
-    protected eventsService: AppEventsService,
+    protected eventsService: EventsService,
     protected confirmModalService: ConfirmModalService,
     private vacationsService: VacationsService
   ) { 
