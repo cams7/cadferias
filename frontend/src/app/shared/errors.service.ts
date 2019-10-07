@@ -165,9 +165,14 @@ export class ErrorsService {
     this.errorSubject.complete();
   }
 
-  getFieldErrors$(field: string) {
+  getFieldErrors$(fieldName: string | string[]) {
     return this.errorSubject.pipe(
-      map(error => error && !!error['errors'] ? (<FieldValidationErrorVO>error).errors.filter(error => error.field == field): [])
+      map(error => error && !!error['errors'] ? (<FieldValidationErrorVO>error).errors.filter(error => {
+        if(typeof fieldName == 'string')
+          return error.field == fieldName;
+
+        return fieldName.some(field => error.field == field);
+      }): [])
     );
   }
 

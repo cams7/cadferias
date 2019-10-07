@@ -10,6 +10,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import java.time.Instant;
 import java.util.Arrays;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -111,8 +113,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.badRequest().body(details);
 	}
 
-	@ExceptionHandler(AppConstraintViolationException.class)
-	public ResponseEntity<?> handleFieldValidationErrorException(AppConstraintViolationException exception) {
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<?> handleFieldValidationErrorException(ConstraintViolationException exception) {
 
 		// @formatter:off
 		FieldValidationErrorVO details = FieldValidationErrorVO.builder()
@@ -127,13 +129,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.exceptionMessage(exception.getMessage())
 				.path(null)
 				.errors(exception.getConstraintViolations().stream().map(violation -> {
-					String objectName =  getObjectNameWithPrefix(exception.getPrefix(), Utils.getEntityName(violation.getLeafBean().getClass().getSimpleName()));
 					return FieldErrorVO.builder()
 							.codes(null)
 							.arguments(null)
 							.defaultMessage(violation.getMessage())
-							.objectName(objectName)
-							.field(getFieldWithObjectName(objectName, violation.getPropertyPath().toString()))
+							.objectName(Utils.getEntityName(violation.getLeafBean().getClass().getSimpleName()))
+							.field(getField(violation.getPropertyPath().toString()))
 							.rejectedValue(violation.getInvalidValue())
 							.bindingFailure(false)
 							.code(null)

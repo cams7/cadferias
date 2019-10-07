@@ -6,18 +6,12 @@ package br.com.cams7.feriasfuncionarios.service.common;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import br.com.cams7.feriasfuncionarios.common.Utils;
-import br.com.cams7.feriasfuncionarios.error.AppConstraintViolationException;
 import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.error.vo.FieldValidationErrorVO.FieldErrorVO;
@@ -42,9 +36,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 
 	@Autowired
 	private MessageSource messageSource;
-
-	@Autowired
-	private LocalValidatorFactoryBean validator;
 
 	@Autowired
 	protected R reporitory;
@@ -101,13 +92,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 		@SuppressWarnings("unchecked")
 		PageVO<E, ID> page = reporitory.findBySearch((SearchVO<AuditableFilterVO>) search);
 		return page;
-	}
-
-	@Override
-	public void checkViolations(String prefix, E entity) {
-		Set<ConstraintViolation<E>> violations = validator.validate(entity);
-		if (CollectionUtils.isNotEmpty(violations))
-			throw new AppConstraintViolationException(prefix, violations);
 	}
 
 	private String getMessage(String codeMessage, Object... args) {

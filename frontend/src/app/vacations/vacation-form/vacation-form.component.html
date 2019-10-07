@@ -15,8 +15,7 @@
                     <label for="vacationDate" class="control-label">Data da férias</label>
                     <input id="vacationDate" type="text" class="form-control" formControlName="vacationDate" [ngClass]="classError(['startDate','endDate'])" 
                         bsDaterangepicker [bsConfig]="bsDaterangeConfig">
-                    <field-error-display fieldName="startDate" (validation)="validation=$event"></field-error-display>
-                    <field-error-display fieldName="endDate" (validation)="validation=$event"></field-error-display>
+                    <field-error-display [fieldName]="['startDate','endDate']" (validation)="validation=$event"></field-error-display>
                 </div>
             </div>
             <div class="row" formGroupName="employee">

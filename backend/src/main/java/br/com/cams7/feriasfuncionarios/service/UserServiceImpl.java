@@ -22,15 +22,26 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity, Long, UserFilterVO>
 		implements UserService {
 
+	private static final String FIELD_EMAIL = "email";
+
 	@Autowired
 	private EmployeeService employeeService;
 
 	@Override
-	public UserEntity create(String prefix, UserEntity user) {
+	public UserEntity create(UserEntity entity) {
+		return this.create(null, entity);
+	}
 
+	@Override
+	public UserEntity create(String prefix, UserEntity user) {
 		validateEmail(prefix, user);
 
 		return super.create(user);
+	}
+
+	@Override
+	public UserEntity update(UserEntity entity) {
+		return this.update(null, entity);
 	}
 
 	@Override
@@ -64,7 +75,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity,
 				: reporitory.existsByEmail(email);
 
 		if (registeredUser)
-			throw new AppFieldErrorException(prefix, getFieldError("email", email, "User.emailRegistered", email));
+			throw new AppFieldErrorException(prefix, getFieldError(FIELD_EMAIL, email, "User.emailRegistered", email));
 
 	}
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil, shareReplay, tap } from 'rxjs/operators';
 import { ErrorsService } from '../../errors.service';
 import { FieldErrorVO } from '../../model/vo/error/field-validation-error-vo';
@@ -11,7 +11,7 @@ import { FieldErrorVO } from '../../model/vo/error/field-validation-error-vo';
 })
 export class FieldErrorDisplayComponent implements OnInit, OnDestroy {
     
-  @Input() fieldName: string;
+  @Input() fieldName: string | string[];
   @Output() validation = new EventEmitter();
 
   private endSubject = new Subject<boolean>();
@@ -24,10 +24,12 @@ export class FieldErrorDisplayComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._errors$ = this.errorsService.getFieldErrors$(this.fieldName).pipe(
       tap(errors => {
-        const validation = <FieldValidationVO>{};
-        validation.fieldName = this.fieldName;
-        validation.hasErros = errors && errors.length > 0;
-        this.validation.emit(validation);
+        if(typeof this.fieldName == 'string')
+          this.validationEmit(errors, this.fieldName);
+        else
+          this.fieldName.filter(fieldName => errors.some(error => error.field == fieldName)).forEach(fieldName => {
+            this.validationEmit(errors.filter(error => error.field == fieldName), fieldName);
+          });
       }),
       takeUntil(this.end$),
       shareReplay()
@@ -37,6 +39,14 @@ export class FieldErrorDisplayComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.endSubject.next(true);
     this.endSubject.complete();
+  }
+
+  private validationEmit(fieldErrors: FieldErrorVO[], fieldName: string) {
+    const errors = !!fieldErrors ? fieldErrors.filter(error => error.field == fieldName): [];
+    const validation = <FieldValidationVO>{};
+    validation.fieldName = fieldName;
+    validation.hasErros = errors.length > 0;
+    this.validation.emit(validation);
   }
 
   private get end$() {

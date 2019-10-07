@@ -84,6 +84,7 @@ public class EmployeeEntity extends Auditable<Long> {
 
 	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = true, position = 6)
 	@JsonView(Views.Public.class)
+	@Valid
 	@NotNull(message = "{Employee.user.notNull}")
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "ID_USUARIO")

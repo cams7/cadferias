@@ -26,7 +26,7 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 @Transactional
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, EmployeeEntity, Long, EmployeeFilterVO>
 		implements EmployeeService {
-	
+
 	private static final String EMPLOYEE_PREFIX = "employee.";
 
 	@Autowired
@@ -38,8 +38,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Override
 	public EmployeeEntity create(EmployeeEntity employee) {
 		UserEntity user = employee.getUser();
-
-		userService.checkViolations(EMPLOYEE_PREFIX, user);
 
 		user.setPassword("12345");
 		employee.setUser(userService.create(EMPLOYEE_PREFIX, user));

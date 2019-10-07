@@ -31,6 +31,4 @@ public interface BaseService<E extends Auditable<ID>, ID extends Serializable, F
 	void deleteAllById(Iterable<ID> ids);
 
 	PageVO<E, ID> getBySearch(SearchVO<F> search);
-
-	void checkViolations(String prefix, E entity);
 }
