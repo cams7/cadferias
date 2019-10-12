@@ -23,8 +23,10 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import br.com.cams7.feriasfuncionarios.common.Validations;
-import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.common.Validations.OnCreate;
+import br.com.cams7.feriasfuncionarios.common.Validations.OnUpdate;
+import br.com.cams7.feriasfuncionarios.common.Views.Details;
+import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -53,13 +55,13 @@ import lombok.ToString;
 @Entity
 @Table(name = "TB_EQUIPE")
 public class StaffEntity extends Auditable<Long> {
-	
+
 	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "Staff.withCreatedByAndLastModifiedBy";
 
 	@ApiModelProperty(notes = "Identificador único da equipe.", example = "1", required = true, position = 5)
-	@JsonView(Views.Public.class)
-	@Null(groups = Validations.OnCreate.class, message = "{Staff.id.null}")
-	@NotNull(groups = Validations.OnUpdate.class, message = "{Staff.id.notNull}")
+	@JsonView(Public.class)
+	@Null(groups = OnCreate.class, message = "{Staff.id.null}")
+	@NotNull(groups = OnUpdate.class, message = "{Staff.id.notNull}")
 	@Id
 	@SequenceGenerator(name = "SQ_EQUIPE", sequenceName = "SQ_EQUIPE", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_EQUIPE")
@@ -67,14 +69,14 @@ public class StaffEntity extends Auditable<Long> {
 	private Long id;
 
 	@ApiModelProperty(notes = "Nome da equipe.", example = "Equipe 1", required = true, position = 6)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@NotBlank(message = "{Staff.name.notBlank}")
 	@Size(min = 3, max = 30, message = "{Staff.name.size}")
 	@Column(name = "NOME", nullable = false)
 	private String name;
 
 	@ApiModelProperty(notes = "Funcionários que pertence a equipe.", required = false, position = 7)
-	@JsonView(Views.Details.class)
+	@JsonView(Details.class)
 	@OneToMany(mappedBy = "staff")
 	private Collection<EmployeeEntity> employees;
 

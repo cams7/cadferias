@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label for="employeeRegistration" class="col-form-label">Matricula</label>
-                <input id="employeeRegistration" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control"  formControlName="employeeRegistration" [ngClass]="classError('employeeRegistration')">
+                <input id="employeeRegistration" type="text" readonly=true [class.form-control-plaintext]="isRegistred" class="form-control"  formControlName="employeeRegistration" [ngClass]="classError('employeeRegistration')">
                 <field-error-display fieldName="employeeRegistration" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">

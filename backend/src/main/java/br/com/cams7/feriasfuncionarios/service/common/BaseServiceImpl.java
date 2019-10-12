@@ -6,15 +6,21 @@ package br.com.cams7.feriasfuncionarios.service.common;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.common.Utils;
 import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
-import br.com.cams7.feriasfuncionarios.error.vo.FieldValidationErrorVO.FieldErrorVO;
+import br.com.cams7.feriasfuncionarios.error.vo.ConstraintViolationWithPrefixVO;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.AuditableFilterVO;
@@ -34,8 +40,9 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	private static final int ID_INDEX = 2;
 	private static final int FILTER_INDEX = 3;
 
+
 	@Autowired
-	private MessageSource messageSource;
+	private ValidatorFactory validatorFactory;
 
 	@Autowired
 	protected R reporitory;
@@ -94,9 +101,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 		return page;
 	}
 
-	private String getMessage(String codeMessage, Object... args) {
-		return Utils.getMessage(messageSource, codeMessage, args);
-	}
 
 	protected Class<R> getRepositoryType() {
 		@SuppressWarnings("unchecked")
@@ -126,19 +130,16 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 		return ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
 	}
 
-	protected FieldErrorVO getFieldError(String field, Object value, String codeMessage, Object... args) {
-		// @formatter:off
-		return FieldErrorVO.builder()
-				.codes(null)
-				.arguments(null)
-				.defaultMessage(getMessage(codeMessage, args))
-				.objectName(Utils.getEntityName(getEntityType().getSimpleName()))
-				.field(field)
-				.rejectedValue(value)
-				.bindingFailure(false)
-				.code(null)
-				.build();
-		// @formatter:on
+
+	protected void validateField(final String prefix, String fieldName, Object fieldValue, Class<?> validationType) {
+		Validator validator = this.validatorFactory.getValidator();
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		Set<ConstraintViolation<E>> constraintViolations = validator
+				.validateValue(getEntityType(), fieldName, fieldValue, validationType).stream()
+				.map(constraintViolation -> new ConstraintViolationWithPrefixVO(prefix, constraintViolation))
+				.collect(Collectors.toSet());
+		if (constraintViolations.size() > 0)
+			throw new ConstraintViolationException(constraintViolations);
 	}
 
 }

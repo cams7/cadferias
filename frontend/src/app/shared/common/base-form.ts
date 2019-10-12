@@ -27,7 +27,6 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     constructor(
         protected route: ActivatedRoute,
-        protected eventsService: EventsService,
         protected errorsService: ErrorsService,
         protected confirmModalService: ConfirmModalService
     ) { 
@@ -40,14 +39,18 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     abstract submit$(): Observable<E>;
 
-    onSubmit() {        
+    onSubmit() {   
+        if ((this._submitted || this.isRegistred) && !(this.form.touched && this.form.dirty))
+          return; 
+          
         this._submitted = true;
-    
+
+        this.form.markAsUntouched();
+        this.form.markAsPristine();       
+        
         this.submit$().subscribe(entity => {
             this._submitted = false;
             this.errorsService.addError();
-            this.form.markAsPristine();
-            this.form.markAsUntouched();
 
             if(!this.isRegistred)
                 this._entity = entity;
@@ -55,11 +58,11 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     } 
     
     unchangedData$(): Observable<boolean> {
-        return of(!this.form || !(this.form.touched && this.form.dirty)).pipe(
+        return of(!this.submitted).pipe(
             flatMap(unchanged => {
                 if(unchanged)
                     return of(true);
-                return this.confirmModalService.showConfirm$('Sair da página','Os dados do formulário foram modificados, você deseja realmente sair dessa página?');
+                return this.confirmModalService.showConfirm$('Sair da página','Os dados do formulário não foram registrados, você realmente deseja sair dessa página?');
             })
         );
     }

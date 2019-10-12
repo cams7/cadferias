@@ -21,8 +21,10 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import br.com.cams7.feriasfuncionarios.common.Validations;
-import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.common.Validations.EmailRegistered;
+import br.com.cams7.feriasfuncionarios.common.Validations.OnCreate;
+import br.com.cams7.feriasfuncionarios.common.Validations.OnUpdate;
+import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -55,9 +57,9 @@ public class UserEntity extends Auditable<Long> {
 	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "User.withCreatedByAndLastModifiedBy";
 
 	@ApiModelProperty(notes = "Identificador único do usuário.", example = "1", required = true, position = 5)
-	@JsonView(Views.Public.class)
-	@Null(groups = Validations.OnCreate.class, message = "{User.id.null}")
-	@NotNull(groups = Validations.OnUpdate.class, message = "{User.id.notNull}")
+	@JsonView(Public.class)
+	@Null(groups = OnCreate.class, message = "{User.id.null}")
+	@NotNull(groups = OnUpdate.class, message = "{User.id.notNull}")
 	@Id
 	@SequenceGenerator(name = "SQ_USUARIO", sequenceName = "SQ_USUARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_USUARIO")
@@ -65,7 +67,8 @@ public class UserEntity extends Auditable<Long> {
 	private Long id;
 
 	@ApiModelProperty(notes = "E-mail do usuário.", example = "usuario@teste.com", required = true, position = 6)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
+	@NotBlank(message = "{User.email.registered}", groups = EmailRegistered.class)
 	@NotBlank(message = "{User.email.notBlank}")
 	@Size(min = 3, max = 30, message = "{User.email.size}")
 	@Email(message = "{User.email.email}")
@@ -73,7 +76,7 @@ public class UserEntity extends Auditable<Long> {
 	private String email;
 
 	@ApiModelProperty(notes = "Senha do usuário.", example = "S&nh@123", required = true, position = 7)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@Column(name = "SENHA", nullable = false, length = 30)
 	private String password;
 

@@ -26,13 +26,13 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: EventsService,
+    private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService,
     private vacationsService: VacationsService
   ) { 
-    super(route, eventsService, errorsService, confirmModalService);
+    super(route, errorsService, confirmModalService);
   }
 
   ngOnInit() {

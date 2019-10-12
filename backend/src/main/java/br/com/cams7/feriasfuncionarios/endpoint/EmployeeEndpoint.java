@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.endpoint.common.BaseEndpoint;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiParam;
 public class EmployeeEndpoint extends BaseEndpoint<EmployeeService, EmployeeEntity, Long, EmployeeFilterVO> {
 
 	@ApiOperation("Busca o funcionário pelo ID.")
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@ResponseStatus(value = OK)
 	@GetMapping(path = "only/{id}")
 	public EmployeeEntity geOnlyEmployeeById(@ApiParam("ID da equipe.") @PathVariable Long id) {
@@ -45,7 +45,7 @@ public class EmployeeEndpoint extends BaseEndpoint<EmployeeService, EmployeeEnti
 	}
 
 	@ApiOperation("Carrega os funcionários pelo filtro de busca do select.")
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@ResponseStatus(value = OK)
 	@PostMapping(path = "searchByName")
 	public Iterable<EmployeeEntity> getByName(

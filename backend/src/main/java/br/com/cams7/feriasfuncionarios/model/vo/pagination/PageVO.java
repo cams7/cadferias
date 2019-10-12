@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,23 +30,23 @@ import lombok.ToString;
 public class PageVO<E extends Auditable<ID>, ID extends Serializable> extends PageInputVO {
 
 	@ApiModelProperty(notes = "Conteúdo da página atual.", required = true, position = 0)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	private Iterable<E> content;
 
 	@ApiModelProperty(notes = "Total de elementos da página atual.", required = true, position = 1)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	private Integer numberOfElements;
 
 	@ApiModelProperty(notes = "Número total de páginas.", required = true, position = 2)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	private Integer totalPages;
 
 	@ApiModelProperty(notes = "É a primeira página.", required = true, position = 3)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	private Boolean first;
 
 	@ApiModelProperty(notes = "É a última página.", required = true, position = 4)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	private Boolean last;
 
 	public PageVO(Integer pageNumber, Integer size, Iterable<E> content, Long totalElements, Boolean changedQuery,

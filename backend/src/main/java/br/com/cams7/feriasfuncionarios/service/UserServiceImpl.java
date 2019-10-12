@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.error.AppFieldErrorException;
+import br.com.cams7.feriasfuncionarios.common.Validations.EmailRegistered;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.UserFilterVO;
 import br.com.cams7.feriasfuncionarios.repository.UserRepository;
@@ -74,9 +74,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity,
 		boolean registeredUser = userId != null ? reporitory.existsByEmail(userId, email)
 				: reporitory.existsByEmail(email);
 
-		if (registeredUser)
-			throw new AppFieldErrorException(prefix, getFieldError(FIELD_EMAIL, email, "User.emailRegistered", email));
-
+		validateField(prefix, FIELD_EMAIL, !registeredUser ? email : null, EmailRegistered.class);
 	}
 
 }

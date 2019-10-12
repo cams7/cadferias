@@ -20,12 +20,12 @@ export class StaffFormComponent extends BaseForm<Staff> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: EventsService,
+    private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super(route, eventsService, errorsService, confirmModalService);
+    super(route, errorsService, confirmModalService);
   }
 
   ngOnInit() {

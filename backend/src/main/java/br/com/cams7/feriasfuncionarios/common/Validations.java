@@ -14,4 +14,8 @@ public final class Validations {
 
 	public static interface OnUpdate {
 	}
+
+	public static interface EmailRegistered {
+
+	}
 }

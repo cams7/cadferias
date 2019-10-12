@@ -65,8 +65,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		if (vacationIds.length > 0)
 			vacationService.deleteAllById(Arrays.asList(vacationIds));
 
-		super.delete(employeeId);
-
+		super.delete(employeeId);		
 	}
 
 	@Transactional(readOnly = true)

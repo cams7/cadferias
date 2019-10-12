@@ -34,13 +34,13 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
-    protected eventsService: EventsService,
+    private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService,
     private employeesService: EmployeesService    
   ) { 
-    super(route, eventsService, errorsService, confirmModalService);
+    super(route, errorsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -161,8 +161,10 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
       tap(employee => {
         if(this.isRegistred)
             this.eventsService.addSuccessAlert('Funcionário(a) atualizado(a)!', `Os dados do(a) funcionário(a) "${employee.name}" foram atualizados com sucesso.`);
-        else
+        else {
+            this.form.patchValue({employeeRegistration: employee.employeeRegistration});
             this.eventsService.addSuccessAlert('Funcionário(a) cadastrado(a)!', `O(A) funcionário(a) "${employee.name}" foi cadastrado(a) com sucesso.`);  
+        }
       })
     ); 
   }

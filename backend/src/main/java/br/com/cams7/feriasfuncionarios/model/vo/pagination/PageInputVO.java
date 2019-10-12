@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import br.com.cams7.feriasfuncionarios.common.Views;
+import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -24,27 +24,27 @@ public class PageInputVO {
 	public static final int DEFAULT_SIZE = 10;
 
 	@ApiModelProperty(notes = "Número da página atual.", required = true, position = 0)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@NotNull
 	private Integer pageNumber;
 
 	@ApiModelProperty(notes = "Número máximo de elementos que será exibidos na página atual.", required = true, position = 1)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@NotNull
 	private Integer size;
 
 	@ApiModelProperty(notes = "Número de elementos retornados após a consulta.", required = true, position = 2)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@NotNull
 	private Long totalElements;
 
 	@ApiModelProperty(notes = "O filtro da consulta foi alterado.", required = true, position = 3)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@NotNull
 	private Boolean changedQuery;
 
 	@ApiModelProperty(notes = "Consulta ordenada pelos campos informados.", required = true, position = 4)
-	@JsonView(Views.Public.class)
+	@JsonView(Public.class)
 	@Valid
 	@NotNull
 	@Size(min = 1)

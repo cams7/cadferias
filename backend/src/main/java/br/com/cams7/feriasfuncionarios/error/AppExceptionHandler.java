@@ -10,8 +10,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import java.time.Instant;
 import java.util.Arrays;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -25,6 +27,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.cams7.feriasfuncionarios.common.Utils;
+import br.com.cams7.feriasfuncionarios.error.vo.ConstraintViolationWithPrefixVO;
 import br.com.cams7.feriasfuncionarios.error.vo.ErrorVO;
 import br.com.cams7.feriasfuncionarios.error.vo.FieldValidationErrorVO;
 import br.com.cams7.feriasfuncionarios.error.vo.FieldValidationErrorVO.ArgumentErrorVO;
@@ -36,9 +39,6 @@ import br.com.cams7.feriasfuncionarios.error.vo.FieldValidationErrorVO.FieldErro
  */
 @ControllerAdvice
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
-	private static final String NOTFOUND_ERROR = "Resource not found";
-	private static final String INVALIDDATA_ERROR = "Invalid data";
-	private static final String FIELD_VALIDATION_ERROR = "Field validation error";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -51,7 +51,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		// @formatter:off
 		ErrorVO details = ErrorVO.builder()
 				.type(WARNING)
-				.title(NOTFOUND_ERROR)
+				.title(getMessage("notFound"))
 				.message(message)
 				.codeMessage(exception.getCodeMessage())
 				.timestamp(Instant.now().toEpochMilli())
@@ -73,7 +73,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		// @formatter:off
 		ErrorVO details = ErrorVO.builder()
 				.type(WARNING)
-				.title(INVALIDDATA_ERROR)
+				.title(getMessage("invalidData"))
 				.message(message)
 				.codeMessage(exception.getCodeMessage())
 				.timestamp(Instant.now().toEpochMilli())
@@ -87,39 +87,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(details, BAD_REQUEST);
 	}
 
-	@ExceptionHandler(AppFieldErrorException.class)
-	public ResponseEntity<?> handleFieldValidationErrorException(AppFieldErrorException exception) {
-
-		FieldErrorVO error = exception.getError();
-		String objectName =  getObjectNameWithPrefix(exception.getPrefix(), error.getObjectName());
-		
-		error.setObjectName(objectName);
-		error.setField(getFieldWithObjectName(objectName, error.getField()));
-		
-		// @formatter:off
-		FieldValidationErrorVO details = FieldValidationErrorVO.builder()
-				.type(WARNING)
-				.title(FIELD_VALIDATION_ERROR)
-				.message(exception.getMessage())
-				.codeMessage(null)
-				.timestamp(Instant.now().toEpochMilli())
-				.status(BAD_REQUEST.value())
-				.error(BAD_REQUEST.name())
-				.exception(exception.getClass().getName())
-				.exceptionMessage(exception.getMessage())
-				.path(null)
-				.errors(new FieldErrorVO[] {error}).build();
-		//@formatter:on
-		return ResponseEntity.badRequest().body(details);
-	}
-
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<?> handleFieldValidationErrorException(ConstraintViolationException exception) {
 
 		// @formatter:off
 		FieldValidationErrorVO details = FieldValidationErrorVO.builder()
 				.type(WARNING)
-				.title(FIELD_VALIDATION_ERROR)
+				.title(getMessage("invalidField"))
 				.message(exception.getMessage())
 				.codeMessage(null)
 				.timestamp(Instant.now().toEpochMilli())
@@ -129,12 +103,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.exceptionMessage(exception.getMessage())
 				.path(null)
 				.errors(exception.getConstraintViolations().stream().map(violation -> {
+					String objectName = getObjectName(violation);
+						
 					return FieldErrorVO.builder()
 							.codes(null)
 							.arguments(null)
 							.defaultMessage(violation.getMessage())
-							.objectName(Utils.getEntityName(violation.getLeafBean().getClass().getSimpleName()))
-							.field(getField(violation.getPropertyPath().toString()))
+							.objectName(objectName)
+							.field(getFieldWithObjectName(objectName, getField(violation.getPropertyPath().toString())))
 							.rejectedValue(violation.getInvalidValue())
 							.bindingFailure(false)
 							.code(null)
@@ -151,7 +127,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		// @formatter:off
 		FieldValidationErrorVO details = FieldValidationErrorVO.builder()
 				.type(WARNING)
-				.title(FIELD_VALIDATION_ERROR)
+				.title(getMessage("invalidField"))
 				.message(exception.getLocalizedMessage())
 				.codeMessage(null)
 				.timestamp(Instant.now().toEpochMilli())
@@ -177,7 +153,29 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private final String getMessage(AppException exception) {
-		return Utils.getMessage(messageSource, exception.getCodeMessage(), exception.getArgs());
+		return getMessage(exception.getCodeMessage(), exception.getArgs());
+	}
+
+	private final String getMessage(String codeMessage, Object... args) {
+		return Utils.getMessage(messageSource, codeMessage, args);
+	}
+
+	private static String getObjectName(ConstraintViolation<?> violation) {
+		if (violation instanceof ConstraintViolationWithPrefixVO) {
+			String prefix = ((ConstraintViolationWithPrefixVO<?>) violation).getPrefix();
+			if (StringUtils.isNotBlank(prefix))
+				return getObjectNameWithPrefix(prefix, Utils.getEntityName(getEntityType(violation).getSimpleName()));
+		}
+
+		return Utils.getEntityName(getEntityType(violation).getSimpleName());
+
+	}
+
+	private static Class<?> getEntityType(ConstraintViolation<?> violation) {
+		if (violation.getLeafBean() != null)
+			return violation.getLeafBean().getClass();
+
+		return violation.getRootBeanClass();
 	}
 
 	private static String getObjectNameWithPrefix(String prefix, String entityName) {
