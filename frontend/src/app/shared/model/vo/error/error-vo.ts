@@ -23,5 +23,9 @@ export enum ErrorException {
     INVALID_DATA_ACCESS_API_USAGE ='org.springframework.dao.InvalidDataAccessApiUsageException',
     //integrity constraint violation: NOT NULL check constraint
     //integrity constraint violation: foreign key no parent 
-    DATA_INTEGRITY_VIOLATION = 'org.springframework.dao.DataIntegrityViolationException'
+    DATA_INTEGRITY_VIOLATION = 'org.springframework.dao.DataIntegrityViolationException',
+    EXPIRED_JWT = 'io.jsonwebtoken.ExpiredJwtException',
+    MALFORMED_JWT = 'io.jsonwebtoken.MalformedJwtException',
+    SIGNATURE = 'io.jsonwebtoken.SignatureException',
+    UNSUPPORTED_JWT = 'io.jsonwebtoken.UnsupportedJwtException'
 }

@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { Observable, of, EMPTY } from 'rxjs';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { TokenStorageService } from './token-storage.service';
 import { UsersService } from './../../users/users.service';
 import { User } from './../model/user';
+import { Role, RoleName } from '../model/role';
 
+export const TOKEN_PREFIX = 'Bearer ';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private _loggedUser$: Observable<User> = of(undefined);
+  private _loggedUser$: Observable<User> = EMPTY;
 
   constructor(
     private tokenStorage: TokenStorageService,
@@ -19,36 +21,76 @@ export class AuthService {
   ) { }
   
   loadTokenData() {
-    if(this.tokenStorage.token) {
-      const loggedUser = <User>JSON.parse(this.tokenStorage.token);
-      this._loggedUser$ = of(loggedUser); 
-    } 
+    let loggedUser: User;
+    if(!!this.tokenStorage.token) 
+      loggedUser = this.getLoggedUser(this.tokenStorage.token);
+          
+    this._loggedUser$ = this.getLoggedUser$(loggedUser);      
   }
-
+  
   signIn$(user: User) {
     this._loggedUser$ = this.usersService.getToken$(user).pipe(
-      map(token => {
-        if(!token) 
+      map(data => {        
+        if(!data || !data.token) 
           return undefined;
 
-        this.tokenStorage.saveToken(token);
-        const loggedUser = <User>JSON.parse(token);
-        return loggedUser; 
+        if(!data.token.startsWith(TOKEN_PREFIX))
+          return undefined;
+
+        const token = data.token.replace(TOKEN_PREFIX, '');
+
+        const loggedUser = this.getLoggedUser(token);
+        if(!!loggedUser)
+          this.tokenStorage.saveToken(token);  
+        
+        return loggedUser;
       }),
+      switchMap(loggedUser => this.getLoggedUser$(loggedUser)),
       shareReplay()      
     );
 
     return this.loggedUser$;
   }
 
+  private getLoggedUser(token: string) {
+    if(!token || !(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/g).test(token)))
+      return undefined;
+
+    const tokenSplitted = token.split(/\./g);
+
+    if(tokenSplitted.length != 3)
+      return undefined;
+
+    try{
+      const decoded = JSON.parse(atob(tokenSplitted[1]));
+      const loggedUser = <User>{};
+      loggedUser.id = Number(decoded['id']);
+      loggedUser.email = decoded['email'];
+      loggedUser.roles = (<string>decoded['roles']).split(/\,/g).map(roleName => {
+        const role = <Role>{};
+        role.name = RoleName[roleName];
+        return role;
+      });
+
+      console.log(`sub: ${decoded['sub']}`);
+      console.log(`exp: ${decoded['exp']}`);    
+      return loggedUser; 
+    } catch(_) {}
+    return undefined;
+  }
+
+  private getLoggedUser$(loggedUser: User) {
+    return !!loggedUser ? of(loggedUser): EMPTY;
+  }
+
   signOut() {  
-    this._loggedUser$ = of(undefined);
+    this._loggedUser$ = EMPTY;
     this.tokenStorage.removeToken();  
   }
 
   get loggedUser$() {
     return this._loggedUser$.pipe(  
-      filter(user => this.tokenStorage.token && !!user && !!user.id)    
+      filter(user => this.tokenStorage.token && !!user && !!user.id)
     );
   }
 

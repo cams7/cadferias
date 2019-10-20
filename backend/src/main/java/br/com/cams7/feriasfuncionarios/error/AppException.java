@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @SuppressWarnings("serial")
 @Getter
-public abstract class AppException extends RuntimeException {
+public class AppException extends RuntimeException {
 
 	private String codeMessage;
 	private Object[] args;
@@ -20,6 +20,10 @@ public abstract class AppException extends RuntimeException {
 		super();
 		this.codeMessage = codeMessage;
 		this.args = args;
+	}
+
+	public AppException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

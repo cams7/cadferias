@@ -4,6 +4,7 @@
 package br.com.cams7.feriasfuncionarios.repository;
 
 import static br.com.cams7.feriasfuncionarios.model.UserEntity.WITH_CREATEDBY_LASTMODIFIEDBY;
+import static br.com.cams7.feriasfuncionarios.model.UserEntity.WITH_ROLES;
 
 import java.util.Optional;
 
@@ -24,6 +25,10 @@ public interface UserRepository extends UserRepositoryCustom, SoftDeleteCrudRepo
 	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY)
 	@Query("SELECT u FROM UserEntity u WHERE u.id = :id AND u.active = true")
 	Optional<UserEntity> findById(@Param("id") Long id);
+	
+	@EntityGraph(value = WITH_ROLES)
+	@Query("SELECT u FROM UserEntity u WHERE u.email = :email AND u.active = true")
+	Optional<UserEntity> findByEmail(@Param("email") String email);
 
 	@Query("SELECT (COUNT(u) > 0) FROM UserEntity u WHERE u.email = :email AND u.active = true")
 	boolean existsByEmail(@Param("email") String email);

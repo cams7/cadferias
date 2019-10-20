@@ -9,7 +9,6 @@ import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.
 import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
 import { BaseList } from './../../shared/common/base-list';
 import { StaffsService } from '../staffs.service';
-import { EmployeesService } from './../../employees/employees.service';
 import { Staff } from './../../shared/model/staff';
 import { FilterType } from 'src/app/shared/model/vo/filter/auditable-filter-vo';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
@@ -28,8 +27,7 @@ export class StaffListComponent extends BaseList<Staff, StaffFilterVO> {
     protected fb: FormBuilder,
     protected eventsService: EventsService,
     protected confirmModalService: ConfirmModalService,
-    private staffsService: StaffsService,
-    private employeesService: EmployeesService
+    private staffsService: StaffsService
   ) { 
     super(renderer, route, router, fb, eventsService, confirmModalService, staffsService);
   }

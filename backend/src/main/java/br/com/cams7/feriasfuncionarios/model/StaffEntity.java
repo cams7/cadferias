@@ -3,6 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.model;
 
+import static br.com.cams7.feriasfuncionarios.model.StaffEntity.WITH_CREATEDBY_LASTMODIFIEDBY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -47,9 +49,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
 //@formatter:off
-@NamedEntityGraph(name = StaffEntity.WITH_CREATEDBY_LASTMODIFIEDBY, attributeNodes = {
-	@NamedAttributeNode("createdBy"), 
-	@NamedAttributeNode("lastModifiedBy")
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY, attributeNodes = {
+		@NamedAttributeNode("createdBy"), 
+		@NamedAttributeNode("lastModifiedBy")
+	})
 })
 //@formatter:on
 @Entity

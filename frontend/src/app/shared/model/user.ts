@@ -1,4 +1,5 @@
 import { Auditable } from './auditable';
+import { Role } from './role';
 
 //Entidade que representa o usuário.
 export interface User extends Auditable {
@@ -6,4 +7,6 @@ export interface User extends Auditable {
     email: string;
     //Senha do usuário.
     password: string;
+    //Funções do usuário
+    roles: Role[];
 }

@@ -3,6 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.model;
 
+import static br.com.cams7.feriasfuncionarios.model.VacationEntity.WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -48,14 +50,16 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
 //@formatter:off
-@NamedEntityGraph(name = VacationEntity.WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE, attributeNodes = {
-	@NamedAttributeNode("createdBy"), 
-	@NamedAttributeNode("lastModifiedBy"),
-	@NamedAttributeNode(value = "employee", subgraph = "employee")
-}, subgraphs = @NamedSubgraph(name = "employee", attributeNodes = {
-	@NamedAttributeNode(value = "user"),
-	@NamedAttributeNode(value = "staff")
-}))
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE, attributeNodes = {
+		@NamedAttributeNode("createdBy"), 
+		@NamedAttributeNode("lastModifiedBy"),
+		@NamedAttributeNode(value = "employee", subgraph = "employee")
+	}, subgraphs = @NamedSubgraph(name = "employee", attributeNodes = {
+		@NamedAttributeNode(value = "user"),
+		@NamedAttributeNode(value = "staff")
+	}))
+})
 //@formatter:on
 @Entity
 @Table(name = "TB_FERIAS")

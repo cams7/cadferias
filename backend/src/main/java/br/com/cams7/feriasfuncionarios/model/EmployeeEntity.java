@@ -3,6 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.model;
 
+import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -21,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
@@ -61,11 +63,13 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(of = "id", callSuper = false)
 //@formatter:off
-@NamedEntityGraph(name = EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF, attributeNodes = {
-	@NamedAttributeNode("createdBy"), 
-	@NamedAttributeNode("lastModifiedBy"), 
-	@NamedAttributeNode("user"),
-	@NamedAttributeNode("staff") 
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF, attributeNodes = {
+		@NamedAttributeNode("createdBy"), 
+		@NamedAttributeNode("lastModifiedBy"), 
+		@NamedAttributeNode("user"),
+		@NamedAttributeNode("staff") 
+	})
 })
 //@formatter:on
 @Entity

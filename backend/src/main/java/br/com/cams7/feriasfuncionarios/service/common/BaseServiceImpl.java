@@ -3,9 +3,15 @@
  */
 package br.com.cams7.feriasfuncionarios.service.common;
 
+import static br.com.cams7.feriasfuncionarios.common.Utils.CLASS_SEPARATOR;
+import static br.com.cams7.feriasfuncionarios.common.Utils.SERVICE_SUFFIX;
+import static br.com.cams7.feriasfuncionarios.common.Utils.getEntityName;
+
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,9 +21,11 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.common.Utils;
+import br.com.cams7.feriasfuncionarios.error.AppException;
 import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.error.vo.ConstraintViolationWithPrefixVO;
@@ -40,6 +48,8 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	private static final int ID_INDEX = 2;
 	private static final int FILTER_INDEX = 3;
 
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private ValidatorFactory validatorFactory;
@@ -57,7 +67,7 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	@Override
 	public E getById(ID id) {
 		return reporitory.findById(id).orElseThrow(() -> new AppResourceNotFoundException("Entity.notFound",
-				Utils.getEntityName(getEntityType().getSimpleName()), id));
+				getMessage(getEntityName(getEntityType().getSimpleName())), id));
 	}
 
 	@Transactional(readOnly = true)
@@ -76,7 +86,8 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	@Override
 	public E update(E entity) {
 		if (entity.getId() == null)
-			throw new AppInvalidDataException("Entity.idNotNull", Utils.getEntityName(getEntityType().getSimpleName()));
+			throw new AppInvalidDataException("Entity.idNotNull",
+					getMessage(getEntityName(getEntityType().getSimpleName())));
 
 		entity.setActive(true);
 		return reporitory.save(entity);
@@ -101,7 +112,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 		return page;
 	}
 
-
 	protected Class<R> getRepositoryType() {
 		@SuppressWarnings("unchecked")
 		Class<R> type = (Class<R>) getTypeFromTemplate(REPOSITORY_INDEX);
@@ -110,8 +120,13 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 
 	protected Class<E> getEntityType() {
 		@SuppressWarnings("unchecked")
-		Class<E> type = (Class<E>) getTypeFromTemplate(ENTITY_INDEX);
-		return type;
+		Class<E> entityType = (Class<E>) getEntityType(getClass());
+		return entityType;
+	}
+
+	private static Class<?> getEntityType(Class<?> type) {
+		Class<?> entityType = (Class<?>) getTypeFromTemplate(type, ENTITY_INDEX);
+		return entityType;
 	}
 
 	protected Class<ID> getIdType() {
@@ -127,11 +142,16 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	}
 
 	private Type getTypeFromTemplate(int index) {
-		return ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
+		return getTypeFromTemplate(getClass(), index);
 	}
 
+	private static Type getTypeFromTemplate(Class<?> type, int index) {
+		return ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[index];
+	}
 
-	protected void validateField(final String prefix, String fieldName, Object fieldValue, Class<?> validationType) {
+	protected void validateField(String fieldName, Object fieldValue, Class<?> validationType) {
+		String prefix = getPrefix();
+
 		Validator validator = this.validatorFactory.getValidator();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		Set<ConstraintViolation<E>> constraintViolations = validator
@@ -140,6 +160,34 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 				.collect(Collectors.toSet());
 		if (constraintViolations.size() > 0)
 			throw new ConstraintViolationException(constraintViolations);
+	}
+
+	protected final String getMessage(String codeMessage, Object... args) {
+		return Utils.getMessage(messageSource, codeMessage, args);
+	}
+
+	private String getPrefix() {
+		String prefix = Arrays.asList(Thread.currentThread().getStackTrace()).stream().filter(trace -> {
+			String className = trace.getClassName();
+			return className.startsWith(getClass().getPackageName() + CLASS_SEPARATOR)
+					&& className.endsWith(SERVICE_SUFFIX)
+					&& !className.endsWith(CLASS_SEPARATOR + getClass().getSuperclass().getSimpleName());
+		}).map(trace -> trace.getClassName()).distinct()
+				.filter(className -> !className.equals(this.getClass().getName())).map(className -> {
+					try {
+						Class<?> type = Class.forName(className);
+						Class<?> entityType = getEntityType(type);
+						return getEntityName(entityType.getSimpleName());
+					} catch (ClassNotFoundException e) {
+						throw new AppException(e.getMessage(), e);
+					}
+				}).collect(ArrayList<String>::new, (l, e) -> l.add(0, e), (l1, l2) -> l1.addAll(0, l2)).stream()
+				.collect(Collectors.joining(CLASS_SEPARATOR));
+
+		if (!prefix.isBlank())
+			prefix += CLASS_SEPARATOR;
+
+		return prefix;
 	}
 
 }

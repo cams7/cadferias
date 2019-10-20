@@ -3,7 +3,10 @@
  */
 package br.com.cams7.feriasfuncionarios.service;
 
+import static br.com.cams7.feriasfuncionarios.model.RoleEntity.RoleName.ROLE_USER;
+
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
+import br.com.cams7.feriasfuncionarios.model.RoleEntity;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.EmployeeFilterVO;
@@ -27,8 +31,6 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, EmployeeEntity, Long, EmployeeFilterVO>
 		implements EmployeeService {
 
-	private static final String EMPLOYEE_PREFIX = "employee.";
-
 	@Autowired
 	private UserService userService;
 
@@ -38,9 +40,14 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Override
 	public EmployeeEntity create(EmployeeEntity employee) {
 		UserEntity user = employee.getUser();
-
+		
 		user.setPassword("12345");
-		employee.setUser(userService.create(EMPLOYEE_PREFIX, user));
+		user.setRoles(Arrays.asList(ROLE_USER).stream().map(roleName -> {
+			RoleEntity role = new RoleEntity();
+			role.setName(roleName);
+			return role;
+		}).collect(Collectors.toSet()));
+		employee.setUser(userService.create(user));
 
 		final String EMPLOYEE_REGISTRATION = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
 		employee.setEmployeeRegistration(EMPLOYEE_REGISTRATION);
@@ -65,7 +72,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		if (vacationIds.length > 0)
 			vacationService.deleteAllById(Arrays.asList(vacationIds));
 
-		super.delete(employeeId);		
+		super.delete(employeeId);
 	}
 
 	@Transactional(readOnly = true)

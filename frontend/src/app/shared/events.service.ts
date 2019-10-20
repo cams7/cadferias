@@ -91,7 +91,7 @@ export class EventsService {
       type: type,
       title: title,
       message: message,
-      timeout: timeout? timeout: 5000
+      timeout: (timeout ? timeout : 10000)
     };
     this.alertSubject.next(alert);
   }

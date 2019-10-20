@@ -13,6 +13,7 @@ import { SigninService } from './signin/signin.service';
 import { Direction } from './shared/model/vo/pagination/sort-vo';
 import { PageAndSortParamsVO } from './shared/model/vo/page-params-vo';
 import { MessageType } from './shared/model/vo/message/message-vo';
+import { ErrorException } from './shared/model/vo/error/error-vo';
 
 @Component({
   selector: 'app-root',
@@ -57,9 +58,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           case MessageType.DANGER:
             this.eventsService.addDangerAlert(error.title, error.message);
             break;
-          case MessageType.WARNING:
+          case MessageType.WARNING: {
             this.eventsService.addWarningAlert(error.title, error.message);
+            if(ErrorException.EXPIRED_JWT == error.exception)
+              this.login();            
             break;
+          }
           case MessageType.SUCCESS:
             this.eventsService.addSuccessAlert(error.title, error.message);
             break;

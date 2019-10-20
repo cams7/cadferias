@@ -21,13 +21,6 @@ export class UsersService extends BaseService<User, UserFilterVO> {
   }
 
   getToken$(user: User) {
-    /*const params = Object.keys(user).reduce((params, fieldName) => {
-      return params.append(fieldName, user[fieldName]);
-    }, new HttpParams());
-    
-    return this.http.get(`${environment.API}${USERS}`, { params: params }).pipe(
-      map((data: any) => data.length == 1 ? data[0].token : undefined)   
-    );*/
-    return of("{\"id\": 1,\"email\": \"jorge78@teste.com\"}");
+    return this.http.post<{token: string}>(`${environment.API}api/auth/signin`, user);
   }
 }

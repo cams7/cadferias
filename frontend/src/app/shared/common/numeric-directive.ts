@@ -8,7 +8,7 @@ export class NumericDirective {
   @Input('numeric') numericType: 'number' | 'decimal'; // number | decimal
 
   private regex = {
-    number: new RegExp(/^\d+$/),
+    number: new RegExp(/^\d+$/g),
     decimal: new RegExp(/^[0-9]+(\.[0-9]*){0,1}$/g)
   };
 

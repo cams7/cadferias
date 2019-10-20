@@ -32,7 +32,7 @@ export class ErrorsService {
 
   constructor() { }
 
-  getError(response: HttpErrorResponse) {
+  showError(response: HttpErrorResponse) {
     let error: ErrorVO;
     if(this.isValidError(response)) {      
       try {
@@ -40,11 +40,10 @@ export class ErrorsService {
       } catch(_) {
         error = this.getErrorByResponseError(response[RESPONSE_ERROR]);
       }
-    } else
+    } else 
       error = this.getErrorByResponse(response);
 
     this.addError(error);
-    return error;
   }
 
   private isValidError(response: HttpErrorResponse) {
@@ -58,6 +57,7 @@ export class ErrorsService {
   }
 
   private getErrorByResponse(response: HttpErrorResponse) {
+    console.error(response);
     const error = <ErrorVO>{};
     error.status = Number(response[RESPONSE_STATUS]);      
     error.path = response[RESPONSE_URL];

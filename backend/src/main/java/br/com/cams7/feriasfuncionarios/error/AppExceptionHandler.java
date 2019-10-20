@@ -3,11 +3,14 @@
  */
 package br.com.cams7.feriasfuncionarios.error;
 
+import static br.com.cams7.feriasfuncionarios.common.Utils.getEntityName;
+import static br.com.cams7.feriasfuncionarios.common.Utils.getTimestamp;
+import static br.com.cams7.feriasfuncionarios.common.Utils.getValueWithoutEntitySuffix;
 import static br.com.cams7.feriasfuncionarios.error.vo.MessageVO.MessageType.WARNING;
+import static br.com.cams7.feriasfuncionarios.error.vo.MessageVO.MessageType.DANGER;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import java.time.Instant;
 import java.util.Arrays;
 
 import javax.validation.ConstraintViolation;
@@ -42,6 +45,28 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
+	
+	@ExceptionHandler(AppException.class)
+	public ResponseEntity<ErrorVO> handleResourceNotFoundException(AppException exception) {
+
+		String message = getMessage(exception);
+
+		// @formatter:off
+		ErrorVO details = ErrorVO.builder()
+				.type(DANGER)
+				.title(getMessage("error"))
+				.message(message)
+				.codeMessage(exception.getCodeMessage())
+				.timestamp(getTimestamp())
+				.status(BAD_REQUEST.value())
+				.error(BAD_REQUEST.name())
+				.exception(exception.getCause().getClass().getName())
+				.exceptionMessage(message)
+				.path(null)
+				.build();
+		//@formatter:on
+		return new ResponseEntity<>(details, BAD_REQUEST);
+	}
 
 	@ExceptionHandler(AppResourceNotFoundException.class)
 	public ResponseEntity<ErrorVO> handleResourceNotFoundException(AppResourceNotFoundException exception) {
@@ -54,7 +79,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.title(getMessage("notFound"))
 				.message(message)
 				.codeMessage(exception.getCodeMessage())
-				.timestamp(Instant.now().toEpochMilli())
+				.timestamp(getTimestamp())
 				.status(NOT_FOUND.value())
 				.error(NOT_FOUND.name())
 				.exception(exception.getClass().getName())
@@ -76,7 +101,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.title(getMessage("invalidData"))
 				.message(message)
 				.codeMessage(exception.getCodeMessage())
-				.timestamp(Instant.now().toEpochMilli())
+				.timestamp(getTimestamp())
 				.status(BAD_REQUEST.value())
 				.error(BAD_REQUEST.name())
 				.exception(exception.getClass().getName())
@@ -96,7 +121,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.title(getMessage("invalidField"))
 				.message(exception.getMessage())
 				.codeMessage(null)
-				.timestamp(Instant.now().toEpochMilli())
+				.timestamp(getTimestamp())
 				.status(BAD_REQUEST.value())
 				.error(BAD_REQUEST.name())
 				.exception(exception.getClass().getName())
@@ -130,7 +155,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 				.title(getMessage("invalidField"))
 				.message(exception.getLocalizedMessage())
 				.codeMessage(null)
-				.timestamp(Instant.now().toEpochMilli())
+				.timestamp(getTimestamp())
 				.status(status.value())
 				.error(status.name())
 				.exception(exception.getClass().getName())
@@ -141,7 +166,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 							.codes(getCodes(error.getCodes()))
 							.arguments(getArguments(error.getArguments()))
 							.defaultMessage(error.getDefaultMessage())
-							.objectName(Utils.getValueWithoutEntitySuffix(error.getObjectName()))
+							.objectName(getValueWithoutEntitySuffix(error.getObjectName()))
 							.field(error.getField())
 							.rejectedValue(error.getRejectedValue())
 							.bindingFailure(error.isBindingFailure())
@@ -153,6 +178,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private final String getMessage(AppException exception) {
+		if(exception.getCodeMessage() == null)
+			return exception.getMessage();
 		return getMessage(exception.getCodeMessage(), exception.getArgs());
 	}
 
@@ -164,10 +191,10 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		if (violation instanceof ConstraintViolationWithPrefixVO) {
 			String prefix = ((ConstraintViolationWithPrefixVO<?>) violation).getPrefix();
 			if (StringUtils.isNotBlank(prefix))
-				return getObjectNameWithPrefix(prefix, Utils.getEntityName(getEntityType(violation).getSimpleName()));
+				return getObjectNameWithPrefix(prefix, getEntityName(getEntityType(violation).getSimpleName()));
 		}
 
-		return Utils.getEntityName(getEntityType(violation).getSimpleName());
+		return getEntityName(getEntityType(violation).getSimpleName());
 
 	}
 
@@ -192,6 +219,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		return array[array.length - 1];
 	}
 
+	
+
 	private static Object[] getArguments(Object[] arguments) {
 		return Arrays.asList(arguments).stream().map(argument -> {
 			if (argument instanceof DefaultMessageSourceResolvable) {
@@ -211,7 +240,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private static String[] getCodes(String[] codes) {
-		return Arrays.asList(codes).stream().map(code -> Utils.getValueWithoutEntitySuffix(code))
+		return Arrays.asList(codes).stream().map(code -> getValueWithoutEntitySuffix(code))
 				.toArray(String[]::new);
 	}
 

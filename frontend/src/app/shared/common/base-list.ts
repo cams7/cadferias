@@ -137,6 +137,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                         order: order
                     });
                 })
+            ).pipe(
+                shareReplay()
             ),
             this.deletedEntitySubject.asObservable()
         ).pipe(
@@ -177,7 +179,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             this._currentItems$.subscribe(pagination => {                
                 this.deletedEntities.push(entityId);
                 if(pagination.content.length == 1 && Number(this.page.page) < Number(this.numPages)) {
-                    this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(         
+                    this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(     
                         shareReplay()
                     );    
                 } else {

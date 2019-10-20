@@ -1,17 +1,18 @@
 import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { flatMap, filter } from 'rxjs/operators';
 
 import { MASKS } from 'ng-brazil';
 
 import { Base, BR_DATE_FORMAT } from './base';
-import { EventsService } from '../events.service';
 import { ErrorsService } from '../errors.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { BaseEntity } from '../model/base-entity';
 import { FieldValidationVO } from './field-error-message/field-error-display.component';
+import { MessageType } from '../model/vo/message/message-vo';
+import { ErrorException } from '../model/vo/error/error-vo';
 
 const DEBOUNCE_TIME = 500;
 export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {
@@ -24,6 +25,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     private _entity: E;
 
     private _validation = new Map<string, boolean>();
+    private subscriptions: Subscription[] = [];
 
     constructor(
         protected route: ActivatedRoute,
@@ -34,12 +36,28 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     }
 
     ngOnInit() {
-        this._entity = this.route.snapshot.data['entity'];          
+        this._entity = this.route.snapshot.data['entity']; 
+        this.subscriptions.push( 
+            this.errorsService.erros$.pipe(
+                filter(error => MessageType.WARNING == error.type && ErrorException.EXPIRED_JWT == error.exception)
+            ).subscribe(_ => {
+                this._submitted = false;
+                /*if(this.isRegistred) {
+                    this.form.markAsTouched();
+                    this.form.markAsDirty();
+                }*/
+            })
+        );        
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
     abstract submit$(): Observable<E>;
 
-    onSubmit() {   
+    onSubmit() {
         if ((this._submitted || this.isRegistred) && !(this.form.touched && this.form.dirty))
           return; 
           
@@ -58,11 +76,11 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     } 
     
     unchangedData$(): Observable<boolean> {
-        return of(!this.submitted).pipe(
+        return of(!(this.submitted || (this.form && this.form.touched && this.form.dirty))).pipe(
             flatMap(unchanged => {
                 if(unchanged)
                     return of(true);
-                return this.confirmModalService.showConfirm$('Sair da página','Os dados do formulário não foram registrados, você realmente deseja sair dessa página?');
+                return this.confirmModalService.showConfirm$('Sair da página','Os dados do formulário foram modificados, você realmente deseja sair dessa página?');
             })
         );
     }
@@ -118,7 +136,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     }
 
     get isRegistred() {
-        return !!this._entity.id;
+        return this._entity && this._entity.id;
     }
 
     get debounceTime() {

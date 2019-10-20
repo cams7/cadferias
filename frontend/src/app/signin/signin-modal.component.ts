@@ -47,6 +47,7 @@ export class SigninModalComponent extends BaseForm<User> {
   submit$() {
     if(this.form.status == 'VALID') {       
       const user = <User>this.form.value;
+      user['rememberMe'] = undefined;
 
       this.authService.signIn$(user).pipe(
         take(1)
