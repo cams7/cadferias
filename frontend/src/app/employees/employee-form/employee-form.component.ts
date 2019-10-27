@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, merge, of, Subject, forkJoin } from 'rxjs';
@@ -15,13 +15,14 @@ import { EmployeesService } from '../employees.service';
 import { Employee } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
 
+const EMPLOYEE_PHOTO = 'assets/img/employee-avatar.png';
 @Component({
   selector: 'app-employee-form',
   templateUrl: './employee-form.component.html',
   styleUrls: ['./employee-form.component.scss']
 })
-export class EmployeeFormComponent extends BaseForm<Employee> {
-
+export class EmployeeFormComponent extends BaseForm<Employee> implements AfterViewInit {
+  
   stateName$ = new Subject<string>();
   private _states$: Observable<StateVO[]>;
 
@@ -29,9 +30,14 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
   private _cities$: Observable<CityVO[]>;
 
   staffName$ = new Subject<string>();
-  private _staffs$: Observable<Staff[]>;  
+  private _staffs$: Observable<Staff[]>; 
+  
+  readonly acceptedImageTypes = '.png,.jpg,.jpeg';
+
+  @ViewChild('imagePreview', { read: ElementRef, static:true }) imagePreview: ElementRef;
      
   constructor(
+    private renderer: Renderer2,
     private fb: FormBuilder,
     protected route: ActivatedRoute,
     private eventsService: EventsService,
@@ -47,24 +53,24 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     super.ngOnInit();
     
     super.form = this.fb.group({
-      hiringDate: [super.getDate(<any>this.entity.hiringDate)], 
-      //employeePhoto: [undefined],
-      employeeRegistration: [this.entity.employeeRegistration],
-      name: [this.entity.name],
-      birthDate: [super.getDate(<any>this.entity.birthDate)],
-      phoneNumber: [this.entity.phoneNumber],
+      hiringDate: [super.getDate(<any>super.entity.hiringDate)], 
+      photo: [super.entity.photo],
+      employeeRegistration: [super.entity.employeeRegistration],
+      name: [super.entity.name],
+      birthDate: [super.getDate(<any>super.entity.birthDate)],
+      phoneNumber: [super.entity.phoneNumber],
       address: this.fb.group({
-        street: [this.entity.address.street],
-        houseNumber: [this.entity.address.houseNumber],
-        neighborhood: [this.entity.address.neighborhood],
-        city: [this.entity.address.city],
-        state: [this.entity.address.state]
+        street: [super.entity.address.street],
+        houseNumber: [super.entity.address.houseNumber],
+        neighborhood: [super.entity.address.neighborhood],
+        city: [super.entity.address.city],
+        state: [super.entity.address.state]
       }),
       user: this.fb.group({
-        email: [this.entity.user.email]
+        email: [super.entity.user.email]
       }),
       staff: this.fb.group({
-        id: [this.entity.staff.id]
+        id: [super.entity.staff.id]
       })
     });
 
@@ -73,7 +79,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
 
     this._states$ = merge(
-      of(this.entity.address.state).pipe(
+      of(super.entity.address.state).pipe(
         filter(acronym => !!acronym),
         flatMap(acronym => states$.pipe<StateVO>(
           map(states => states.find(state => state.acronym == acronym))
@@ -98,7 +104,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
 
     this._cities$ = merge(
-      of(this.entity.address.city).pipe(
+      of(super.entity.address.city).pipe(
         filter(name => !!name && !!this.form.get('address.state').value),
         flatMap(name => forkJoin(
           of(name), 
@@ -131,7 +137,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
     
     this._staffs$ = merge(
-      of(this.entity.staff.id).pipe(
+      of(super.entity.staff.id).pipe(
         filter(id => !!id),
         flatMap(id => this.staffsService.getOnlyStaffById$(id)),
         filter(staff => !!staff),
@@ -148,9 +154,13 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     );
   } 
 
+  ngAfterViewInit() {
+    this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${this.photo})`);
+  }
+
   submit$() {
     const employee = <Employee>this.form.value;
-    employee.id = this.entity.id;
+    employee.id = super.entity.id;
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
     employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
     employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
@@ -169,8 +179,32 @@ export class EmployeeFormComponent extends BaseForm<Employee> {
     ); 
   }
 
+  private get photo() {
+    if(!super.entity.photo)
+      return EMPLOYEE_PHOTO;
+
+    return super.entity.photo;
+  }
+
+  changePhoto(event: Event) {
+    const files: FileList = (<any>event.target).files;
+	  if (files && files.length == 1) {
+      const file = files.item(0);
+      const reader = new FileReader();
+      reader.onload = progressEvent => {
+        const image = (<any>progressEvent.target).result;
+        this.renderer.removeStyle(this.imagePreview.nativeElement, 'background-image');
+        this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${image})`);
+        this.form.patchValue({photo: image});
+        this.form.get('photo').markAsTouched();
+        this.form.get('photo').markAsDirty();
+      };
+      reader.readAsDataURL(file);
+	  }
+  }
+
   get userId() {
-    return this.entity.user.id;
+    return super.entity.user.id;
   }
 
   get staff() {

@@ -11,6 +11,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -19,6 +20,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
@@ -43,6 +45,7 @@ import br.com.cams7.feriasfuncionarios.common.Validations.OnUpdate;
 import br.com.cams7.feriasfuncionarios.common.Views.Details;
 import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
+import br.com.cams7.feriasfuncionarios.model.validator.ImageBase64Encoding;
 import br.com.cams7.feriasfuncionarios.model.validator.Phone;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -143,7 +146,15 @@ public class EmployeeEntity extends Auditable<Long> {
 	@Embedded
 	private Address address;
 
-	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 14)
+	@ApiModelProperty(notes = "Foto do funcionário na codificação base 64.", required = false, position = 14)
+	@JsonView(Public.class)
+	@ImageBase64Encoding(message = "{Employee.photo.invalidBase64Encoding}")
+	@Basic(fetch = LAZY)
+	@Lob
+	@Column(name = "FOTO_FUNCIONARIO", columnDefinition = "CLOB")
+	private String photo;
+
+	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 15)
 	@JsonView(Details.class)
 	@OneToMany(mappedBy = "employee")
 	private Collection<VacationEntity> vacations;

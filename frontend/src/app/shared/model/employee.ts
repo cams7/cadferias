@@ -20,7 +20,9 @@ export interface Employee extends Auditable {
     //Número de telefone do funcionário.
     phoneNumber: string;
     //Endereço do funcionário.
-    address: Address;    
+    address: Address; 
+    //Foto do funcionário na codificação base 64.
+    photo: string;
 }
 
 //Entidade que representa o endereço do funcionário.

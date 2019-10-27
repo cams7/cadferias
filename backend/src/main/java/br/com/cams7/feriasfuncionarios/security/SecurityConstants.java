@@ -13,7 +13,7 @@ public final class SecurityConstants {
 	public static final String SECRET = "FeriasFuncionariosSecretKey";
 	public static final String TOKEN_PREFIX = "Bearer";
 	public static final String HEADER_STRING = "Authorization";
-	public static final long EXPIRATION_TIME = 60_000l; // 1000x60x5 = 1 min
+	public static final long EXPIRATION_TIME = 36_000_000l; // 1000x60x60x10 = 10 horas
 
 	public static final String AUTH_URL = "/api/auth";
 	public static final String SIGNIN_URL = AUTH_URL + "/signin";

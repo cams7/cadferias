@@ -2,12 +2,21 @@
     <fieldset class="border p-2 form-group">
         <legend  class="w-auto">Funcionário</legend>
         <div class="row">
-            <div class="col-md-8 mb-3">
+            <div class="col-md-4 mb-3 avatar-upload">
+                <div class="avatar-edit">
+                    <input type='file' id="imageUpload" [accept]="acceptedImageTypes" (change)="changePhoto($event)"/>
+                    <label for="imageUpload"></label>
+                </div>
+                <div class="avatar-preview">
+                    <div id="imagePreview" #imagePreview></div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
                 <label for="name" class="control-label">Nome</label>
                 <input id="name" type="text" class="form-control" formControlName="name" [ngClass]="classError('name')">
                 <field-error-display fieldName="name" (validation)="validation=$event"></field-error-display>          
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-2 mb-3">
                 <label for="birthDate" class="control-label">Data de nascimento</label>
                 <input id="birthDate" type="text" class="form-control" formControlName="birthDate" [ngClass]="classError('birthDate')" 
                     bsDatepicker [bsConfig]="bsConfig">
