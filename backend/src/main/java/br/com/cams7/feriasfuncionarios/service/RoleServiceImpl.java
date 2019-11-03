@@ -21,12 +21,12 @@ import br.com.cams7.feriasfuncionarios.repository.RoleRepository;
 public class RoleServiceImpl implements RoleService {
 
 	@Autowired
-	private RoleRepository roleRepository;
+	private RoleRepository repository;
 
 	@Transactional(readOnly = true)
 	@Override
 	public RoleEntity getRoleByName(RoleName roleName) {
-		return roleRepository.findByName(roleName)
+		return repository.findByName(roleName)
 				.orElseThrow(() -> new AppResourceNotFoundException("Role.notFound", roleName.name()));
 	}
 

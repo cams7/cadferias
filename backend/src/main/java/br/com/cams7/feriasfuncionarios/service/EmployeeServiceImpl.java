@@ -4,28 +4,19 @@
 package br.com.cams7.feriasfuncionarios.service;
 
 import static br.com.cams7.feriasfuncionarios.model.RoleEntity.RoleName.ROLE_USER;
-import static br.com.cams7.feriasfuncionarios.model.validator.ImageBase64EncodingValidator.REGEX_IMAGE_BASE64_ENCODING_SEPARATOR;
-import static br.com.cams7.feriasfuncionarios.model.validator.ImageBase64EncodingValidator.REGEX_IMAGE_BASE64_ENCODING_WITHOUT_CONTENT;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.error.AppException;
-import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
+import br.com.cams7.feriasfuncionarios.common.Image;
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.EmployeeEntity;
+import br.com.cams7.feriasfuncionarios.model.EmployeePhotoEntity;
 import br.com.cams7.feriasfuncionarios.model.RoleEntity;
 import br.com.cams7.feriasfuncionarios.model.UserEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
@@ -42,15 +33,20 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseServiceImpl;
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, EmployeeEntity, Long, EmployeeFilterVO>
 		implements EmployeeService {
 
+	private static final int PHOTO_WIDTH = 256;
+	private static final int PHOTO_HEIGHT = 256;
+
 	@Autowired
 	private UserService userService;
 
 	@Autowired
 	private VacationService vacationService;
 
+	@Autowired
+	private EmployeePhotoService photoService;
+
 	@Override
 	public EmployeeEntity create(EmployeeEntity employee) {
-		validatePhoto(employee.getPhoto());
 
 		UserEntity user = employee.getUser();
 
@@ -65,12 +61,16 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		final String EMPLOYEE_REGISTRATION = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
 		employee.setEmployeeRegistration(EMPLOYEE_REGISTRATION);
 
-		return super.create(employee);
+		employee = super.create(employee);
+
+		addPhoto(employee);
+
+		return employee;
 	}
-	
+
 	@Override
 	public EmployeeEntity update(EmployeeEntity employee) {
-		validatePhoto(employee.getPhoto());
+		addPhoto(employee);
 		return super.update(employee);
 	}
 
@@ -115,25 +115,13 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 		return reporitory.findByName(search);
 	}
 
-	private void validatePhoto(String photo) {
-		if (photo != null && !photo.isBlank()) {
-			StringTokenizer st = new StringTokenizer(photo, REGEX_IMAGE_BASE64_ENCODING_SEPARATOR);
-			String imageType = st.nextToken().replaceFirst(REGEX_IMAGE_BASE64_ENCODING_WITHOUT_CONTENT, "$1");
-			String photoBase64Encoding = st.nextToken();
-
-			Base64.Decoder decoder = Base64.getDecoder();
-
-			try {
-				byte[] imageBytes = decoder.decode(photoBase64Encoding);
-
-				try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
-					BufferedImage bf = ImageIO.read(bis);
-					if (bf == null)
-						throw new AppInvalidDataException("invalidImage", imageType);
-				}
-			} catch (IllegalArgumentException | IOException e) {
-				throw new AppException(e.getMessage(), e);
-			}
+	private void addPhoto(EmployeeEntity employee) {
+		if (employee.getPhotos() != null && !employee.getPhotos().isEmpty()) {
+			EmployeePhotoEntity photo = employee.getPhotos().iterator().next();
+			byte[] resizedPhoto = Image.resize(photo.getPhoto(), photo.getImageType(), PHOTO_WIDTH, PHOTO_HEIGHT);
+			photo.setPhoto(resizedPhoto);
+			photo.setEmployee(employee);
+			photoService.save(photo);
 		}
 	}
 

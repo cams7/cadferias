@@ -3,6 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.model;
 
+import static br.com.cams7.feriasfuncionarios.model.VacationEntity.WITH_EMPLOYEE;
 import static br.com.cams7.feriasfuncionarios.model.VacationEntity.WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -51,6 +52,12 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "id", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
+	@NamedEntityGraph(name = WITH_EMPLOYEE, attributeNodes = {
+		@NamedAttributeNode(value = "employee", subgraph = "employee")
+	}, subgraphs = @NamedSubgraph(name = "employee", attributeNodes = {
+		@NamedAttributeNode(value = "user"),
+		@NamedAttributeNode(value = "staff")
+	})),
 	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE, attributeNodes = {
 		@NamedAttributeNode("createdBy"), 
 		@NamedAttributeNode("lastModifiedBy"),
@@ -65,6 +72,7 @@ import lombok.ToString;
 @Table(name = "TB_FERIAS")
 public class VacationEntity extends Auditable<Long> {
 
+	public static final String WITH_EMPLOYEE = "Vacation.withEmployee";
 	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE = "Vacation.withCreatedByAndLastModifiedByAndEmployee";
 
 	@ApiModelProperty(notes = "Identificador único da férias.", example = "1", required = true, position = 5)

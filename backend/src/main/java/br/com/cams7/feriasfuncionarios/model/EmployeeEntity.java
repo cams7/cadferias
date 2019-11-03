@@ -3,7 +3,8 @@
  */
 package br.com.cams7.feriasfuncionarios.model;
 
-import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF;
+import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS;
+import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_USER_STAFF_PHOTOS;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -11,7 +12,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
 import java.time.LocalDate;
 import java.util.Collection;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -20,7 +20,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
@@ -45,7 +44,6 @@ import br.com.cams7.feriasfuncionarios.common.Validations.OnUpdate;
 import br.com.cams7.feriasfuncionarios.common.Views.Details;
 import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
-import br.com.cams7.feriasfuncionarios.model.validator.ImageBase64Encoding;
 import br.com.cams7.feriasfuncionarios.model.validator.Phone;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -67,11 +65,17 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "id", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
-	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF, attributeNodes = {
+	@NamedEntityGraph(name = WITH_USER_STAFF_PHOTOS, attributeNodes = {
+		@NamedAttributeNode("user"),
+		@NamedAttributeNode("staff"),
+		@NamedAttributeNode("photos")
+	}),
+	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS, attributeNodes = {
 		@NamedAttributeNode("createdBy"), 
 		@NamedAttributeNode("lastModifiedBy"), 
 		@NamedAttributeNode("user"),
-		@NamedAttributeNode("staff") 
+		@NamedAttributeNode("staff"),
+		@NamedAttributeNode("photos")
 	})
 })
 //@formatter:on
@@ -79,7 +83,8 @@ import lombok.ToString;
 @Table(name = "TB_FUNCIONARIO", uniqueConstraints = @UniqueConstraint(columnNames = { "ID_USUARIO", "MATRICULA" }))
 public class EmployeeEntity extends Auditable<Long> {
 
-	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF = "Employee.withCreatedByAndLastModifiedByAndUserAndStaff";
+	public static final String WITH_USER_STAFF_PHOTOS = "Employee.withUserAndStaffAndPhotos";
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS = "Employee.withCreatedByAndLastModifiedByAndUserAndStaffAndPhotos";
 
 	@ApiModelProperty(notes = "Identificador único do funcionário.", example = "1", required = true, position = 5)
 	@JsonView(Public.class)
@@ -146,15 +151,13 @@ public class EmployeeEntity extends Auditable<Long> {
 	@Embedded
 	private Address address;
 
-	@ApiModelProperty(notes = "Foto do funcionário na codificação base 64.", required = false, position = 14)
-	@JsonView(Public.class)
-	@ImageBase64Encoding(message = "{Employee.photo.invalidBase64Encoding}")
-	@Basic(fetch = LAZY)
-	@Lob
-	@Column(name = "FOTO_FUNCIONARIO", columnDefinition = "CLOB")
-	private String photo;
+	@ApiModelProperty(notes = "Fotos do funcionário.", required = false, position = 13)
+	@JsonView(Details.class)
+	@Valid
+	@OneToMany(mappedBy = "employee")
+	private Collection<EmployeePhotoEntity> photos;
 
-	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 15)
+	@ApiModelProperty(notes = "Férias que pertence ao funcionário.", required = false, position = 14)
 	@JsonView(Details.class)
 	@OneToMany(mappedBy = "employee")
 	private Collection<VacationEntity> vacations;

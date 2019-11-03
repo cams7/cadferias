@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { FormDeactivateGuard } from '../shared/guards/form-deactivate.guard';
-import { VacationResolverGuard } from './guards/vacation-resolver.guard';
+import { VacationResolver } from './guards/vacation.resolver';
 import { VacationFormComponent } from './vacation-form/vacation-form.component';
 import { VacationListComponent } from './vacation-list/vacation-list.component';
 
@@ -10,13 +10,13 @@ const routes: Routes = [
   {
     path: 'register',
     component: VacationFormComponent,
-    resolve: { entity : VacationResolverGuard },
+    resolve: { entity : VacationResolver },
     canDeactivate: [FormDeactivateGuard]
   },
   {
     path: ':id',
     component: VacationFormComponent,
-    resolve: { entity : VacationResolverGuard },
+    resolve: { entity : VacationResolver },
     canDeactivate: [FormDeactivateGuard]
   },
   {

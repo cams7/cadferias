@@ -105,7 +105,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 			"/configuration/**", 
 			"/swagger-ui.html", 
 			"/webjars/**"
-		);
+		).antMatchers("/h2/**");
 		// @formatter:on
 	}
 }

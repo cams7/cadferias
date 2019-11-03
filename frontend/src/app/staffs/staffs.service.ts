@@ -20,10 +20,6 @@ export class StaffsService extends BaseService<Staff, StaffFilterVO> {
     super(http, `${environment.API}${STAFFS}`);
   }
 
-  getOnlyStaffById$(id: number) {
-    return this.http.get<Staff>(`${this.API_URL}/only/${id}`);
-  }
-
   getByName$(name: string) {
     const search = <SearchBySelectVO>{};
     search.searchValue = name;

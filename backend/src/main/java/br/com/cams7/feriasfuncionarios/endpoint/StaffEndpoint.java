@@ -7,8 +7,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,14 +33,6 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping(path = "/staffs")
 public class StaffEndpoint extends BaseEndpoint<StaffService, StaffEntity, Long, StaffFilterVO> {
-
-	@ApiOperation("Busca a equipe pelo ID.")
-	@JsonView(Public.class)
-	@ResponseStatus(value = OK)
-	@GetMapping(path = "only/{id}")
-	public StaffEntity geOnlyStaffById(@ApiParam("ID da equipe.") @PathVariable Long id) {
-		return service.geOnlyStaffById(id);
-	}
 
 	@ApiOperation("Carrega as equipes pelo filtro de busca do select.")
 	@JsonView(Public.class)

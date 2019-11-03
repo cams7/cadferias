@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
-import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
 import br.com.cams7.feriasfuncionarios.model.StaffEntity;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.filter.StaffFilterVO;
@@ -34,13 +33,6 @@ public class StaffServiceImpl extends BaseServiceImpl<StaffRepository, StaffEnti
 			throw new AppInvalidDataException("Staff.haveEmployees", staffId, employeesTotal);
 
 		super.delete(staffId);
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public StaffEntity geOnlyStaffById(Long id) {
-		return reporitory.findOnlyStaffById(id)
-				.orElseThrow(() -> new AppResourceNotFoundException("Staff.notFound", id));
 	}
 
 	@Transactional(readOnly = true)

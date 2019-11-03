@@ -14,7 +14,5 @@ import br.com.cams7.feriasfuncionarios.service.common.BaseService;
  */
 public interface StaffService extends BaseService<StaffEntity, Long, StaffFilterVO> {
 
-	StaffEntity geOnlyStaffById(Long id);
-
 	Iterable<StaffEntity> getByName(SearchBySelectVO search);
 }

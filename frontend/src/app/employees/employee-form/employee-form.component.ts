@@ -14,6 +14,7 @@ import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
 import { Employee } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
+import { EmployeePhoto, ImageType } from './../../shared/model/employee-photo';
 
 const EMPLOYEE_PHOTO = 'assets/img/employee-avatar.png';
 @Component({
@@ -33,6 +34,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   private _staffs$: Observable<Staff[]>; 
   
   readonly acceptedImageTypes = '.png,.jpg,.jpeg';
+  private photoChanged = false;
 
   @ViewChild('imagePreview', { read: ElementRef, static:true }) imagePreview: ElementRef;
      
@@ -54,7 +56,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     
     super.form = this.fb.group({
       hiringDate: [super.getDate(<any>super.entity.hiringDate)], 
-      photo: [super.entity.photo],
+      photo: [this.photo],
       employeeRegistration: [super.entity.employeeRegistration],
       name: [super.entity.name],
       birthDate: [super.getDate(<any>super.entity.birthDate)],
@@ -139,7 +141,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     this._staffs$ = merge(
       of(super.entity.staff.id).pipe(
         filter(id => !!id),
-        flatMap(id => this.staffsService.getOnlyStaffById$(id)),
+        flatMap(id => this.staffsService.getById$(id)),
         filter(staff => !!staff),
         map(staff => [staff])
       ),
@@ -155,7 +157,8 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   } 
 
   ngAfterViewInit() {
-    this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${this.photo})`);
+    const photo = this.photo;
+    this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${!!photo ? photo : EMPLOYEE_PHOTO})`);
   }
 
   submit$() {
@@ -167,6 +170,19 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     employee.user.id = this.userId;
     employee.staff = this.staff;
     
+    const photo: string = (<any>employee).photo;
+    if(this.photoChanged && photo && photo.match(/^data\:image\/(png|jpg|jpeg)\;base64\,([A-Za-z0-9\/\+\=]+)$/g)) {
+      const photos = super.entity.photos;
+      const employeePhoto = photos && photos.length > 0 ? photos[0] : <EmployeePhoto>{};
+      employeePhoto.imageType = <ImageType>photo.match(/(png|jpg|jpeg)/g)[0].toUpperCase();
+      employeePhoto.photo = photo.match(/([A-Za-z0-9\/\+\=]+)$/g)[0];
+
+      employee.photos = [employeePhoto];   
+    } else 
+      employee.photos = undefined;
+
+    (<any>employee).photo = undefined;
+    
     return this.employeesService.save$(employee).pipe(      
       tap(employee => {
         if(this.isRegistred)
@@ -175,16 +191,19 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
             this.form.patchValue({employeeRegistration: employee.employeeRegistration});
             this.eventsService.addSuccessAlert('Funcionário(a) cadastrado(a)!', `O(A) funcionário(a) "${employee.name}" foi cadastrado(a) com sucesso.`);  
         }
+        this.photoChanged = false;
       })
     ); 
   }
 
   private get photo() {
-    if(!super.entity.photo)
-      return EMPLOYEE_PHOTO;
+    if(!super.entity.photos || super.entity.photos.length < 1)
+      return undefined;
 
-    return super.entity.photo;
+    const photo = super.entity.photos[0];
+    return `data:image/${photo.imageType.toLowerCase()};base64,${photo.photo}`;
   }
+
 
   changePhoto(event: Event) {
     const files: FileList = (<any>event.target).files;
@@ -198,6 +217,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
         this.form.patchValue({photo: image});
         this.form.get('photo').markAsTouched();
         this.form.get('photo').markAsDirty();
+        this.photoChanged = true;
       };
       reader.readAsDataURL(file);
 	  }

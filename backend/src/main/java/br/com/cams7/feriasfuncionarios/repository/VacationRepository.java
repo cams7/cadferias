@@ -3,6 +3,7 @@
  */
 package br.com.cams7.feriasfuncionarios.repository;
 
+import static br.com.cams7.feriasfuncionarios.model.VacationEntity.WITH_EMPLOYEE;
 import static br.com.cams7.feriasfuncionarios.model.VacationEntity.WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE;
 
 import java.util.Optional;
@@ -21,9 +22,13 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
 public interface VacationRepository extends VacationRepositoryCustom, SoftDeleteCrudRepository<VacationEntity, Long> {
 
 	@Override
-	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE)
+	@EntityGraph(value = WITH_EMPLOYEE)
 	@Query("SELECT v FROM VacationEntity v WHERE v.id = :id AND v.active = true")
 	Optional<VacationEntity> findById(@Param("id") Long id);
+	
+	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE)
+	@Query("SELECT v FROM VacationEntity v WHERE v.id = :id AND v.active = true")
+	Optional<VacationEntity> findWithAuditById(@Param("id") Long id);
 
 	@Query("SELECT v.id FROM VacationEntity v WHERE v.employee.id = :employeeId AND v.active = true")
 	Long[] findIdsByEmployeeId(@Param("employeeId") Long employeeId);

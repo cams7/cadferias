@@ -1,6 +1,7 @@
 import { Auditable } from './auditable';
 import { User } from './user';
 import { Staff } from './staff';
+import { EmployeePhoto } from './employee-photo';
 
 //Entidade que representa o funcionário.
 export interface Employee extends Auditable {
@@ -21,8 +22,8 @@ export interface Employee extends Auditable {
     phoneNumber: string;
     //Endereço do funcionário.
     address: Address; 
-    //Foto do funcionário na codificação base 64.
-    photo: string;
+    //Fotos do funcionário.
+    photos: EmployeePhoto[];
 }
 
 //Entidade que representa o endereço do funcionário.

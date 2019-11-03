@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
-import { StaffsService } from './../staffs.service';
-import { Staff } from './../../shared/model/staff';
+import { StaffsService } from '../staffs.service';
+import { Staff } from '../../shared/model/staff';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StaffResolverGuard implements Resolve<Staff> {
+export class StaffResolver implements Resolve<Staff> {
   
   constructor(
     private staffsService: StaffsService

@@ -3,7 +3,8 @@
  */
 package br.com.cams7.feriasfuncionarios.repository;
 
-import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF;
+import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_USER_STAFF_PHOTOS;
+import static br.com.cams7.feriasfuncionarios.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -22,9 +23,13 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
 public interface EmployeeRepository extends EmployeeRepositoryCustom, SoftDeleteCrudRepository<EmployeeEntity, Long> {
 
 	@Override
-	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF)
+	@EntityGraph(value = WITH_USER_STAFF_PHOTOS)
 	@Query("SELECT e FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
 	Optional<EmployeeEntity> findById(@Param("id") Long id);
+	
+	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS)
+	@Query("SELECT e FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
+	Optional<EmployeeEntity> findWithAuditById(@Param("id") Long id);
 
 	@Query("SELECT e FROM EmployeeEntity e WHERE e.id = :id AND e.active = true")
 	Optional<EmployeeEntity> findOnlyEmployeeById(@Param("id") Long id);

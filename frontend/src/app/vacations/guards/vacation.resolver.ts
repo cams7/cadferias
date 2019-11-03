@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
-import { VacationsService } from './../vacations.service';
+import { VacationsService } from '../vacations.service';
 import { User } from 'src/app/shared/model/user';
 import { Staff } from 'src/app/shared/model/staff';
 import { Employee } from 'src/app/shared/model/employee';
-import { Vacation } from './../../shared/model/vacation';
+import { Vacation } from '../../shared/model/vacation';
 
 @Injectable({
   providedIn: 'root'
 })
-export class VacationResolverGuard implements Resolve<Vacation> {
+export class VacationResolver implements Resolve<Vacation> {
   
   constructor(
     private vacationsService: VacationsService

@@ -71,9 +71,9 @@ import lombok.ToString;
 @Table(name = "TB_USUARIO")
 public class UserEntity extends Auditable<Long> {
 
-	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "User.withCreatedByAndLastModifiedBy";
 	public static final String WITH_ROLES = "User.withRoles";
-
+	public static final String WITH_CREATEDBY_LASTMODIFIEDBY = "User.withCreatedByAndLastModifiedBy";
+	
 	@ApiModelProperty(notes = "Identificador único do usuário.", example = "1", required = true, position = 5)
 	@JsonView(Public.class)
 	@Null(groups = OnCreate.class, message = "{User.id.null}")

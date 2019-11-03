@@ -3,14 +3,14 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/r
 import { Observable, of } from 'rxjs';
 
 import { EmployeesService } from '../employees.service';
-import { User } from './../../shared/model/user';
-import { Staff } from './../../shared/model/staff';
-import { Employee, Address } from './../../shared/model/employee';
+import { User } from '../../shared/model/user';
+import { Staff } from '../../shared/model/staff';
+import { Employee, Address } from '../../shared/model/employee';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EmployeeResolverGuard implements Resolve<Employee> {
+export class EmployeeResolver implements Resolve<Employee> {
   
   constructor(
     private employeesService: EmployeesService
