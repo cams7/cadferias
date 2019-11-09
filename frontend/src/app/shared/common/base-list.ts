@@ -48,7 +48,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
 
     public form: FormGroup;
 
-    private _sortField = <SortVO>{property: 'id', direction: Direction.DESC};
+    private _sortField = <SortVO>{property: 'entityId', direction: Direction.DESC};
     private sortFields = new Map<string, Direction>();
 
     private deletedEntitySubject = new BehaviorSubject<number>(undefined);
@@ -170,20 +170,20 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         this.deletedEntitySubject.complete();
     }
 
-    private getItems$(entityId: number, pageAndSort: PageAndSortParamsVO, filter: F) {
-        if(!this._currentItems$ || !entityId || this.deletedEntities.some(id => id == entityId)) {  
+    private getItems$(id: number, pageAndSort: PageAndSortParamsVO, filter: F) {
+        if(!this._currentItems$ || !id || this.deletedEntities.some(entityId => entityId == id)) {  
             this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(         
                 shareReplay()
             );
         } else {            
             this._currentItems$.subscribe(pagination => {                
-                this.deletedEntities.push(entityId);
+                this.deletedEntities.push(id);
                 if(pagination.content.length == 1 && Number(this.page.page) < Number(this.numPages)) {
                     this._currentItems$ = this.service.getBySearch$(this.getSearch(pageAndSort, filter)).pipe(     
                         shareReplay()
                     );    
                 } else {
-                    pagination.content = pagination.content.filter(item => Number(item.id) != Number(entityId));
+                    pagination.content = pagination.content.filter(item => Number(item.entityId) != Number(id));
                     pagination.totalElements = Number(pagination.totalElements) - 1;                   
                 }
             });
@@ -376,7 +376,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
 
     onDelete(entity: E) {
         this.delete$(entity).subscribe(_ => {    
-            this.deletedEntitySubject.next(entity.id);                                
+            this.deletedEntitySubject.next(entity.entityId);                                
         });
     }
 

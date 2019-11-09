@@ -79,7 +79,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserRepository, UserEntity,
 	}
 
 	private void validateEmail(UserEntity user) {
-		Long userId = user.getId();
+		Long userId = user.getEntityId();
 		String email = user.getEmail();
 
 		boolean registeredUser = userId != null ? reporitory.existsByEmail(userId, email)

@@ -16,8 +16,8 @@ export class StaffResolver implements Resolve<Staff> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Staff> {
     if (route.params && route.params['id']) {
-      const id: number = route.params['id'];
-      return this.staffsService.getById$(id); 
+      const entityId: number = route.params['id'];
+      return this.staffsService.getById$(entityId); 
     }
 
     return of(<Staff>{});

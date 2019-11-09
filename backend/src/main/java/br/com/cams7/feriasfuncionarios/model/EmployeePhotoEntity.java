@@ -44,7 +44,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "entityId", callSuper = false)
 @Entity
 @Table(name = "TB_FOTO_FUNCIONARIO")
 public class EmployeePhotoEntity extends BaseEntity<Long> {
@@ -55,7 +55,7 @@ public class EmployeePhotoEntity extends BaseEntity<Long> {
 	@SequenceGenerator(name = "SQ_FOTO_FUNCIONARIO", sequenceName = "SQ_FOTO_FUNCIONARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_FOTO_FUNCIONARIO")
 	@Column(name = "ID_FOTO_FUNCIONARIO")
-	private Long id;
+	private Long entityId;
 
 	@ApiModelProperty(notes = "Extensão da imagem.", example = "JPEG", required = true, position = 1)
 	@JsonView(Public.class)

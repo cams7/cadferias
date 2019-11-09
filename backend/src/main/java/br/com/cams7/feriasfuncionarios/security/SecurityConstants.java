@@ -20,7 +20,7 @@ public final class SecurityConstants {
 	public static final String SIGNUP_URL = AUTH_URL + "/signup";
 
 	public static final String JWT_SUBJECT = "loggedUser";
-	public static final String USER_ID = "id";
+	public static final String USER_ID = "entityId";
 	public static final String USER_EMAIL = "email";
 	public static final String USER_ROLES = "roles";
 

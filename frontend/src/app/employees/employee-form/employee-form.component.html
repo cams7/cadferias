@@ -26,8 +26,8 @@
         <div class="row">
             <div class="col-md-4 mb-3" formGroupName="staff">
                 <label for="staffName" class="control-label">Equipe</label>
-                <ng-select id="staffName" formControlName="id" class="form-control" style="border: none" [ngClass]="classError('staff')"
-                    [items]="staffs$ | async" bindLabel="name" bindValue="id" [multiple]="false" [trackByFn]="trackById" [typeahead]="staffName$"
+                <ng-select id="staffName" formControlName="entityId" class="form-control" style="border: none" [ngClass]="classError('staff')"
+                    [items]="staffs$ | async" bindLabel="name" bindValue="entityId" [multiple]="false" [trackByFn]="trackById" [typeahead]="staffName$"
                     [searchable]="!isRegistred" [clearable]="!isRegistred" [hideSelected]="isRegistred" [openOnEnter]="false"
                     notFoundText="Nenhuma equipe foi encontrada" typeToSearchText="Informe o nome da equipe">
                 </ng-select>
@@ -81,6 +81,14 @@
                 <label for="addressNeighborhood">Bairro</label>
                 <input id="addressNeighborhood" type="text" class="form-control" formControlName="neighborhood" [ngClass]="classError('address.neighborhood')">
                 <field-error-display fieldName="address.neighborhood" (validation)="validation=$event"></field-error-display>
+            </div>            
+            <div class="col-md-3 mb-3">
+                <label for="addressState">Estado</label>
+                <ng-select id="addressState" formControlName="state" class="form-control" style="border: none" [ngClass]="classError('address.state')"
+                    [items]="states$ | async" bindLabel="name" bindValue="acronym" [multiple]="false" [trackByFn]="trackByAcronym" [typeahead]="stateName$"
+                    [openOnEnter]="false" notFoundText="Nenhum estado foi encontrado" typeToSearchText="Informe o nome do estado">
+                </ng-select>
+                <field-error-display fieldName="address.state" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="addressCity">Cidade</label>
@@ -89,14 +97,6 @@
                     [openOnEnter]="false" notFoundText="Nenhuma cidade foi encontrada" typeToSearchText="Informe o nome da cidade">
                 </ng-select>
                 <field-error-display fieldName="address.city" (validation)="validation=$event"></field-error-display>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="addressState">Estado</label>
-                <ng-select id="addressState" formControlName="state" class="form-control" style="border: none" [ngClass]="classError('address.state')"
-                    [items]="states$ | async" bindLabel="name" bindValue="acronym" [multiple]="false" [trackByFn]="trackByAcronym" [typeahead]="stateName$"
-                    [openOnEnter]="false" notFoundText="Nenhum estado foi encontrado" typeToSearchText="Informe o nome do estado">
-                </ng-select>
-                <field-error-display fieldName="address.state" (validation)="validation=$event"></field-error-display>
             </div>
         </div>
     </fieldset>

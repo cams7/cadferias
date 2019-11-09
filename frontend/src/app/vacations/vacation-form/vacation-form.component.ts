@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable, merge, of } from 'rxjs';
 import { tap, filter, flatMap, map, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -26,13 +26,14 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
+    protected router: Router,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService,
     private vacationsService: VacationsService
   ) { 
-    super(route, errorsService, confirmModalService);
+    super(route, router, errorsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -41,7 +42,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     super.form = this.fb.group({
       vacationDate: [this.vacationDate],
       employee: this.fb.group({
-        id: [this.entity.employee.id],
+        entityId: [this.entity.employee.entityId],
         employeeRegistration: [this.entity.employee.employeeRegistration],
         phoneNumber: [this.entity.employee.phoneNumber],
         user: this.fb.group({
@@ -53,7 +54,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
       }) 
     });
 
-    this.form.get('employee.id').valueChanges.pipe(
+    this.form.get('employee.entityId').valueChanges.pipe(
       filter(employeeId => !!employeeId),
       distinctUntilChanged(),
       switchMap(employeeId => this.employeesService.getById$(employeeId)),
@@ -65,9 +66,9 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     })
 
     this._employees$ = merge(
-      of(this.entity.employee.id).pipe(
-        filter(id => !!id),
-        flatMap(id => this.employeesService.getOnlyEmployeeById$(id)),
+      of(this.entity.employee.entityId).pipe(
+        filter(entityId => !!entityId),
+        flatMap(entityId => this.employeesService.getOnlyEmployeeById$(entityId)),
         filter(employee => !!employee),
         map(employee => [employee])
       ),
@@ -99,13 +100,13 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     vacation.startDate = this.startDate;
     vacation.endDate = this.endDate;
     (<any>vacation).vacationDate = undefined; 
-    vacation.id = this.entity.id;
+    vacation.entityId = this.entity.entityId;
     vacation.employee = this.employee;
         
     return this.vacationsService.save$(vacation).pipe(
       tap(vacation => {
         if(this.isRegistred)
-            this.eventsService.addSuccessAlert('Férias atualizada!', `Os dados da férias "${vacation.id}" foram atualizados com sucesso.`);
+            this.eventsService.addSuccessAlert('Férias atualizada!', `Os dados da férias "${vacation.entityId}" foram atualizados com sucesso.`);
         else
             this.eventsService.addSuccessAlert('Férias cadastrada!', `A férias foi cadastrada com sucesso.`);  
       })
@@ -132,7 +133,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     const vacation = <Vacation>this.form.value;
     const employee = vacation.employee;
 
-    if(!employee || !employee.id)
+    if(!employee || !employee.entityId)
       return undefined;
     
     employee.employeeRegistration = undefined;

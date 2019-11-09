@@ -30,7 +30,7 @@
                 <table class="table table-striped table-bordered table-sortable" style="width:100%">
                     <thead>
                         <tr>
-                            <th [sortField]="getSortField('id')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
+                            <th [sortField]="getSortField('entityId')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
                             <th [sortField]="getSortField('name')" (sortFieldChanged)="sortFieldChanged = $event">Nome</th>
                             <th [sortField]="getSortField('birthDate')" (sortFieldChanged)="sortFieldChanged = $event">Data de Nascimento</th>                        
                             <th [sortField]="getSortField('hiringDate')" (sortFieldChanged)="sortFieldChanged = $event">Data de contratação</th>                        
@@ -41,14 +41,14 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let employee of items$ | async">
-                            <td>{{ employee.id }}</td>
+                            <td>{{ employee.entityId }}</td>
                             <td>{{ employee.name }}</td>
                             <td>{{ employee.birthDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ employee.hiringDate | date: 'dd/MM/yyyy' }}</td>
                             <td>{{ employee.employeeRegistration }}</td>
                             <td>{{ employee.staff.name }}</td>
                             <td>
-                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(employee.id)"><i class="fa fa-edit"></i></a>&nbsp;
+                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(employee.entityId)"><i class="fa fa-edit"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(employee)"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                

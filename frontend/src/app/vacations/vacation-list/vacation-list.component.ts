@@ -72,10 +72,10 @@ export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> 
   }
 
   protected delete$(vacation: Vacation): Observable<void> {
-    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a férias "${vacation.id}"?`).pipe(
+    return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a férias "${vacation.entityId}"?`).pipe(
       filter(confirmed => confirmed),            
-      switchMap(_ => this.vacationsService.remove$(vacation.id)),
-      tap(_ => this.eventsService.addSuccessAlert('Férias excluída!', `A férias "${vacation.id}" foi excluida com sucesso.`))
+      switchMap(_ => this.vacationsService.remove$(vacation.entityId)),
+      tap(_ => this.eventsService.addSuccessAlert('Férias excluída!', `A férias "${vacation.entityId}" foi excluida com sucesso.`))
     );
   }
 

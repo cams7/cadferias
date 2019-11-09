@@ -8,8 +8,6 @@ import static br.com.cams7.feriasfuncionarios.common.Utils.SERVICE_SUFFIX;
 import static br.com.cams7.feriasfuncionarios.common.Utils.getEntityName;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
@@ -21,10 +19,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cams7.feriasfuncionarios.common.Utils;
+import br.com.cams7.feriasfuncionarios.common.Base;
 import br.com.cams7.feriasfuncionarios.error.AppException;
 import br.com.cams7.feriasfuncionarios.error.AppInvalidDataException;
 import br.com.cams7.feriasfuncionarios.error.AppResourceNotFoundException;
@@ -41,15 +38,12 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
  */
 @Transactional
 public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>, E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO>
-		implements BaseService<E, ID, F> {
+		extends Base implements BaseService<E, ID, F> {
 
 	private static final int REPOSITORY_INDEX = 0;
 	private static final int ENTITY_INDEX = 1;
 	private static final int ID_INDEX = 2;
 	private static final int FILTER_INDEX = 3;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@Autowired
 	private ValidatorFactory validatorFactory;
@@ -72,20 +66,27 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 
 	@Transactional(readOnly = true)
 	@Override
+	public E getWithAuditById(ID id) {
+		return reporitory.findWithAuditById(id).orElseThrow(() -> new AppResourceNotFoundException("Entity.notFound",
+				getMessage(getEntityName(getEntityType().getSimpleName())), id));
+	}
+
+	@Transactional(readOnly = true)
+	@Override
 	public boolean existsById(ID id) {
 		return reporitory.existsById(id);
 	}
 
 	@Override
 	public E create(E entity) {
-		entity.setId(null);
+		entity.setEntityId(null);
 		entity.setActive(true);
 		return reporitory.save(entity);
 	}
 
 	@Override
 	public E update(E entity) {
-		if (entity.getId() == null)
+		if (entity.getEntityId() == null)
 			throw new AppInvalidDataException("Entity.idNotNull",
 					getMessage(getEntityName(getEntityType().getSimpleName())));
 
@@ -112,43 +113,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 		return page;
 	}
 
-	protected Class<R> getRepositoryType() {
-		@SuppressWarnings("unchecked")
-		Class<R> type = (Class<R>) getTypeFromTemplate(REPOSITORY_INDEX);
-		return type;
-	}
-
-	protected Class<E> getEntityType() {
-		@SuppressWarnings("unchecked")
-		Class<E> entityType = (Class<E>) getEntityType(getClass());
-		return entityType;
-	}
-
-	private static Class<?> getEntityType(Class<?> type) {
-		Class<?> entityType = (Class<?>) getTypeFromTemplate(type, ENTITY_INDEX);
-		return entityType;
-	}
-
-	protected Class<ID> getIdType() {
-		@SuppressWarnings("unchecked")
-		Class<ID> type = (Class<ID>) getTypeFromTemplate(ID_INDEX);
-		return type;
-	}
-
-	protected Class<F> getFilterType() {
-		@SuppressWarnings("unchecked")
-		Class<F> type = (Class<F>) getTypeFromTemplate(FILTER_INDEX);
-		return type;
-	}
-
-	private Type getTypeFromTemplate(int index) {
-		return getTypeFromTemplate(getClass(), index);
-	}
-
-	private static Type getTypeFromTemplate(Class<?> type, int index) {
-		return ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[index];
-	}
-
 	protected void validateField(String fieldName, Object fieldValue, Class<?> validationType) {
 		String prefix = getPrefix();
 
@@ -160,10 +124,6 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 				.collect(Collectors.toSet());
 		if (constraintViolations.size() > 0)
 			throw new ConstraintViolationException(constraintViolations);
-	}
-
-	protected final String getMessage(String codeMessage, Object... args) {
-		return Utils.getMessage(messageSource, codeMessage, args);
 	}
 
 	private String getPrefix() {
@@ -188,6 +148,31 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 			prefix += CLASS_SEPARATOR;
 
 		return prefix;
+	}
+
+	protected Class<R> getRepositoryType() {
+		@SuppressWarnings("unchecked")
+		Class<R> type = (Class<R>) getTypeFromTemplate(REPOSITORY_INDEX);
+		return type;
+	}
+
+	private Class<?> getEntityType(Class<?> type) {
+		return getTypeFromTemplate(type, ENTITY_INDEX);
+	}
+
+	@Override
+	protected int getIdIndex() {
+		return ID_INDEX;
+	}
+
+	@Override
+	protected int getEntityIndex() {
+		return ENTITY_INDEX;
+	}
+
+	@Override
+	protected int getFilterIndex() {
+		return FILTER_INDEX;
 	}
 
 }

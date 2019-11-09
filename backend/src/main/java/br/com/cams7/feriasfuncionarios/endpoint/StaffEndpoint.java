@@ -4,6 +4,7 @@
 package br.com.cams7.feriasfuncionarios.endpoint;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 import javax.validation.Valid;
 
@@ -31,7 +32,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api("Endpoint utilizado para criação, recuperação, atualização e exclusão de equipes.")
 @RestController
-@RequestMapping(path = "/staffs")
+@RequestMapping(path = "/staffs", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 public class StaffEndpoint extends BaseEndpoint<StaffService, StaffEntity, Long, StaffFilterVO> {
 
 	@ApiOperation("Carrega as equipes pelo filtro de busca do select.")

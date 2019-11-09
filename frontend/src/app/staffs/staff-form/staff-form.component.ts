@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 
 import { EventsService } from './../../shared/events.service';
@@ -20,12 +20,13 @@ export class StaffFormComponent extends BaseForm<Staff> {
   constructor(
     private fb: FormBuilder,
     protected route: ActivatedRoute,
+    protected router: Router,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super(route, errorsService, confirmModalService);
+    super(route, router, errorsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -38,7 +39,7 @@ export class StaffFormComponent extends BaseForm<Staff> {
 
   submit$() {
     const staff = <Staff>this.form.value;
-    staff.id = this.entity.id;
+    staff.entityId = this.entity.entityId;
 
     return this.staffsService.save$(staff).pipe(
       tap(staff => {

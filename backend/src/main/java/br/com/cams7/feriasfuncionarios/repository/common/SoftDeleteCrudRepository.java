@@ -27,12 +27,15 @@ public interface SoftDeleteCrudRepository<E extends Auditable<ID>, ID extends Se
 	Iterable<E> findAll();
 
 	@Override
-	@Query("SELECT e FROM #{#entityName} e WHERE e.id IN ?1 AND e.active = true")
+	@Query("SELECT e FROM #{#entityName} e WHERE e.entityId IN ?1 AND e.active = true")
 	Iterable<E> findAllById(Iterable<ID> ids);
 
 	@Override
-	@Query("SELECT e FROM #{#entityName} e WHERE e.id = ?1 AND e.active = true")
+	@Query("SELECT e FROM #{#entityName} e WHERE e.entityId = ?1 AND e.active = true")
 	Optional<E> findById(ID id);
+	
+	@Query("SELECT e FROM #{#entityName} e WHERE e.entityId = ?1 AND e.active = true")
+	Optional<E> findWithAuditById(ID id);
 
 	@Query("SELECT e FROM #{#entityName} e WHERE e.active = false")
 	Iterable<E> findInactive();
@@ -41,33 +44,33 @@ public interface SoftDeleteCrudRepository<E extends Auditable<ID>, ID extends Se
 	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.active = true")
 	long count();
 
-	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
+	@Query("SELECT COUNT(e) FROM #{#entityName} e WHERE e.entityId = ?1 and e.active = true")
 	long countById(ID id);
 
 	@Override
-	@Query("SELECT (COUNT(e) > 0) FROM #{#entityName} e WHERE e.id = ?1 and e.active = true")
+	@Query("SELECT (COUNT(e) > 0) FROM #{#entityName} e WHERE e.entityId = ?1 and e.active = true")
 	boolean existsById(ID id);
 
 	@Override
-	@Query("UPDATE #{#entityName} e SET e.active=false WHERE e.id = ?1")
+	@Query("UPDATE #{#entityName} e SET e.active=false WHERE e.entityId = ?1")
 	@Modifying(flushAutomatically = true)
 	void deleteById(ID id);
 
 	@Override
 	default void delete(E entity) {
-		ID id = entity.getId();
+		ID id = entity.getEntityId();
 		deleteById(id);
 	}
 
 	@Override
 	default void deleteAll(Iterable<? extends E> entities) {
 		entities.forEach(entity -> {
-			ID id = entity.getId();
+			ID id = entity.getEntityId();
 			deleteById(id);
 		});
 	}
 
-	@Query("UPDATE #{#entityName} e SET e.active=false WHERE e.id IN ?1")
+	@Query("UPDATE #{#entityName} e SET e.active=false WHERE e.entityId IN ?1")
 	@Modifying(flushAutomatically = true)
 	void deleteAllById(Iterable<ID> ids);
 

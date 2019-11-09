@@ -23,17 +23,18 @@ public interface VacationRepository extends VacationRepositoryCustom, SoftDelete
 
 	@Override
 	@EntityGraph(value = WITH_EMPLOYEE)
-	@Query("SELECT v FROM VacationEntity v WHERE v.id = :id AND v.active = true")
+	@Query("SELECT v FROM VacationEntity v WHERE v.entityId = :id AND v.active = true")
 	Optional<VacationEntity> findById(@Param("id") Long id);
 	
+	@Override
 	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_EMPLOYEE)
-	@Query("SELECT v FROM VacationEntity v WHERE v.id = :id AND v.active = true")
+	@Query("SELECT v FROM VacationEntity v WHERE v.entityId = :id AND v.active = true")
 	Optional<VacationEntity> findWithAuditById(@Param("id") Long id);
 
-	@Query("SELECT v.id FROM VacationEntity v WHERE v.employee.id = :employeeId AND v.active = true")
+	@Query("SELECT v.entityId FROM VacationEntity v WHERE v.employee.entityId = :employeeId AND v.active = true")
 	Long[] findIdsByEmployeeId(@Param("employeeId") Long employeeId);
 	
-	@Query("SELECT v.employee.id FROM VacationEntity v WHERE v.id = :id AND v.active = true")
+	@Query("SELECT v.employee.entityId FROM VacationEntity v WHERE v.entityId = :id AND v.active = true")
 	Long findEmployeeIdById(@Param("id") Long id);
 
 }

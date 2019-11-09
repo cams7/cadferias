@@ -49,7 +49,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "entityId", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = WITH_EMPLOYEE, attributeNodes = {
@@ -83,7 +83,7 @@ public class VacationEntity extends Auditable<Long> {
 	@SequenceGenerator(name = "SQ_FERIAS", sequenceName = "SQ_FERIAS", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_FERIAS")
 	@Column(name = "ID_FERIAS", nullable = false, updatable = false)
-	private Long id;
+	private Long entityId;
 
 	@ApiModelProperty(notes = "Funcionário do qual pertence a férias.", required = true, position = 6)
 	@JsonView(Public.class)

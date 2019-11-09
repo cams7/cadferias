@@ -18,8 +18,8 @@ export class EmployeeResolver implements Resolve<Employee> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Employee> {
     if (route.params && route.params['id']) {
-      const id: number = route.params['id'];
-      return this.employeesService.getById$(id); 
+      const entityId: number = route.params['id'];
+      return this.employeesService.getById$(entityId); 
     }
 
     const employee = <Employee>{};

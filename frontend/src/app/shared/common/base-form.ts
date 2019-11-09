@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { flatMap, filter } from 'rxjs/operators';
 
@@ -29,6 +29,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     constructor(
         protected route: ActivatedRoute,
+        protected router: Router,
         protected errorsService: ErrorsService,
         protected confirmModalService: ConfirmModalService
     ) { 
@@ -70,8 +71,9 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
             this._submitted = false;
             this.errorsService.addError();
 
-            if(!this.isRegistred)
-                this._entity = entity;
+            if(!this.isRegistred) {
+                this.router.navigate([entity.entityId], {relativeTo: this.route.parent});
+            }
         });
     } 
     
@@ -102,7 +104,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     }
 
     trackById(entity: BaseEntity) {
-        return entity.id;
+        return entity.entityId;
     }    
 
     get submitted() {
@@ -136,7 +138,7 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     }
 
     get isRegistred() {
-        return this._entity && this._entity.id;
+        return this._entity && this._entity.entityId;
     }
 
     get debounceTime() {

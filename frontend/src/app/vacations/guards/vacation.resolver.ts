@@ -19,8 +19,8 @@ export class VacationResolver implements Resolve<Vacation> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Vacation> {
     if (route.params && route.params['id']) {
-      const id: number = route.params['id'];
-      return this.vacationsService.getById$(id); 
+      const entityId: number = route.params['id'];
+      return this.vacationsService.getById$(entityId); 
     } 
 
     const vacation = <Vacation>{};

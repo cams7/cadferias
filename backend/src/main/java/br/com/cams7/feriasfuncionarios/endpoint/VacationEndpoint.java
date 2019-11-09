@@ -3,6 +3,8 @@
  */
 package br.com.cams7.feriasfuncionarios.endpoint;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,6 @@ import io.swagger.annotations.Api;
  */
 @Api("Endpoint utilizado para criação, recuperação, atualização e exclusão de férias.")
 @RestController
-@RequestMapping(path = "/vacations")
+@RequestMapping(path = "/vacations", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 public class VacationEndpoint extends BaseEndpoint<VacationService, VacationEntity, Long, VacationFilterVO> {
-
 }

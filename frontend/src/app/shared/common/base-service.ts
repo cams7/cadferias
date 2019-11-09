@@ -34,7 +34,7 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
     }
 
     save$(entity: E) {
-        if (entity.id)
+        if (entity.entityId)
             return this.update$(entity);
 
         return this.create$(entity);

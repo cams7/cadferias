@@ -20,7 +20,7 @@ public final class SecurityUtil {
 
 		if (!(authentication.getPrincipal() instanceof UserEntity)) {
 			UserEntity user = new UserEntity();
-			user.setId(1l);
+			user.setEntityId(1l);
 			return user;
 		}
 

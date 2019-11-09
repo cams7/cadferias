@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly queryParams = <PageAndSortParamsVO>{
     page: 1, 
     itemsPerPage: 10,
-    sort: 'id',
+    sort: 'entityId',
     order: Direction.DESC
   };
 

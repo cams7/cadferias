@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import br.com.cams7.feriasfuncionarios.common.Validations.EmailRegistered;
 import br.com.cams7.feriasfuncionarios.common.Validations.OnCreate;
 import br.com.cams7.feriasfuncionarios.common.Validations.OnUpdate;
+import br.com.cams7.feriasfuncionarios.common.Views.Details;
 import br.com.cams7.feriasfuncionarios.common.Views.LoggedIn;
 import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
@@ -55,7 +56,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "entityId", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = WITH_CREATEDBY_LASTMODIFIEDBY, attributeNodes = {
@@ -82,7 +83,7 @@ public class UserEntity extends Auditable<Long> {
 	@SequenceGenerator(name = "SQ_USUARIO", sequenceName = "SQ_USUARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_USUARIO")
 	@Column(name = "ID_USUARIO", nullable = false, updatable = false)
-	private Long id;
+	private Long entityId;
 
 	@ApiModelProperty(notes = "E-mail do usuário.", example = "usuario@teste.com", required = true, position = 6)
 	@JsonView(Public.class)
@@ -105,14 +106,14 @@ public class UserEntity extends Auditable<Long> {
 	private String encryptedPassword;
 
 	@ApiModelProperty(notes = "Listagem com as funções (ROLES) do usuário.", required = false, position = 8)
-	@JsonView(Public.class)
+	@JsonView(Details.class)
 	@ManyToMany(fetch = LAZY)
 	@JoinTable(name = "TB_USUARIO_FUNCAO", joinColumns = { @JoinColumn(name = "ID_USUARIO") }, inverseJoinColumns = {
 			@JoinColumn(name = "ID_FUNCAO") })
 	private Set<RoleEntity> roles;
 
 	public UserEntity(Long id) {
-		this.id = id;
+		this.entityId = id;
 	}
 
 //	@ApiModelProperty(notes = "Funcionário vinculado ao usuário.", required = false, position = 8)

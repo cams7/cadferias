@@ -5,6 +5,7 @@ package br.com.cams7.feriasfuncionarios.endpoint;
 
 import static br.com.cams7.feriasfuncionarios.security.SecurityConstants.AUTH_URL;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 import javax.validation.Valid;
 
@@ -30,7 +31,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api("Endpoint utilizado para autenticação do usuário.")
 @RestController
-@RequestMapping(path = AUTH_URL)
+@RequestMapping(path = AUTH_URL, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 public class AuthEndpoint {
 
 	@Autowired

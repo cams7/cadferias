@@ -56,7 +56,7 @@ public class TokenAuthentication {
 		// @formatter:off		
 		String token = Jwts.builder()
 				.setSubject(JWT_SUBJECT)
-				.claim(USER_ID, user.getId())
+				.claim(USER_ID, user.getEntityId())
 				.claim(USER_EMAIL, user.getEmail())
 				.claim(USER_ROLES, roles)
 				.setExpiration(new Date(getTimestamp() + EXPIRATION_TIME))
@@ -80,7 +80,7 @@ public class TokenAuthentication {
 
 		String subject = claims.getSubject();
 		UserEntity user = new UserEntity();
-		user.setId(((Integer) claims.get(USER_ID)).longValue());
+		user.setEntityId(((Integer) claims.get(USER_ID)).longValue());
 		user.setEmail((String) claims.get(USER_EMAIL));
 
 		Set<RoleEntity> roles = Arrays.asList(((String) claims.get(USER_ROLES)).split(DELIMITER)).stream()

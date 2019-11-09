@@ -64,7 +64,7 @@ export class AuthService {
     try{
       const decoded = JSON.parse(atob(tokenSplitted[1]));
       const loggedUser = <User>{};
-      loggedUser.id = Number(decoded['id']);
+      loggedUser.entityId = Number(decoded['entityId']);
       loggedUser.email = decoded['email'];
       loggedUser.roles = (<string>decoded['roles']).split(/\,/g).map(roleName => {
         const role = <Role>{};
@@ -90,13 +90,13 @@ export class AuthService {
 
   get loggedUser$() {
     return this._loggedUser$.pipe(  
-      filter(user => this.tokenStorage.token && !!user && !!user.id)
+      filter(user => this.tokenStorage.token && !!user && !!user.entityId)
     );
   }
 
   get loggedIn$() {
     return this._loggedUser$.pipe(
-      map(user => this.tokenStorage.token && !!user && !!user.id)
+      map(user => this.tokenStorage.token && !!user && !!user.entityId)
     );  
   }
   

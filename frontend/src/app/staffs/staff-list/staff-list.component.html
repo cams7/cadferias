@@ -30,17 +30,17 @@
                 <table class="table table-striped table-bordered table-sortable" style="width:100%">
                     <thead>
                         <tr>
-                            <th [sortField]="getSortField('id')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
+                            <th [sortField]="getSortField('entityId')" (sortFieldChanged)="sortFieldChanged = $event"># </th>
                             <th [sortField]="getSortField('name')" (sortFieldChanged)="sortFieldChanged = $event">Nome</th>
                             <th class="without-order">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let staff of items$ | async">
-                            <td>{{ staff.id }}</td>
+                            <td>{{ staff.entityId }}</td>
                             <td>{{ staff.name }}</td>
                             <td>
-                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(staff.id)"><i class="fa fa-edit"></i></a>&nbsp;
+                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(staff.entityId)"><i class="fa fa-edit"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(staff)"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                

@@ -20,8 +20,9 @@ import br.com.cams7.feriasfuncionarios.repository.common.SoftDeleteCrudRepositor
  */
 public interface StaffRepository extends StaffRepositoryCustom, SoftDeleteCrudRepository<StaffEntity, Long> {
 
+	@Override
 	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY)
-	@Query("SELECT s FROM StaffEntity s WHERE s.id = :id AND s.active = true")
+	@Query("SELECT s FROM StaffEntity s WHERE s.entityId = :id AND s.active = true")
 	Optional<StaffEntity> findWithAuditById(@Param("id") Long id);
 
 }

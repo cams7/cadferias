@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, EMPTY } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
@@ -22,12 +22,13 @@ export class SigninModalComponent extends BaseForm<User> {
   constructor(   
     private fb: FormBuilder,
     protected route: ActivatedRoute,
+    protected router: Router,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super(route, errorsService, confirmModalService);
+    super(route, router, errorsService, confirmModalService);
   }
 
   ngOnInit() {

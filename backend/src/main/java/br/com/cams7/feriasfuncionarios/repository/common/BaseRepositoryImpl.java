@@ -6,8 +6,6 @@ package br.com.cams7.feriasfuncionarios.repository.common;
 import static br.com.cams7.feriasfuncionarios.model.vo.pagination.SortVO.Direction.DESC;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import br.com.cams7.feriasfuncionarios.common.Base;
 import br.com.cams7.feriasfuncionarios.model.common.Auditable;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchBySelectVO;
 import br.com.cams7.feriasfuncionarios.model.vo.SearchVO;
@@ -38,7 +37,7 @@ import br.com.cams7.feriasfuncionarios.model.vo.pagination.SortVO;
  *
  */
 public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO>
-		implements BaseRepository<E, ID, F> {
+		extends Base implements BaseRepository<E, ID, F> {
 
 	private static final int ENTITY_INDEX = 0;
 	private static final int ID_INDEX = 1;
@@ -55,34 +54,14 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 	@PersistenceContext
 	protected EntityManager em;
 
-	private Type getTypeFromTemplate(int index) {
-		return ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
-	}
-
-	protected Class<E> getEntityType() {
-		@SuppressWarnings("unchecked")
-		Class<E> type = (Class<E>) getTypeFromTemplate(ENTITY_INDEX);
-		return type;
-	}
-
-	protected Class<ID> getIdType() {
-		@SuppressWarnings("unchecked")
-		Class<ID> type = (Class<ID>) getTypeFromTemplate(ID_INDEX);
-		return type;
-	}
-
-	protected Class<F> getFilterType() {
-		@SuppressWarnings("unchecked")
-		Class<F> type = (Class<F>) getTypeFromTemplate(FILTER_INDEX);
-		return type;
-	}
-
 	@Override
 	public PageVO<E, ID> findBySearch(SearchVO<F> search) {
 		F filter = search.getSearchFilter();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<E> selectQuery = cb.createQuery(getEntityType());
-		Root<E> root = selectQuery.from(getEntityType());
+		@SuppressWarnings("unchecked")
+		CriteriaQuery<E> selectQuery = cb.createQuery((Class<E>) getEntityType());
+		@SuppressWarnings("unchecked")
+		Root<E> root = selectQuery.from((Class<E>) getEntityType());
 
 		Join<?, ?>[] join = getJoin(root, true);
 
@@ -118,7 +97,8 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		Long totalElements = pageInput.getTotalElements();
 		if (pageInput.getChangedQuery()) {
 			CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-			Root<E> root = countQuery.from(getEntityType());
+			@SuppressWarnings("unchecked")
+			Root<E> root = countQuery.from((Class<E>) getEntityType());
 			Join<?, ?>[] join = getJoin(root, false);
 
 			countQuery.select(cb.count(root));
@@ -214,8 +194,10 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 	 */
 	protected Iterable<E> findBySearch(SearchBySelectVO search, String fieldName) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<E> selectQuery = cb.createQuery(getEntityType());
-		Root<E> root = selectQuery.from(getEntityType());
+		@SuppressWarnings("unchecked")
+		CriteriaQuery<E> selectQuery = cb.createQuery((Class<E>) getEntityType());
+		@SuppressWarnings("unchecked")
+		Root<E> root = selectQuery.from((Class<E>) getEntityType());
 		selectQuery.select(root);
 		Predicate[] and = new Predicate[] { cb.isTrue(root.get(FIELD_ACTIVE)),
 				cb.like(cb.lower(root.get(fieldName)), getLowerValue2Like(search.getSearchValue())) };
@@ -234,6 +216,21 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		typedQuery.setMaxResults(search.getSize());
 		List<E> staffs = typedQuery.getResultList();
 		return staffs;
+	}
+
+	@Override
+	protected int getIdIndex() {
+		return ID_INDEX;
+	}
+
+	@Override
+	protected int getEntityIndex() {
+		return ENTITY_INDEX;
+	}
+
+	@Override
+	protected int getFilterIndex() {
+		return FILTER_INDEX;
 	}
 
 }

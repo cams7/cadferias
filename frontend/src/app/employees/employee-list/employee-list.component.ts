@@ -76,7 +76,7 @@ export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> 
   protected delete$(employee: Employee): Observable<void> {
     return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover o(a) funcionário(a) "${employee.name}"?`).pipe(
       filter(confirmed => confirmed),
-      flatMap(_ => this.employeesService.remove$(employee.id)),
+      flatMap(_ => this.employeesService.remove$(employee.entityId)),
       tap(_ => this.eventsService.addSuccessAlert('Funcionário(a) excluído(a)!', `O(A) funcionário(a) "${employee.name}" foi excluido(a) com sucesso.`))
     );
   }

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, merge, of, Subject, forkJoin } from 'rxjs';
 import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, debounceTime, flatMap, tap } from 'rxjs/operators';
 
@@ -42,13 +42,14 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     private renderer: Renderer2,
     private fb: FormBuilder,
     protected route: ActivatedRoute,
+    protected router: Router,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService,
     private employeesService: EmployeesService    
   ) { 
-    super(route, errorsService, confirmModalService);
+    super(route, router, errorsService, confirmModalService);
   }
 
   ngOnInit() {
@@ -72,7 +73,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
         email: [super.entity.user.email]
       }),
       staff: this.fb.group({
-        id: [super.entity.staff.id]
+        entityId: [super.entity.staff.entityId]
       })
     });
 
@@ -139,9 +140,9 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     );
     
     this._staffs$ = merge(
-      of(super.entity.staff.id).pipe(
-        filter(id => !!id),
-        flatMap(id => this.staffsService.getById$(id)),
+      of(super.entity.staff.entityId).pipe(
+        filter(entityId => !!entityId),
+        flatMap(entityId => this.staffsService.getById$(entityId)),
         filter(staff => !!staff),
         map(staff => [staff])
       ),
@@ -163,11 +164,11 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
 
   submit$() {
     const employee = <Employee>this.form.value;
-    employee.id = super.entity.id;
+    employee.entityId = super.entity.entityId;
     employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
     employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
     employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
-    employee.user.id = this.userId;
+    employee.user.entityId = this.userId;
     employee.staff = this.staff;
     
     const photo: string = (<any>employee).photo;
@@ -224,12 +225,12 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   }
 
   get userId() {
-    return super.entity.user.id;
+    return super.entity.user.entityId;
   }
 
   get staff() {
     const employee = <Employee>this.form.value;
-    if(!employee.staff || !employee.staff.id)
+    if(!employee.staff || !employee.staff.entityId)
       return undefined;
     
     return employee.staff;

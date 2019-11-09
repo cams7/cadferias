@@ -19,6 +19,8 @@ public interface BaseService<E extends Auditable<ID>, ID extends Serializable, F
 //	Iterable<E> getAll();
 
 	E getById(ID id);
+	
+	E getWithAuditById(ID id);
 
 	boolean existsById(ID id);
 

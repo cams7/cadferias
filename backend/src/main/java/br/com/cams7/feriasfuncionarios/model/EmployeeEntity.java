@@ -62,7 +62,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "entityId", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = WITH_USER_STAFF_PHOTOS, attributeNodes = {
@@ -94,7 +94,7 @@ public class EmployeeEntity extends Auditable<Long> {
 	@SequenceGenerator(name = "SQ_FUNCIONARIO", sequenceName = "SQ_FUNCIONARIO", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = SEQUENCE, generator = "SQ_FUNCIONARIO")
 	@Column(name = "ID_FUNCIONARIO", nullable = false, updatable = false)
-	private Long id;
+	private Long entityId;
 
 	@ApiModelProperty(notes = "Usuário vinculado ao funcionário.", required = true, position = 6)
 	@JsonView(Public.class)
@@ -152,7 +152,7 @@ public class EmployeeEntity extends Auditable<Long> {
 	private Address address;
 
 	@ApiModelProperty(notes = "Fotos do funcionário.", required = false, position = 13)
-	@JsonView(Details.class)
+	@JsonView(Public.class)
 	@Valid
 	@OneToMany(mappedBy = "employee")
 	private Collection<EmployeePhotoEntity> photos;
@@ -164,7 +164,7 @@ public class EmployeeEntity extends Auditable<Long> {
 
 	public EmployeeEntity(Long id) {
 		this();
-		this.id = id;
+		this.entityId = id;
 	}
 
 	@ApiModel(description = "Entidade que representa o endereço do funcionário.")

@@ -58,7 +58,7 @@ export class StaffListComponent extends BaseList<Staff, StaffFilterVO> {
   protected delete$(staff: Staff): Observable<void> {
     return this.confirmModalService.showConfirm$('Confirmação', `Tem certeza que deseja remover a equipe "${staff.name}"?`).pipe(
       filter(confirmed => confirmed),
-      flatMap(_ => this.staffsService.remove$(staff.id)), 
+      flatMap(_ => this.staffsService.remove$(staff.entityId)), 
       tap(_ => this.eventsService.addSuccessAlert('Equipe excluída!', `A equipe "${staff.name}" foi excluida com sucesso.`))
     );
   }

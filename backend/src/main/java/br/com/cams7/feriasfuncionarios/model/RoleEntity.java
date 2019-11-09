@@ -23,6 +23,7 @@ import org.hibernate.annotations.NaturalId;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import br.com.cams7.feriasfuncionarios.common.Views.Details;
 import br.com.cams7.feriasfuncionarios.common.Views.Public;
 import br.com.cams7.feriasfuncionarios.model.common.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -42,7 +43,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "entityId", callSuper = false)
 @Entity
 @Table(name = "TB_FUNCAO", uniqueConstraints = { @UniqueConstraint(columnNames = { "nome" }) })
 public class RoleEntity extends BaseEntity<Long> {
@@ -53,7 +54,7 @@ public class RoleEntity extends BaseEntity<Long> {
 	@SequenceGenerator(name = "sq_funcao", sequenceName = "sq_funcao", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sq_funcao")
 	@Column(name = "ID_FUNCAO")
-	private Long id;
+	private Long entityId;
 
 	@ApiModelProperty(notes = "Nome da função (ROLE).", example = "ROLE_USER", required = true, position = 1)
 	@JsonView(Public.class)
@@ -63,7 +64,7 @@ public class RoleEntity extends BaseEntity<Long> {
 	private RoleName name;
 
 	@ApiModelProperty(notes = "Listagem com os usuários que tem essa função (ROLE).", required = false, position = 2)
-	@JsonView(Public.class)
+	@JsonView(Details.class)
 	@ManyToMany(mappedBy = "roles", fetch = LAZY)
 	private Set<UserEntity> users;
 
