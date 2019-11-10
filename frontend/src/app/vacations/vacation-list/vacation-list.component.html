@@ -41,13 +41,14 @@
                     <tbody>
                         <tr *ngFor="let vacation of items$ | async">
                             <td>{{ vacation.entityId }}</td>
-                            <td>{{ vacation.startDate | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ vacation.endDate | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ vacation.employee.name }}</td>
-                            <td>{{ vacation.employee.staff.name }}</td>
+                            <td>{{ vacation.startDate | date:'shortDate' }}</td>
+                            <td>{{ vacation.endDate | date:'shortDate' }}</td>
+                            <td><a [routerLink]="['/employees', vacation.employee.entityId, 'details']"> {{ vacation.employee.name }}</a></td>
+                            <td><a [routerLink]="['/staffs', vacation.employee.staff.entityId, 'details']"> {{ vacation.employee.staff.name }}</a></td>
                             <td>
+                                <a class="btn btn-sm btn-outline-info mb-1" role="button" (click)="onDetails(vacation.entityId)" [tooltip]="getWithAuditByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-info-circle"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.entityId)" [tooltip]="getByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-edit"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(vacation)" [tooltip]="deleteRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
+                                <a class="btn btn-sm btn-outline-danger mb-1" role="button" (click)="onDelete(vacation)" [tooltip]="deleteRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                
                     </tbody>                

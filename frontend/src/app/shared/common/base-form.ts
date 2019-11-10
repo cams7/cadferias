@@ -6,19 +6,19 @@ import { flatMap, filter } from 'rxjs/operators';
 
 import { MASKS } from 'ng-brazil';
 
-import { Base, BR_DATE_FORMAT } from './base';
+import { Base, BR_DATE_FORMAT, QUERY_PARAMS } from './base';
 import { ErrorsService } from '../errors.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { BaseEntity, Link } from '../model/base-entity';
-import { FieldValidationVO } from './field-error-message/field-error-display.component';
+import { FieldValidationVO } from './field-error-display/field-error-display.component';
 import { MessageType } from '../model/vo/message/message-vo';
 import { ErrorException } from '../model/vo/error/error-vo';
 
 const DEBOUNCE_TIME = 500;
 export abstract class BaseForm<E extends BaseEntity> extends Base implements OnInit {
-          
-    private _brazilMasks = MASKS;
 
+    private _brazilMasks = MASKS;
+ 
     public form: FormGroup;
     protected _submitted = false;
 
@@ -106,6 +106,14 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
     trackById(entity: BaseEntity) {
         return entity.entityId;
     }
+
+    onList() {
+        this.router.navigate([`/${this.route.parent.routeConfig.path}`], { queryParams: QUERY_PARAMS });    
+    }
+
+    onDetails() {
+        this.router.navigate([this.entity.entityId, 'details'], { relativeTo: this.route.parent });
+    }
     
     abstract get getBySearchRel(): Link;
     abstract get getWithAuditByIdRel(): Link;
@@ -134,16 +142,16 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
         }
     }
 
-    get brazilMasks() {
-        return this._brazilMasks;
-    }
-
     get entity() {
         return this._entity;
     }
 
     get isRegistred() {
         return this._entity && this._entity.entityId;
+    }
+
+    get brazilMasks() {
+        return this._brazilMasks;
     }
 
     get debounceTime() {

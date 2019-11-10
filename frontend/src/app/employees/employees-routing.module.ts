@@ -5,6 +5,7 @@ import { FormDeactivateGuard } from '../shared/guards/form-deactivate.guard';
 import { EmployeeResolver } from './guards/employee.resolver';
 import { EmployeeFormComponent } from './employee-form/employee-form.component';
 import { EmployeeListComponent } from './employee-list/employee-list.component';
+import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 
 const routes: Routes = [ 
   {
@@ -12,6 +13,11 @@ const routes: Routes = [
     component: EmployeeFormComponent,
     resolve: { entity : EmployeeResolver },
     canDeactivate: [FormDeactivateGuard]
+  },
+  {
+    path: ':id/details',
+    component: EmployeeDetailsComponent,
+    resolve: { entity : EmployeeResolver }
   },
   {
     path: ':id',

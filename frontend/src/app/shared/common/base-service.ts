@@ -21,9 +21,13 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
     getBySearch$(search: SearchVO<F>) {
         return this.http.post<PageVO<E>>(`${this.API_URL}/search`, search);
     }
-    
+        
     getById$(id: number) {        
         return this.http.get<E>(`${this.API_URL}/${id}`);
+    }
+
+    getWithAuditById$(id: number) {        
+        return this.http.get<E>(`${this.API_URL}/${id}/details`);
     }
 
     protected create$(entity: E) {

@@ -61,6 +61,7 @@
 .table-sortable > thead > tr > th.without-order {
   cursor: none;
   position: relative;
+  width: 15%;
 }
 
 .table-sortable > thead > tr > th.without-order:after {

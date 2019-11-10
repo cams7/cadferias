@@ -10,10 +10,9 @@ import { ErrorsService } from './shared/errors.service';
 import { AuthService } from './shared/auth/auth.service';
 import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
-import { Direction } from './shared/model/vo/pagination/sort-vo';
-import { PageAndSortParamsVO } from './shared/model/vo/page-params-vo';
 import { MessageType } from './shared/model/vo/message/message-vo';
 import { ErrorException } from './shared/model/vo/error/error-vo';
+import { QUERY_PARAMS } from './shared/common/base';
 
 @Component({
   selector: 'app-root',
@@ -22,12 +21,7 @@ import { ErrorException } from './shared/model/vo/error/error-vo';
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {  
 
-  readonly queryParams = <PageAndSortParamsVO>{
-    page: 1, 
-    itemsPerPage: 10,
-    sort: 'entityId',
-    order: Direction.DESC
-  };
+  readonly queryParams = QUERY_PARAMS;
 
   private _alerts: AlertMessageVO[] = [];
   private subscriptions: Subscription[] = [];

@@ -11,12 +11,12 @@
                     <div id="imagePreview" #imagePreview></div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-5 mb-3">
                 <label for="name" class="control-label">Nome</label>
                 <input id="name" type="text" class="form-control" formControlName="name" [ngClass]="classError('name')">
                 <field-error-display fieldName="name" (validation)="validation=$event"></field-error-display>          
             </div>
-            <div class="col-md-2 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="birthDate" class="control-label">Data de nascimento</label>
                 <input id="birthDate" type="text" class="form-control" formControlName="birthDate" [ngClass]="classError('birthDate')" 
                     bsDatepicker [bsConfig]="bsConfig">
@@ -34,12 +34,12 @@
                 <field-error-display fieldName="staff" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
-                <label for="employeeRegistration" class="col-form-label">Matricula</label>
+                <label for="employeeRegistration" class="control-label">Matricula</label>
                 <input id="employeeRegistration" type="text" readonly=true [class.form-control-plaintext]="isRegistred" class="form-control"  formControlName="employeeRegistration" [ngClass]="classError('employeeRegistration')">
                 <field-error-display fieldName="employeeRegistration" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
-                <label for="hiringDate" class="col-form-label">Data de contratação</label>
+                <label for="hiringDate" class="control-label">Data de contratação</label>
                 <input id="hiringDate" type="text" [readonly]="isRegistred" [class.form-control-plaintext]="isRegistred" class="form-control" formControlName="hiringDate"
                     bsDatepicker [bsConfig]="bsConfig" [isDisabled]="isRegistred" [ngClass]="classError('hiringDate')">
                 <field-error-display fieldName="hiringDate" (validation)="validation=$event"></field-error-display>
@@ -78,12 +78,12 @@
         </div>
         <div class="row">
             <div class="col-md-5 mb-3">
-                <label for="addressNeighborhood">Bairro</label>
+                <label for="addressNeighborhood" class="control-label">Bairro</label>
                 <input id="addressNeighborhood" type="text" class="form-control" formControlName="neighborhood" [ngClass]="classError('address.neighborhood')">
                 <field-error-display fieldName="address.neighborhood" (validation)="validation=$event"></field-error-display>
             </div>            
             <div class="col-md-3 mb-3">
-                <label for="addressState">Estado</label>
+                <label for="addressState" class="control-label">Estado</label>
                 <ng-select id="addressState" formControlName="state" class="form-control" style="border: none" [ngClass]="classError('address.state')"
                     [items]="states$ | async" bindLabel="name" bindValue="acronym" [multiple]="false" [trackByFn]="trackByAcronym" [typeahead]="stateName$"
                     [openOnEnter]="false" notFoundText="Nenhum estado foi encontrado" typeToSearchText="Informe o nome do estado">
@@ -91,7 +91,7 @@
                 <field-error-display fieldName="address.state" (validation)="validation=$event"></field-error-display>
             </div>
             <div class="col-md-4 mb-3">
-                <label for="addressCity">Cidade</label>
+                <label for="addressCity" class="control-label">Cidade</label>
                 <ng-select id="addressCity" formControlName="city" class="form-control" style="border: none" [ngClass]="classError('address.city')"
                     [items]="cities$ | async" bindLabel="name" bindValue="name" [multiple]="false" [trackByFn]="trackById" [typeahead]="cityName$"
                     [openOnEnter]="false" notFoundText="Nenhuma cidade foi encontrada" typeToSearchText="Informe o nome da cidade">
@@ -102,9 +102,9 @@
     </fieldset>
     <div class="form-group row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-info btn-lg float-left">Voltar</button>
-            <button type="submit" class="btn btn-primary btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button><!--&nbsp;
-            <button type="button" class="btn btn-secondary btn-lg">Limpar</button>-->
+            <button type="button" class="btn btn-primary float-left mr-1" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Listar funcionários</button>
+            <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Detalhar</button>
+            <button type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button>
         </div>        
     </div>        
 </form>

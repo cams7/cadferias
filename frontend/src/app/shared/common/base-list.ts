@@ -370,6 +370,10 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         }
     }
 
+    onDetails(id: number) {
+        this.router.navigate([id, 'details'], { relativeTo: this.route });
+    }
+
     onEdit(id: number) {
         this.router.navigate([id], { relativeTo: this.route });
     }

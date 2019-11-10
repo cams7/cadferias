@@ -7,17 +7,16 @@ import { distinctUntilChanged, takeUntil, switchMap, filter, map, shareReplay, d
 import { EventsService } from './../../shared/events.service';
 import { ErrorsService } from 'src/app/shared/errors.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
+import { getRel } from 'src/app/shared/model/base-entity';
 import { CityVO } from '../../shared/model/vo/address/city-vo';
 import { StateVO } from '../../shared/model/vo/address/state-vo';
 import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
-import { Employee, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL, EMPLOYEE_ENDPOINT_UPDATE_REL } from './../../shared/model/employee';
+import { Employee, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL, EMPLOYEE_ENDPOINT_UPDATE_REL, getPhoto, EMPLOYEE_PHOTO } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
 import { EmployeePhoto, ImageType } from './../../shared/model/employee-photo';
-import { getRel } from 'src/app/shared/model/base-entity';
 
-const EMPLOYEE_PHOTO = 'assets/img/employee-avatar.png';
 @Component({
   selector: 'app-employee-form',
   templateUrl: './employee-form.component.html',
@@ -58,7 +57,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     
     super.form = this.fb.group({
       hiringDate: [super.getDate(<any>super.entity.hiringDate)], 
-      photo: [this.photo],
+      photo: [getPhoto(super.entity)],
       employeeRegistration: [super.entity.employeeRegistration],
       name: [super.entity.name],
       birthDate: [super.getDate(<any>super.entity.birthDate)],
@@ -159,7 +158,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   } 
 
   ngAfterViewInit() {
-    const photo = this.photo;
+    const photo = getPhoto(super.entity);
     this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${!!photo ? photo : EMPLOYEE_PHOTO})`);
   }
 
@@ -197,15 +196,6 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
       })
     ); 
   }
-
-  private get photo() {
-    if(!super.entity.photos || super.entity.photos.length < 1)
-      return undefined;
-
-    const photo = super.entity.photos[0];
-    return `data:image/${photo.imageType.toLowerCase()};base64,${photo.photo}`;
-  }
-
 
   changePhoto(event: Event) {
     const files: FileList = (<any>event.target).files;
@@ -254,19 +244,19 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   }
 
   get getBySearchRel() {
-    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getWithAuditByIdRel() {
-    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
   }
 
   get updateRel() {
-    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_UPDATE_REL);
+    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_UPDATE_REL);
   }
 
   get submitTooltip() {
-    if(!this.entity._links)
+    if(!super.entity._links)
       return "Salvar os dados do funcionário";
     return this.updateRel.title;
   }

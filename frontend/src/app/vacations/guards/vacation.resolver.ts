@@ -20,6 +20,11 @@ export class VacationResolver implements Resolve<Vacation> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Vacation> {
     if (route.params && route.params['id']) {
       const entityId: number = route.params['id'];
+      const path = route.routeConfig.path;
+      
+      if(path.endsWith('/details'))
+        return this.vacationsService.getWithAuditById$(entityId);
+
       return this.vacationsService.getById$(entityId); 
     } 
 

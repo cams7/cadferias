@@ -17,8 +17,13 @@ export class EmployeeResolver implements Resolve<Employee> {
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Employee> {
-    if (route.params && route.params['id']) {
+    if (route.params && route.params['id']) {      
       const entityId: number = route.params['id'];
+      const path = route.routeConfig.path;
+
+      if(path.endsWith('/details'))
+        return this.employeesService.getWithAuditById$(entityId); 
+
       return this.employeesService.getById$(entityId); 
     }
 

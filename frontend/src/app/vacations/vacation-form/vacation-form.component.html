@@ -24,7 +24,7 @@
                     <input id="staffName" type="text" readonly=true class="form-control form-control-plaintext" formControlName="name">
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="employeeRegistration" class="col-form-label">Matricula</label>
+                    <label for="employeeRegistration" class="control-label">Matricula</label>
                     <input id="employeeRegistration" type="text" readonly=true class="form-control form-control-plaintext"  formControlName="employeeRegistration">                    
                 </div>            
             </div>
@@ -45,9 +45,9 @@
         </fieldset>  
         <div class="form-group row">
             <div class="col-sm-12">
-                <button type="button" class="btn btn-info btn-lg float-left">Voltar</button>
-                <button type="submit" class="btn btn-primary btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button><!--&nbsp;
-                <button type="button" class="btn btn-secondary btn-lg">Limpar</button>-->
+                <button type="button" class="btn btn-primary float-left mr-1" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Listar férias</button>
+                <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Detalhar</button>
+                <button type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button>
             </div>        
         </div>        
     </form>

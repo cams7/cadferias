@@ -53,19 +53,19 @@ export class StaffFormComponent extends BaseForm<Staff> {
   }
 
   get getBySearchRel() {
-    return getRel(this.entity._links, STAFF_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(super.entity._links, STAFF_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getWithAuditByIdRel() {
-    return getRel(this.entity._links, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+    return getRel(super.entity._links, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
   }
 
   get updateRel() {
-    return getRel(this.entity._links, STAFF_ENDPOINT_UPDATE_REL);
+    return getRel(super.entity._links, STAFF_ENDPOINT_UPDATE_REL);
   }
 
   get submitTooltip() {
-    if(!this.entity._links)
+    if(!super.entity._links)
       return "Salvar os dados da equipe";
     return this.updateRel.title;
   }

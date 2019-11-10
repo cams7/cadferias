@@ -71,6 +71,15 @@ export enum State {
     TO='TO'
 }
 
+export const EMPLOYEE_PHOTO = 'assets/img/employee-avatar.png';
+export const getPhoto = (employee: Employee) => {
+    if(!employee ||!employee.photos || employee.photos.length == 0)
+        return undefined;
+
+    const photo = employee.photos[0];
+    return `data:image/${photo.imageType.toLowerCase()};base64,${photo.photo}`;
+}
+
 export const EMPLOYEE_ENDPOINT = 'EmployeeEndpoint';
 export const EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL = `${EMPLOYEE_ENDPOINT}.${GET_BY_SEARCH_REL}`;
 export const EMPLOYEE_ENDPOINT_GET_BY_ID_REL = `${EMPLOYEE_ENDPOINT}.${GET_BY_ID_REL}`;

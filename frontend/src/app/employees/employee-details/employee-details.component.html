@@ -1,0 +1,80 @@
+<fieldset class="border p-2 form-group">
+    <legend  class="w-auto">Funcionário</legend>
+    <div class="row">
+        <div class="col-md-4 mb-3 avatar-upload">
+            <div class="avatar-preview">
+                <div id="imagePreview" #imagePreview></div>
+            </div>
+        </div>
+        <div class="col-md-5 mb-3">
+            <label for="name" class="col-form-label col-form-label-lg">Nome</label>
+            <input id="name" type="text" class="form-control-plaintext" [value]="entity.name" readonly>       
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="birthDate" class="col-form-label col-form-label-lg">Data de nascimento</label>
+            <input id="birthDate" type="text" class="form-control-plaintext" value="{{ entity.birthDate | date:'shortDate' }}" readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="staffName" class="col-form-label col-form-label-lg">Equipe</label>
+            <a id="staffName" class="form-control-plaintext" [routerLink]="['/staffs', entity.staff.entityId, 'details']">{{ entity.staff.name }}</a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="employeeRegistration" class="col-form-label col-form-label-lg">Matricula</label>
+            <input id="employeeRegistration" type="text" class="form-control-plaintext" [value]="entity.employeeRegistration" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="hiringDate" class="col-form-label col-form-label-lg">Data de contratação</label>
+            <input id="hiringDate" type="text" class="form-control-plaintext" value="{{ entity.hiringDate | date:'shortDate' }}" readonly>
+        </div>            
+    </div>
+</fieldset>
+<fieldset class="border p-2 form-group">
+    <legend  class="w-auto">Contato</legend>
+    <div class="row">
+        <div class="col-md-8 mb-3">
+            <label for="userEmail" class="col-form-label col-form-label-lg">E-mail</label>
+            <input id="userEmail" type="text" class="form-control-plaintext" [value]="entity.user.email" readonly>
+        </div>            
+        <div class="col-md-4 mb-3">
+            <label for="phoneNumber" class="col-form-label col-form-label-lg">Telefone</label>
+            <input id="phoneNumber" type="text" class="form-control-plaintext" value="{{ entity.phoneNumber | telefone }}" readonly>       
+        </div>
+    </div>  
+</fieldset>        
+<fieldset class="border p-2 form-group">
+    <legend  class="w-auto">Endereço</legend>
+    <div class="row">
+        <div class="col-md-10 mb-3">
+            <label for="addressStreet" class="col-form-label col-form-label-lg">Logradouro</label>
+            <input id="addressStreet" type="text" class="form-control-plaintext" [value]="entity.address.street" readonly>        
+        </div>
+        <div class="col-md-2 mb-3">
+            <label for="addressHouseNumber" class="col-form-label col-form-label-lg">Numero</label>
+            <input id="addressHouseNumber" type="text" class="form-control-plaintext" [value]="entity.address.houseNumber" readonly>       
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 mb-3">
+            <label for="addressNeighborhood" class="col-form-label col-form-label-lg">Bairro</label>
+            <input id="addressNeighborhood" type="text" class="form-control-plaintext" [value]="entity.address.neighborhood" readonly>
+        </div>            
+        <div class="col-md-3 mb-3">
+            <label for="addressState" class="col-form-label col-form-label-lg">Estado</label>
+            <input id="addressState" type="text" class="form-control-plaintext" [value]="entity.address.state" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="addressCity" class="col-form-label col-form-label-lg">Cidade</label>
+            <input id="addressCity" type="text" class="form-control-plaintext" [value]="entity.address.city" readonly>
+        </div>
+    </div>
+</fieldset>
+<auditable [entity]="entity"></auditable>
+
+<div class="form-group row">
+    <div class="col-sm-12">
+        <button type="button" class="btn btn-primary float-left" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Listar funcionários</button>
+        <button type="button" class="btn btn-secondary float-right" (click)="onEdit()" [tooltip]="getByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Alterar</button>
+    </div>        
+</div>

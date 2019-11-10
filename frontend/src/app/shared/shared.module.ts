@@ -14,19 +14,21 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { TextMaskModule } from 'angular2-text-mask';
 import { NgBrazil } from 'ng-brazil';
 
+import { NumericDirective } from './common/numeric-directive';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SortFieldDirective } from './common/sort-field.directive';
-import { FieldErrorDisplayComponent } from './common/field-error-message/field-error-display.component';
-import { NumericDirective } from './common/numeric-directive';
+import { FieldErrorDisplayComponent } from './common/field-error-display/field-error-display.component';
+import { AuditableComponent } from './common/auditable/auditable.component';
 
 @NgModule({
   declarations: [
+    NumericDirective,
     PageNotFoundComponent, 
     ConfirmModalComponent,
     SortFieldDirective,
-    FieldErrorDisplayComponent,
-    NumericDirective
+    FieldErrorDisplayComponent,    
+    AuditableComponent
   ],
   imports: [
     CommonModule, 
@@ -56,9 +58,10 @@ import { NumericDirective } from './common/numeric-directive';
     NgSelectModule,
     TextMaskModule,
     NgBrazil,
+    NumericDirective,
     SortFieldDirective,
     FieldErrorDisplayComponent,
-    NumericDirective    
+    AuditableComponent    
   ]
 })
 export class SharedModule {

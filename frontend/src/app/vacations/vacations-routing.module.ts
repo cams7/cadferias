@@ -5,6 +5,7 @@ import { FormDeactivateGuard } from '../shared/guards/form-deactivate.guard';
 import { VacationResolver } from './guards/vacation.resolver';
 import { VacationFormComponent } from './vacation-form/vacation-form.component';
 import { VacationListComponent } from './vacation-list/vacation-list.component';
+import { VacationDetailsComponent } from './vacation-details/vacation-details.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,11 @@ const routes: Routes = [
     component: VacationFormComponent,
     resolve: { entity : VacationResolver },
     canDeactivate: [FormDeactivateGuard]
+  },
+  {
+    path: ':id/details',
+    component: VacationDetailsComponent,
+    resolve: { entity : VacationResolver }
   },
   {
     path: ':id',

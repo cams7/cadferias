@@ -43,13 +43,14 @@
                         <tr *ngFor="let employee of items$ | async">
                             <td>{{ employee.entityId }}</td>
                             <td>{{ employee.name }}</td>
-                            <td>{{ employee.birthDate | date: 'dd/MM/yyyy' }}</td>
-                            <td>{{ employee.hiringDate | date: 'dd/MM/yyyy' }}</td>
+                            <td>{{ employee.birthDate | date:'shortDate' }}</td>
+                            <td>{{ employee.hiringDate | date:'shortDate' }}</td>
                             <td>{{ employee.employeeRegistration }}</td>
-                            <td>{{ employee.staff.name }}</td>
+                            <td><a [routerLink]="['/staffs', employee.staff.entityId, 'details']">{{ employee.staff.name }}</a></td>
                             <td>
+                                <a class="btn btn-sm btn-outline-info mb-1" role="button" (click)="onDetails(employee.entityId)" [tooltip]="getWithAuditByIdRel(employee.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-info-circle"></i></a>&nbsp;
                                 <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(employee.entityId)" [tooltip]="getByIdRel(employee.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-edit"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(employee)" [tooltip]="deleteRel(employee.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
+                                <a class="btn btn-sm btn-outline-danger mb-1" role="button" (click)="onDelete(employee)" [tooltip]="deleteRel(employee.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                
                     </tbody>                

@@ -1,6 +1,8 @@
 import { OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { PageAndSortParamsVO } from '../model/vo/page-params-vo';
+import { Direction } from '../model/vo/pagination/sort-vo';
 
 const YEAR_FORMAT = 'yyyy';
 const MONTH_FORMAT = 'MM';
@@ -13,8 +15,15 @@ const MILLIS_FORMAT = 'SSS';
 export const DATE_FORMAT = `${YEAR_FORMAT}-${MONTH_FORMAT}-${DAY_FORMAT}`;
 export const BR_DATE_FORMAT = `${DAY_FORMAT}/${MONTH_FORMAT}/${YEAR_FORMAT}`;
 
-export abstract class Base implements OnDestroy {     
-    
+export const QUERY_PARAMS = <PageAndSortParamsVO>{
+    page: 1, 
+    itemsPerPage: 10,
+    sort: 'entityId',
+    order: Direction.DESC
+};
+
+export abstract class Base implements OnDestroy {   
+        
     private endSubject = new Subject<boolean>();
 
     ngOnDestroy() {

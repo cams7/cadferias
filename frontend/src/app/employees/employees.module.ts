@@ -6,11 +6,13 @@ import { SharedModule } from '../shared/shared.module';
 import { EmployeesRoutingModule } from './employees-routing.module';
 import { EmployeeListComponent } from './employee-list/employee-list.component';
 import { EmployeeFormComponent } from './employee-form/employee-form.component';
+import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 
 @NgModule({
   declarations: [
     EmployeeListComponent, 
-    EmployeeFormComponent
+    EmployeeFormComponent, 
+    EmployeeDetailsComponent
   ],
   imports: [
     CommonModule,

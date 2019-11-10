@@ -17,6 +17,11 @@ export class StaffResolver implements Resolve<Staff> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Staff> {
     if (route.params && route.params['id']) {
       const entityId: number = route.params['id'];
+      const path = route.routeConfig.path;
+      
+      if(path.endsWith('/details'))
+        return this.staffsService.getWithAuditById$(entityId); 
+
       return this.staffsService.getById$(entityId); 
     }
 

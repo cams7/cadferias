@@ -150,19 +150,19 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   }
 
   get getBySearchRel() {
-    return getRel(this.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(super.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getWithAuditByIdRel() {
-    return getRel(this.entity._links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+    return getRel(super.entity._links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
   }
 
   get updateRel() {
-    return getRel(this.entity._links, VACATION_ENDPOINT_UPDATE_REL);
+    return getRel(super.entity._links, VACATION_ENDPOINT_UPDATE_REL);
   }
 
   get submitTooltip() {
-    if(!this.entity._links)
+    if(!super.entity._links)
       return "Salvar os dados das férias";
     return this.updateRel.title;
   }
