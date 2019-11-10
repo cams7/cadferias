@@ -10,8 +10,10 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.Serializable;
 
@@ -78,6 +80,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 		if (page.getTotalElements() > 0) {
 			page.getContent().forEach(entity -> {
 				entity.add(getWithAuditByIdRel(entity.getEntityId()));
+				entity.add(getByIdRel(entity.getEntityId()));
 				entity.add(deleteRel(entity.getEntityId()));
 			});
 		}
@@ -92,7 +95,9 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 		@SuppressWarnings("unchecked")
 		E entity = service.getById((ID) getId(id));
 
+		entity.add(getBySearchRel());
 		entity.add(getWithAuditByIdRel(entity.getEntityId()));
+		entity.add(updateRel(entity.getEntityId()));
 
 		return entity;
 	}
@@ -105,6 +110,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 		@SuppressWarnings("unchecked")
 		E entity = service.getWithAuditById((ID) getId(id));
 
+		entity.add(getBySearchRel());
 		entity.add(getByIdRel(entity.getEntityId()));
 		entity.add(deleteRel(entity.getEntityId()));
 
@@ -137,28 +143,43 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 		return new ResponseEntity<Void>(OK);
 	}
 
-	private Link getByIdRel(ID id) {
-		Link selfRel = linkTo(methodOn(this.getClass()).getById(String.valueOf(id))).withSelfRel().withType(GET.name())
-				.withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang())
-				.withTitle(getMessage(String.format("%s.getById", getEndPointName()), id))
+	private Link getBySearchRel() {
+		final String ENDPOINT = String.format("%s.getBySearch", getEndPointName());
+		@SuppressWarnings("unchecked")
+		Link rel = linkTo(methodOn(this.getClass()).getBySearch(null)).withRel(ENDPOINT).withType(POST.name())
+				.withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang()).withTitle(getMessage(ENDPOINT))
 				.withDeprecation(getDeprecation());
-		return selfRel;
+		return rel;
+	}
+
+	private Link getByIdRel(ID id) {
+		final String ENDPOINT = String.format("%s.getById", getEndPointName());
+		return linkTo(methodOn(this.getClass()).getById(String.valueOf(id))).withRel(ENDPOINT).withType(GET.name())
+				.withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang()).withTitle(getMessage(ENDPOINT, id))
+				.withDeprecation(getDeprecation());
 	}
 
 	private Link getWithAuditByIdRel(ID id) {
-		Link selfRel = linkTo(methodOn(this.getClass()).getWithAuditById(String.valueOf(id))).withSelfRel()
+		final String ENDPOINT = String.format("%s.getWithAuditById", getEndPointName());
+		return linkTo(methodOn(this.getClass()).getWithAuditById(String.valueOf(id))).withRel(ENDPOINT)
 				.withType(GET.name()).withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang())
-				.withTitle(getMessage(String.format("%s.getWithAuditById", getEndPointName()), id))
+				.withTitle(getMessage(ENDPOINT, id)).withDeprecation(getDeprecation());
+	}
+
+	private Link updateRel(ID id) {
+		final String ENDPOINT = String.format("%s.update", getEndPointName());
+		@SuppressWarnings("unchecked")
+		Link rel = linkTo(methodOn(this.getClass()).update(null)).withRel(ENDPOINT).withType(PUT.name())
+				.withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang()).withTitle(getMessage(ENDPOINT, id))
 				.withDeprecation(getDeprecation());
-		return selfRel;
+		return rel;
 	}
 
 	private Link deleteRel(ID id) {
-		Link deleteRel = linkTo(methodOn(this.getClass()).delete(String.valueOf(id))).withRel("delete")
-				.withType(DELETE.name()).withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang())
-				.withTitle(getMessage(String.format("%s.delete", getEndPointName()), id))
+		final String ENDPOINT = String.format("%s.delete", getEndPointName());
+		return linkTo(methodOn(this.getClass()).delete(String.valueOf(id))).withRel(ENDPOINT).withType(DELETE.name())
+				.withMedia(APPLICATION_JSON_UTF8_VALUE).withHreflang(getHreflang()).withTitle(getMessage(ENDPOINT, id))
 				.withDeprecation(getDeprecation());
-		return deleteRel;
 	}
 
 	protected final String getEndPointName() {

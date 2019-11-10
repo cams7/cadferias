@@ -4,8 +4,6 @@ import { environment } from '../../environments/environment';
 
 import { StateVO } from '../shared/model/vo/address/state-vo';
 import { CityVO } from '../shared/model/vo/address/city-vo';
-import { UsersService } from './../users/users.service';
-import { StaffsService } from './../staffs/staffs.service';
 import { BaseService } from '../shared/common/base-service';
 import { Employee } from '../shared/model/employee';
 import { EmployeeFilterVO } from '../shared/model/vo/filter/employee-filter-vo';
@@ -19,9 +17,7 @@ const EMPLOYEES='employees';
 export class EmployeesService extends BaseService<Employee, EmployeeFilterVO> {
 
   constructor(
-    protected http: HttpClient,
-    private usersService: UsersService,
-    private staffsService: StaffsService
+    protected http: HttpClient
   ) { 
     super(http, `${environment.API}${EMPLOYEES}`);
   }

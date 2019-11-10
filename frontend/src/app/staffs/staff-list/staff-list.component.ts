@@ -9,9 +9,10 @@ import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.
 import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
 import { BaseList } from './../../shared/common/base-list';
 import { StaffsService } from '../staffs.service';
-import { Staff } from './../../shared/model/staff';
+import { Staff, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, STAFF_ENDPOINT_GET_BY_ID_REL, STAFF_ENDPOINT_DELETE_REL } from './../../shared/model/staff';
 import { FilterType } from 'src/app/shared/model/vo/filter/auditable-filter-vo';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
+import { LinkWithRel, getRelByLinks } from 'src/app/shared/model/base-entity';
 
 @Component({
   selector: 'app-staff-list',
@@ -61,5 +62,17 @@ export class StaffListComponent extends BaseList<Staff, StaffFilterVO> {
       flatMap(_ => this.staffsService.remove$(staff.entityId)), 
       tap(_ => this.eventsService.addSuccessAlert('Equipe excluída!', `A equipe "${staff.name}" foi excluida com sucesso.`))
     );
+  }
+
+  getWithAuditByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  getByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, STAFF_ENDPOINT_GET_BY_ID_REL);
+  }
+
+  deleteRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, STAFF_ENDPOINT_DELETE_REL);
   }
 }

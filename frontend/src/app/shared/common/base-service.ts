@@ -2,17 +2,18 @@ import { HttpClient } from "@angular/common/http";
 
 import { Base } from './base';
 import { PageVO } from '../model/vo/pagination/page-vo';
-import { BaseEntity } from '../model/base-entity';
+import { BaseEntity, Link, RequestMethod } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
 import { SearchVO } from '../model/vo/search-vo';
+import { EMPTY, Observable } from 'rxjs';
 
 export abstract class BaseService<E extends BaseEntity, F extends AuditableFilterVO> extends Base {
 
     protected readonly searchSize = 7;
 
-    constructor(
+    constructor(        
         protected http: HttpClient,
-        protected API_URL: string
+        protected API_URL: string      
     ) { 
         super();
     }
@@ -21,7 +22,7 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
         return this.http.post<PageVO<E>>(`${this.API_URL}/search`, search);
     }
     
-    getById$(id: number) {
+    getById$(id: number) {        
         return this.http.get<E>(`${this.API_URL}/${id}`);
     }
 
@@ -46,6 +47,35 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
 
     get shortApiUrl() {
         return this.API_URL.substring(this.API_URL.search(/\/(\w+)$/));
+    }
+
+    requestByLink$(link: Link, content?: E | SearchVO<F>) {
+        let request$: Observable<E | PageVO<E> | void> = EMPTY;
+
+        if(!!link)
+            switch (link.type) {
+                case RequestMethod.GET: {     
+                    request$ = this.http.get<E>(link.href);          
+                    break;
+                }
+                case RequestMethod.POST: {   
+                    if(!!content)  
+                        request$ = this.http.post<E | PageVO<E>>(link.href, content);          
+                    break;
+                }
+                case RequestMethod.PUT: {
+                    if(!!content)     
+                        request$ = this.http.put<E>(link.href, content);          
+                    break;
+                }
+                case RequestMethod.DELETE: {    
+                    request$ = this.http.delete<void>(link.href);           
+                    break;
+                }
+                default:
+                    break;
+            }
+        return request$;
     }
     
 }

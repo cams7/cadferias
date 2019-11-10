@@ -8,7 +8,8 @@ import { ErrorsService } from 'src/app/shared/errors.service';
 import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.service';
 import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from '../staffs.service';
-import { Staff } from './../../shared/model/staff';
+import { Staff, STAFF_ENDPOINT_GET_BY_SEARCH_REL, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, STAFF_ENDPOINT_UPDATE_REL } from './../../shared/model/staff';
+import { getRel } from 'src/app/shared/model/base-entity';
 
 @Component({
   selector: 'app-staff-form',
@@ -49,5 +50,23 @@ export class StaffFormComponent extends BaseForm<Staff> {
             this.eventsService.addSuccessAlert('Equipe cadastrada!', `A equipe "${staff.name}" foi cadastrada com sucesso.`);  
       })
     );
+  }
+
+  get getBySearchRel() {
+    return getRel(this.entity._links, STAFF_ENDPOINT_GET_BY_SEARCH_REL);
+  }
+
+  get getWithAuditByIdRel() {
+    return getRel(this.entity._links, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  get updateRel() {
+    return getRel(this.entity._links, STAFF_ENDPOINT_UPDATE_REL);
+  }
+
+  get submitTooltip() {
+    if(!this.entity._links)
+      return "Salvar os dados da equipe";
+    return this.updateRel.title;
   }
 }

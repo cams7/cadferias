@@ -2,6 +2,7 @@ import { Auditable } from './auditable';
 import { User } from './user';
 import { Staff } from './staff';
 import { EmployeePhoto } from './employee-photo';
+import { GET_BY_ID_REL, GET_WITH_AUDIT_BY_ID_REL, UPDATE_REL, DELETE_REL, GET_BY_SEARCH_REL } from './base-entity';
 
 //Entidade que representa o funcionário.
 export interface Employee extends Auditable {
@@ -69,3 +70,10 @@ export enum State {
     SP='SP', 
     TO='TO'
 }
+
+export const EMPLOYEE_ENDPOINT = 'EmployeeEndpoint';
+export const EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL = `${EMPLOYEE_ENDPOINT}.${GET_BY_SEARCH_REL}`;
+export const EMPLOYEE_ENDPOINT_GET_BY_ID_REL = `${EMPLOYEE_ENDPOINT}.${GET_BY_ID_REL}`;
+export const EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL = `${EMPLOYEE_ENDPOINT}.${GET_WITH_AUDIT_BY_ID_REL}`;
+export const EMPLOYEE_ENDPOINT_UPDATE_REL = `${EMPLOYEE_ENDPOINT}.${UPDATE_REL}`;   
+export const EMPLOYEE_ENDPOINT_DELETE_REL = `${EMPLOYEE_ENDPOINT}.${DELETE_REL}`;

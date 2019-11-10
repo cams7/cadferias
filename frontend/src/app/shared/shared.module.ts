@@ -7,6 +7,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -36,6 +37,7 @@ import { NumericDirective } from './common/numeric-directive';
     BsDatepickerModule.forRoot(),
     ModalModule.forRoot(),
     AlertModule.forRoot(),
+    TooltipModule.forRoot(),
     NgSelectModule,
     TextMaskModule,
     NgBrazil
@@ -50,6 +52,7 @@ import { NumericDirective } from './common/numeric-directive';
     BsDatepickerModule,
     ModalModule,
     AlertModule,
+    TooltipModule,
     NgSelectModule,
     TextMaskModule,
     NgBrazil,

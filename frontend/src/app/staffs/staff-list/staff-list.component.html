@@ -40,8 +40,8 @@
                             <td>{{ staff.entityId }}</td>
                             <td>{{ staff.name }}</td>
                             <td>
-                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(staff.entityId)"><i class="fa fa-edit"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(staff)"><i class="fa fa-trash"></i></a>
+                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(staff.entityId)" [tooltip]="getByIdRel(staff.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-edit"></i></a>&nbsp;
+                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(staff)" [tooltip]="deleteRel(staff.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                
                     </tbody>                

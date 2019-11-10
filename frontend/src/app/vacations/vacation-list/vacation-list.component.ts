@@ -9,11 +9,12 @@ import { ConfirmModalService } from './../../shared/confirm-modal/confirm-modal.
 import { Direction } from 'src/app/shared/model/vo/pagination/sort-vo';
 import { BaseList } from './../../shared/common/base-list';
 import { VacationsService } from './../vacations.service';
-import { Vacation } from './../../shared/model/vacation';
+import { Vacation, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, VACATION_ENDPOINT_GET_BY_ID_REL, VACATION_ENDPOINT_DELETE_REL } from './../../shared/model/vacation';
 import { FilterType } from 'src/app/shared/model/vo/filter/auditable-filter-vo';
 import { VacationFilterVO } from 'src/app/shared/model/vo/filter/vacation-filter-vo';
 import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
+import { LinkWithRel, getRelByLinks } from 'src/app/shared/model/base-entity';
 
 
 @Component({
@@ -77,6 +78,18 @@ export class VacationListComponent extends BaseList<Vacation, VacationFilterVO> 
       switchMap(_ => this.vacationsService.remove$(vacation.entityId)),
       tap(_ => this.eventsService.addSuccessAlert('Férias excluída!', `A férias "${vacation.entityId}" foi excluida com sucesso.`))
     );
+  }
+
+  getWithAuditByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  getByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, VACATION_ENDPOINT_GET_BY_ID_REL);
+  }
+
+  deleteRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, VACATION_ENDPOINT_DELETE_REL);
   }
 
 }

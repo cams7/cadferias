@@ -46,8 +46,8 @@
                             <td>{{ vacation.employee.name }}</td>
                             <td>{{ vacation.employee.staff.name }}</td>
                             <td>
-                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.entityId)"><i class="fa fa-edit"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(vacation)"><i class="fa fa-trash"></i></a>
+                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.entityId)" [tooltip]="getByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-edit"></i></a>&nbsp;
+                                <a class="btn btn-sm btn-outline-warning mb-1" role="button" (click)="onDelete(vacation)" [tooltip]="deleteRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>                                
                     </tbody>                

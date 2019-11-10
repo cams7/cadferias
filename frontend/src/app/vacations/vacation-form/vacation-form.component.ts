@@ -11,7 +11,8 @@ import { BaseForm } from './../../shared/common/base-form';
 import { EmployeesService } from './../../employees/employees.service';
 import { VacationsService } from './../vacations.service';
 import { Employee } from './../../shared/model/employee';
-import { Vacation } from './../../shared/model/vacation';
+import { Vacation, VACATION_ENDPOINT_GET_BY_SEARCH_REL, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, VACATION_ENDPOINT_UPDATE_REL } from './../../shared/model/vacation';
+import { getRel } from 'src/app/shared/model/base-entity';
 
 @Component({
   selector: 'app-vacation-form',
@@ -146,6 +147,24 @@ export class VacationFormComponent extends BaseForm<Vacation> {
 
   get employees$() {
     return this._employees$;
+  }
+
+  get getBySearchRel() {
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
+  }
+
+  get getWithAuditByIdRel() {
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  get updateRel() {
+    return getRel(this.entity._links, VACATION_ENDPOINT_UPDATE_REL);
+  }
+
+  get submitTooltip() {
+    if(!this.entity._links)
+      return "Salvar os dados das férias";
+    return this.updateRel.title;
   }
 
 }

@@ -12,9 +12,10 @@ import { StateVO } from '../../shared/model/vo/address/state-vo';
 import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from './../../staffs/staffs.service';
 import { EmployeesService } from '../employees.service';
-import { Employee } from './../../shared/model/employee';
+import { Employee, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL, EMPLOYEE_ENDPOINT_UPDATE_REL } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
 import { EmployeePhoto, ImageType } from './../../shared/model/employee-photo';
+import { getRel } from 'src/app/shared/model/base-entity';
 
 const EMPLOYEE_PHOTO = 'assets/img/employee-avatar.png';
 @Component({
@@ -250,6 +251,24 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
 
   get staffs$() {
     return this._staffs$;
+  }
+
+  get getBySearchRel() {
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
+  }
+
+  get getWithAuditByIdRel() {
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  get updateRel() {
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_UPDATE_REL);
+  }
+
+  get submitTooltip() {
+    if(!this.entity._links)
+      return "Salvar os dados do funcionário";
+    return this.updateRel.title;
   }
 
 }

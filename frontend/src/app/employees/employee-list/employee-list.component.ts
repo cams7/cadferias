@@ -11,10 +11,11 @@ import { BaseList } from './../../shared/common/base-list';
 import { UsersService } from './../../users/users.service';
 import { EmployeesService } from '../employees.service';
 import { VacationsService } from './../../vacations/vacations.service';
-import { Employee } from './../../shared/model/employee';
+import { Employee, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, EMPLOYEE_ENDPOINT_GET_BY_ID_REL, EMPLOYEE_ENDPOINT_DELETE_REL } from './../../shared/model/employee';
 import { EmployeeFilterVO } from './../../shared/model/vo/filter/employee-filter-vo';
 import { FilterType } from 'src/app/shared/model/vo/filter/auditable-filter-vo';
 import { StaffFilterVO } from 'src/app/shared/model/vo/filter/staff-filter-vo';
+import { LinkWithRel, getRelByLinks } from 'src/app/shared/model/base-entity';
 
 @Component({
   selector: 'app-employee-list',
@@ -79,5 +80,17 @@ export class EmployeeListComponent extends BaseList<Employee, EmployeeFilterVO> 
       flatMap(_ => this.employeesService.remove$(employee.entityId)),
       tap(_ => this.eventsService.addSuccessAlert('Funcionário(a) excluído(a)!', `O(A) funcionário(a) "${employee.name}" foi excluido(a) com sucesso.`))
     );
+  }
+
+  getWithAuditByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+  }
+
+  getByIdRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, EMPLOYEE_ENDPOINT_GET_BY_ID_REL);
+  }
+
+  deleteRel(links: LinkWithRel[]) {
+    return getRelByLinks(links, EMPLOYEE_ENDPOINT_DELETE_REL);
   }
 }

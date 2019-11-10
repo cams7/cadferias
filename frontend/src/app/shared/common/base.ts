@@ -208,4 +208,8 @@ export abstract class Base implements OnDestroy {
             filter(end => end)
         );
     }
+
+    get tooltipDelay() {
+        return 1000;
+    }
 }

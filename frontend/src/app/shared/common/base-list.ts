@@ -10,7 +10,7 @@ import { Base } from './base';
 import { BaseService } from './base-service';
 import { PageVO } from '../model/vo/pagination/page-vo';
 import { SortVO, Direction } from '../model/vo/pagination/sort-vo';
-import { BaseEntity } from '../model/base-entity';
+import { BaseEntity, LinkWithRel, Link } from '../model/base-entity';
 import { AuditableFilterVO, FilterType } from '../model/vo/filter/auditable-filter-vo';
 import { SearchVO } from './../model/vo/search-vo';
 import { PageInputVO } from './../model/vo/pagination/page-input-vo';
@@ -381,4 +381,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
     }
 
     protected abstract delete$(entity: E): Observable<void>;
+
+    abstract getWithAuditByIdRel(links: LinkWithRel[]): Link;
+    abstract getByIdRel(links: LinkWithRel[]): Link;
+    abstract deleteRel(links: LinkWithRel[]): Link;
 }

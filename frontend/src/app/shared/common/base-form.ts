@@ -9,7 +9,7 @@ import { MASKS } from 'ng-brazil';
 import { Base, BR_DATE_FORMAT } from './base';
 import { ErrorsService } from '../errors.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
-import { BaseEntity } from '../model/base-entity';
+import { BaseEntity, Link } from '../model/base-entity';
 import { FieldValidationVO } from './field-error-message/field-error-display.component';
 import { MessageType } from '../model/vo/message/message-vo';
 import { ErrorException } from '../model/vo/error/error-vo';
@@ -105,7 +105,12 @@ export abstract class BaseForm<E extends BaseEntity> extends Base implements OnI
 
     trackById(entity: BaseEntity) {
         return entity.entityId;
-    }    
+    }
+    
+    abstract get getBySearchRel(): Link;
+    abstract get getWithAuditByIdRel(): Link;
+    abstract get updateRel(): Link;
+    abstract get submitTooltip(): string;
 
     get submitted() {
         return this._submitted;

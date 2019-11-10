@@ -17,7 +17,7 @@ import { User } from '../shared/model/user';
   templateUrl: './signin-modal.component.html',
   styleUrls: ['./signin-modal.component.scss']
 })
-export class SigninModalComponent extends BaseForm<User> {
+export class SigninModalComponent extends BaseForm<User> {  
    
   constructor(   
     private fb: FormBuilder,
@@ -76,6 +76,22 @@ export class SigninModalComponent extends BaseForm<User> {
       from: EventFrom.SIGNIN_MODAL, 
       type: EventType.MODAL_CLOSE
     });
+  }
+
+  get getBySearchRel() {
+    return undefined;
+  }
+
+  get getWithAuditByIdRel() {
+    return undefined;
+  }
+
+  get updateRel() {
+    return undefined;
+  }
+  
+  get submitTooltip() {
+    return undefined;
   }
 
 }

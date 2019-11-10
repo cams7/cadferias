@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { forkJoin, of } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 import { environment } from '../../environments/environment';
 
 import { BaseService } from '../shared/common/base-service';
-import { EmployeesService } from '../employees/employees.service';
 import { Vacation } from './../shared/model/vacation';
 import { VacationFilterVO } from '../shared/model/vo/filter/vacation-filter-vo';
 
@@ -16,8 +13,7 @@ const VACATIONS = 'vacations';
 export class VacationsService extends BaseService<Vacation, VacationFilterVO> {
 
   constructor(
-    protected http: HttpClient,
-    private employeesService: EmployeesService
+    protected http: HttpClient
   ) { 
     super(http, `${environment.API}${VACATIONS}`);
   }  
