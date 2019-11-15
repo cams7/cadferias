@@ -10,7 +10,7 @@
 		<relativePath />
 	</parent>
 	<groupId>br.com.cams7</groupId>
-	<artifactId>ferias-funcionarios</artifactId>
+	<artifactId>cadferias</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Férias dos Funcionários</name>
 	<description>Aplicação utilizada para automatizar as ações relacionadas as férias dos funcionários</description>
