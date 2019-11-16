@@ -3,12 +3,15 @@
  */
 package br.com.cams7.cadferias.endpoint;
 
+import static br.com.cams7.cadferias.endpoint.EmployeeEndpoint.EMPLOYEEENDPOINT_PATH;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_REGISTER_NEW_VACATION;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,18 +38,22 @@ import io.swagger.annotations.ApiParam;
  */
 @Api("Endpoint utilizado para criação, recuperação, atualização e exclusão de funcionários.")
 @RestController
-@RequestMapping(path = "/employees", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path = EMPLOYEEENDPOINT_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
 public class EmployeeEndpoint extends BaseEndpoint<EmployeeService, EmployeeEntity, Long, EmployeeFilterVO> {
 
+	public static final String EMPLOYEEENDPOINT_PATH = "/employees";
+	
 	@ApiOperation("Busca o funcionário pelo ID.")
+	@PreAuthorize("hasRole('" + ROLE_REGISTER_NEW_VACATION + "')")
 	@JsonView(Public.class)
 	@ResponseStatus(value = OK)
-	@GetMapping(path = "only/{id}", consumes = { MediaType.ALL_VALUE })
-	public EmployeeEntity geOnlyEmployeeById(@ApiParam("ID da equipe.") @PathVariable Long id) {
-		return service.geOnlyEmployeeById(id);
+	@GetMapping(path = "withoutPhotos/{id}", consumes = { MediaType.ALL_VALUE })
+	public EmployeeEntity getByIdWithoutPhotos(@ApiParam("ID do funcionário.") @PathVariable Long id) {
+		return service.getByIdWithoutPhotos(id);
 	}
 
 	@ApiOperation("Carrega os funcionários pelo filtro de busca do select.")
+	@PreAuthorize("hasRole('" + ROLE_REGISTER_NEW_VACATION + "')")
 	@JsonView(Public.class)
 	@ResponseStatus(value = OK)
 	@PostMapping(path = "searchByName")

@@ -45,9 +45,18 @@
         </fieldset>  
         <div class="form-group row">
             <div class="col-sm-12">
-                <button type="button" class="btn btn-primary float-left mr-1" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Listar férias</button>
-                <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Detalhar</button>
-                <button type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">{{ isRegistred ? 'Atualizar' : 'Salvar'}}</button>
+                <span>
+                    <button type="button" class="btn btn-primary float-left mr-1" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Listar férias</button>
+                </span>
+                <span>
+                    <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred" securityItem [roles]="[roles.ROLE_VIEW_VACATION_DETAILS]"><span><i class="fa fa-info-circle"></i>&nbsp;Detalhar</span></button>
+                </span>
+                <span>
+                    <button *ngIf="isRegistred; else registerNew" type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_UPDATE_VACATION_DATA]"><span><i class="fa fa-edit"></i>&nbsp;Atualizar</span></button>                    
+                    <ng-template #registerNew>
+                        <button type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_REGISTER_NEW_VACATION]"><span><i class="fa fa-plus"></i>&nbsp;Salvar</span></button>
+                    </ng-template>                    
+                </span>
             </div>        
         </div>        
     </form>

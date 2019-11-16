@@ -53,7 +53,7 @@ export class SigninModalComponent extends BaseForm<User> {
       this.authService.signIn$(user).pipe(
         take(1)
       ).subscribe(
-        user => console.log(`O usuário "${user.email}" foi autenticado com sucesso!!!`)
+        /*user => console.log(`O usuário "${user.email}" foi autenticado com sucesso!!!`)*/
       );
 
       this.authService.loggedIn$.pipe(

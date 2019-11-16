@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cams7.cadferias.error.AppResourceNotFoundException;
 import br.com.cams7.cadferias.model.RoleEntity;
-import br.com.cams7.cadferias.model.RoleEntity.RoleName;
 import br.com.cams7.cadferias.repository.RoleRepository;
 
 /**
@@ -25,9 +24,9 @@ public class RoleServiceImpl implements RoleService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public RoleEntity getRoleByName(RoleName roleName) {
-		return repository.findByName(roleName)
-				.orElseThrow(() -> new AppResourceNotFoundException("Role.notFound", roleName.name()));
+	public RoleEntity getRoleByName(String name) {
+		return repository.findByName(name)
+				.orElseThrow(() -> new AppResourceNotFoundException("Role.notFound", name));
 	}
 
 }

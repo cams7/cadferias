@@ -8,6 +8,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -16,19 +17,26 @@ import { NgBrazil } from 'ng-brazil';
 
 import { NumericDirective } from './common/numeric-directive';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { InvalidAccessComponent } from './invalid-access/invalid-access.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SortFieldDirective } from './common/sort-field.directive';
 import { FieldErrorDisplayComponent } from './common/field-error-display/field-error-display.component';
 import { AuditableComponent } from './common/auditable/auditable.component';
+import { SecurityItemComponent } from './security/security-item.component';
+import { SecurityItemDirective } from './security/security-item.directive';
+
 
 @NgModule({
   declarations: [
     NumericDirective,
     PageNotFoundComponent, 
+    InvalidAccessComponent,
     ConfirmModalComponent,
     SortFieldDirective,
     FieldErrorDisplayComponent,    
-    AuditableComponent
+    AuditableComponent, 
+    SecurityItemComponent, 
+    SecurityItemDirective
   ],
   imports: [
     CommonModule, 
@@ -40,6 +48,7 @@ import { AuditableComponent } from './common/auditable/auditable.component';
     ModalModule.forRoot(),
     AlertModule.forRoot(),
     TooltipModule.forRoot(),
+    BsDropdownModule.forRoot(),
     NgSelectModule,
     TextMaskModule,
     NgBrazil
@@ -55,13 +64,16 @@ import { AuditableComponent } from './common/auditable/auditable.component';
     ModalModule,
     AlertModule,
     TooltipModule,
+    BsDropdownModule,
     NgSelectModule,
     TextMaskModule,
     NgBrazil,
     NumericDirective,
     SortFieldDirective,
     FieldErrorDisplayComponent,
-    AuditableComponent    
+    AuditableComponent,
+    SecurityItemComponent, 
+    SecurityItemDirective    
   ]
 })
 export class SharedModule {

@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PageAndSortParamsVO } from '../model/vo/page-params-vo';
 import { Direction } from '../model/vo/pagination/sort-vo';
+import { RoleName } from '../model/role';
 
 const YEAR_FORMAT = 'yyyy';
 const MONTH_FORMAT = 'MM';
@@ -25,6 +26,7 @@ export const QUERY_PARAMS = <PageAndSortParamsVO>{
 export abstract class Base implements OnDestroy {   
         
     private endSubject = new Subject<boolean>();
+    readonly roles = RoleName;
 
     ngOnDestroy() {
         this.endSubject.next(true);

@@ -3,7 +3,13 @@
  */
 package br.com.cams7.cadferias.service;
 
-import static br.com.cams7.cadferias.model.RoleEntity.RoleName.ROLE_USER;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_LIST_ALL_EMPLOYEES;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_LIST_ALL_VACATIONS;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_REGISTER_NEW_VACATION;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_UPDATE_VACATION_DATA;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_VIEW_EMPLOYEE_DETAILS;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_VIEW_STAFF_DETAILS;
+import static br.com.cams7.cadferias.model.RoleEntity.ROLE_VIEW_VACATION_DETAILS;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -36,6 +42,18 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	private static final int PHOTO_WIDTH = 256;
 	private static final int PHOTO_HEIGHT = 256;
 
+	private static final String[] ROLES = {
+		// @formatter:off
+		ROLE_VIEW_STAFF_DETAILS, 
+		ROLE_LIST_ALL_EMPLOYEES,
+		ROLE_VIEW_EMPLOYEE_DETAILS, 
+		ROLE_UPDATE_VACATION_DATA, 
+		ROLE_REGISTER_NEW_VACATION, 
+		ROLE_LIST_ALL_VACATIONS,
+		ROLE_VIEW_VACATION_DETAILS
+		// @formatter:on
+	};
+
 	@Autowired
 	private UserService userService;
 
@@ -45,15 +63,22 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Autowired
 	private EmployeePhotoService photoService;
 
+	@Transactional(readOnly = true)
+	@Override
+	public EmployeeEntity getByIdWithoutPhotos(Long employeeId) {
+		return reporitory.findByIdWithoutPhotos(employeeId)
+				.orElseThrow(() -> new AppResourceNotFoundException("Employee.notFound", employeeId));
+	}
+
 	@Override
 	public EmployeeEntity create(EmployeeEntity employee) {
 
 		UserEntity user = employee.getUser();
 
 		user.setPassword("12345");
-		user.setRoles(Arrays.asList(ROLE_USER).stream().map(roleName -> {
+		user.setRoles(Arrays.asList(ROLES).stream().map(name -> {
 			RoleEntity role = new RoleEntity();
-			role.setName(roleName);
+			role.setName(name);
 			return role;
 		}).collect(Collectors.toSet()));
 		employee.setUser(userService.create(user));
@@ -98,15 +123,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeRepository, Emp
 	@Override
 	public long countByStaffId(Long staffId) {
 		return reporitory.countByStaffId(staffId);
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public EmployeeEntity geOnlyEmployeeById(Long id) {
-
-		return reporitory.findOnlyEmployeeById(id).orElseThrow(() -> {
-			return new AppResourceNotFoundException("Employee.notFound", id);
-		});
 	}
 
 	@Transactional(readOnly = true)

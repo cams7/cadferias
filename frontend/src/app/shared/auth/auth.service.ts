@@ -72,8 +72,8 @@ export class AuthService {
         return role;
       });
 
-      console.log(`sub: ${decoded['sub']}`);
-      console.log(`exp: ${decoded['exp']}`);    
+      //console.log(`sub: ${decoded['sub']}`);
+      //console.log(`exp: ${decoded['exp']}`);    
       return loggedUser; 
     } catch(_) {}
     return undefined;
@@ -88,6 +88,30 @@ export class AuthService {
     this.tokenStorage.removeToken();  
   }
 
+  /**
+   * Valida todas as roles recebidas, consultando as permissões do usuário.
+   *
+   * @param roles
+   */
+  validateRoles$(roles: string[], conditional?: Conditional) {
+    if(!roles || roles.length == 0)
+      return of(true);
+
+    const validRoles = (items: string[]) => {
+      if(!items)
+        return false;
+
+      if(conditional && conditional == Conditional.AND)
+        return roles.every(role => items.some(item => item == role));
+
+      return !!(roles.map(role => items.some(item => item == role)).find(found => found));
+    };
+
+    return this.roles$.pipe(
+      map(validRoles)
+    );
+  }
+
   get loggedUser$() {
     return this._loggedUser$.pipe(  
       filter(user => this.tokenStorage.token && !!user && !!user.entityId)
@@ -99,5 +123,24 @@ export class AuthService {
       map(user => this.tokenStorage.token && !!user && !!user.entityId)
     );  
   }
+
+  private get roles$() {
+    return this.loggedUser$.pipe(
+      map(user => user.roles ? user.roles.map(role => role.name) : [])
+    );
+  }
+
+  getRoles(roles: string[]) {
+    return roles ? roles : [];
+  }
+
+  getConditional(conditional: Conditional) {
+    return conditional ? conditional : Conditional.OR;
+  }
   
+}
+
+export enum Conditional {
+  AND='and',
+  OR='or'
 }

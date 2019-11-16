@@ -39,7 +39,7 @@ public final class LoggedUser extends User {
 			return AuthorityUtils.createAuthorityList();
 
 		List<GrantedAuthority> authorities = AuthorityUtils
-				.createAuthorityList(roles.stream().map(role -> role.getName().name()).toArray(String[]::new));
+				.createAuthorityList(roles.stream().map(role -> role.getName()).toArray(String[]::new));
 		return authorities;
 	}
 

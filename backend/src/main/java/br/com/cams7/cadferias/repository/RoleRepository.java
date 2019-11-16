@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.cams7.cadferias.model.RoleEntity;
-import br.com.cams7.cadferias.model.RoleEntity.RoleName;
 
 /**
  * @author ceanm
@@ -17,5 +16,5 @@ import br.com.cams7.cadferias.model.RoleEntity.RoleName;
  */
 @Repository
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
-	Optional<RoleEntity> findByName(RoleName roleName);
+	Optional<RoleEntity> findByName(String name);
 }

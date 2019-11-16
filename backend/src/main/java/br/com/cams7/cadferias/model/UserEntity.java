@@ -105,11 +105,11 @@ public class UserEntity extends Auditable<Long> {
 	@Column(name = "SENHA", nullable = false, length = 100)
 	private String encryptedPassword;
 
-	@ApiModelProperty(notes = "Listagem com as funções (ROLES) do usuário.", required = false, position = 8)
+	@ApiModelProperty(notes = "Listagem com as funcionalidades (ROLES) do usuário.", required = false, position = 8)
 	@JsonView(Details.class)
 	@ManyToMany(fetch = LAZY)
-	@JoinTable(name = "TB_USUARIO_FUNCAO", joinColumns = { @JoinColumn(name = "ID_USUARIO") }, inverseJoinColumns = {
-			@JoinColumn(name = "ID_FUNCAO") })
+	@JoinTable(name = "TB_USUARIO_FUNCIONALIDADE", joinColumns = { @JoinColumn(name = "ID_USUARIO") }, inverseJoinColumns = {
+			@JoinColumn(name = "ID_FUNCIONALIDADE") })
 	private Set<RoleEntity> roles;
 
 	public UserEntity(Long id) {

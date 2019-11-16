@@ -4,6 +4,7 @@
 package br.com.cams7.cadferias.model;
 
 import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS;
+import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_USER_STAFF;
 import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_USER_STAFF_PHOTOS;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -65,6 +66,10 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "entityId", callSuper = false)
 //@formatter:off
 @NamedEntityGraphs({
+	@NamedEntityGraph(name = WITH_USER_STAFF, attributeNodes = {
+		@NamedAttributeNode("user"),
+		@NamedAttributeNode("staff")
+	}),
 	@NamedEntityGraph(name = WITH_USER_STAFF_PHOTOS, attributeNodes = {
 		@NamedAttributeNode("user"),
 		@NamedAttributeNode("staff"),
@@ -83,6 +88,7 @@ import lombok.ToString;
 @Table(name = "TB_FUNCIONARIO", uniqueConstraints = @UniqueConstraint(columnNames = { "ID_USUARIO", "MATRICULA" }))
 public class EmployeeEntity extends Auditable<Long> {
 
+	public static final String WITH_USER_STAFF = "Employee.withUserAndStaff";
 	public static final String WITH_USER_STAFF_PHOTOS = "Employee.withUserAndStaffAndPhotos";
 	public static final String WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS = "Employee.withCreatedByAndLastModifiedByAndUserAndStaffAndPhotos";
 

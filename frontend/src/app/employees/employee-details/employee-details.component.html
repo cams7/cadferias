@@ -18,7 +18,9 @@
     <div class="row">
         <div class="col-md-4 mb-3">
             <label for="staffName" class="col-form-label col-form-label-lg">Equipe</label>
-            <a id="staffName" class="form-control-plaintext" [routerLink]="['/staffs', entity.staff.entityId, 'details']">{{ entity.staff.name }}</a>
+            <span>
+                <a id="staffName" class="form-control-plaintext" [routerLink]="['/staffs', entity.staff.entityId, 'details']" securityItem [roles]="[roles.ROLE_VIEW_STAFF_DETAILS]"><span>{{ entity.staff.name }}</span></a>
+            </span>
         </div>
         <div class="col-md-4 mb-3">
             <label for="employeeRegistration" class="col-form-label col-form-label-lg">Matricula</label>
@@ -74,7 +76,11 @@
 
 <div class="form-group row">
     <div class="col-sm-12">
-        <button type="button" class="btn btn-primary float-left" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Listar funcionários</button>
-        <button type="button" class="btn btn-secondary float-right" (click)="onEdit()" [tooltip]="getByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Alterar</button>
+        <span>
+            <button type="button" class="btn btn-primary float-left" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Listar funcionários</button>
+        </span>
+        <span>
+            <button type="button" class="btn btn-secondary float-right" (click)="onEdit()" [tooltip]="getByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_UPDATE_EMPLOYEE_DATA]"><span><i class="fa fa-edit"></i>&nbsp;Alterar</span></button>
+        </span>
     </div>        
 </div>

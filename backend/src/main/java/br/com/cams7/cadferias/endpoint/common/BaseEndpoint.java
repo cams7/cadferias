@@ -55,6 +55,9 @@ import io.swagger.annotations.ApiParam;
 public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Auditable<ID>, ID extends Serializable, F extends AuditableFilterVO>
 		extends Base {
 
+	public static final String ENDPOINT_SUFFIX_SEARCH = "search";
+	public static final String ENDPOINT_SUFFIX_DETAILS = "details";
+
 	private static final int SERVICE_INDEX = 0;
 	private static final int ENTITY_INDEX = 1;
 	private static final int ID_INDEX = 2;
@@ -74,7 +77,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 	@ApiOperation("Carrega as entidades pela paginação e filtro de busca.")
 	@JsonView(Public.class)
 	@ResponseStatus(value = OK)
-	@PostMapping(path = "search")
+	@PostMapping(path = ENDPOINT_SUFFIX_SEARCH)
 	public PageVO<E, ID> getBySearch(@ApiParam("Filtro de busca informado.") @Valid @RequestBody SearchVO<F> search) {
 		PageVO<E, ID> page = service.getBySearch(search);
 		if (page.getTotalElements() > 0) {
@@ -105,7 +108,7 @@ public abstract class BaseEndpoint<S extends BaseService<E, ID, F>, E extends Au
 	@ApiOperation("Busca a entidade pelo ID.")
 	@JsonView(Details.class)
 	@ResponseStatus(value = OK)
-	@GetMapping(path = "{id:\\d+}/details", consumes = { MediaType.ALL_VALUE })
+	@GetMapping(path = "{id:\\d+}/" + ENDPOINT_SUFFIX_DETAILS, consumes = { MediaType.ALL_VALUE })
 	public E getWithAuditById(@ApiParam("ID da entidade.") @PathVariable String id) {
 		@SuppressWarnings("unchecked")
 		E entity = service.getWithAuditById((ID) getId(id));

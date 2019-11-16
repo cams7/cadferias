@@ -204,7 +204,6 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		selectQuery.where(cb.and(and));
 
 		Path<?> path = root.get(fieldName);
-		@SuppressWarnings("preview")
 		Order order = switch (search.getSort().getDirection()) {
 		case DESC -> cb.desc(path);
 		default -> cb.asc(path);

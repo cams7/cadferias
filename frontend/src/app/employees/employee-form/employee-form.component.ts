@@ -140,10 +140,8 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     );
     
     this._staffs$ = merge(
-      of(super.entity.staff.entityId).pipe(
-        filter(entityId => !!entityId),
-        flatMap(entityId => this.staffsService.getById$(entityId)),
-        filter(staff => !!staff),
+      of(super.entity.staff).pipe(
+        filter(staff => !!staff && !!staff.entityId),
         map(staff => [staff])
       ),
       this.staffName$.pipe(

@@ -30,8 +30,8 @@ export class EmployeesService extends BaseService<Employee, EmployeeFilterVO> {
     return this.http.get<CityVO[]>('assets/data/brazilian-cities.json');  
   }
 
-  getOnlyEmployeeById$(id: number) {
-    return this.http.get<Employee>(`${this.API_URL}/only/${id}`);
+  getByIdWithoutPhotos$(id: number) {        
+    return this.http.get<Employee>(`${this.API_URL}/withoutPhotos/${id}`);
   }
 
   getByName$(name: string) {

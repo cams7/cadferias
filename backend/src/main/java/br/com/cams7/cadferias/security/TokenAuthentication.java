@@ -13,8 +13,8 @@ import static br.com.cams7.cadferias.security.SecurityConstants.TOKEN_PREFIX;
 import static br.com.cams7.cadferias.security.SecurityConstants.USER_EMAIL;
 import static br.com.cams7.cadferias.security.SecurityConstants.USER_ID;
 import static br.com.cams7.cadferias.security.SecurityConstants.USER_ROLES;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,7 +35,6 @@ import br.com.cams7.cadferias.common.Utils;
 import br.com.cams7.cadferias.error.vo.ErrorVO;
 import br.com.cams7.cadferias.model.RoleEntity;
 import br.com.cams7.cadferias.model.UserEntity;
-import br.com.cams7.cadferias.model.RoleEntity.RoleName;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -51,8 +50,7 @@ public class TokenAuthentication {
 	private final static String CHARACTER_ENCODING = "UTF-8";
 
 	public static void addAuthentication(HttpServletResponse response, UserEntity user) throws IOException {
-		String roles = user.getRoles().stream().map(role -> role.getName().name())
-				.collect(Collectors.joining(DELIMITER));
+		String roles = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.joining(DELIMITER));
 		// @formatter:off		
 		String token = Jwts.builder()
 				.setSubject(JWT_SUBJECT)
@@ -83,12 +81,11 @@ public class TokenAuthentication {
 		user.setEntityId(((Integer) claims.get(USER_ID)).longValue());
 		user.setEmail((String) claims.get(USER_EMAIL));
 
-		Set<RoleEntity> roles = Arrays.asList(((String) claims.get(USER_ROLES)).split(DELIMITER)).stream()
-				.map(roleName -> {
-					RoleEntity role = new RoleEntity();
-					role.setName(RoleName.valueOf(roleName));
-					return role;
-				}).collect(Collectors.toSet());
+		Set<RoleEntity> roles = Arrays.asList(((String) claims.get(USER_ROLES)).split(DELIMITER)).stream().map(name -> {
+			RoleEntity role = new RoleEntity();
+			role.setName(name);
+			return role;
+		}).collect(Collectors.toSet());
 
 		user.setRoles(roles);
 

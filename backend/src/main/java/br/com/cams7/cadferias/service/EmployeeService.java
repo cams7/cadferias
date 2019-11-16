@@ -13,13 +13,13 @@ import br.com.cams7.cadferias.service.common.BaseService;
  *
  */
 public interface EmployeeService extends BaseService<EmployeeEntity, Long, EmployeeFilterVO> {
+	
+	EmployeeEntity getByIdWithoutPhotos(Long employeeId);
 
 	void delete(Long employeeId, boolean deleteUser);
 	
 	long countByStaffId(Long staffId);
 	
-	EmployeeEntity geOnlyEmployeeById(Long id);
-
 	Iterable<EmployeeEntity> getByName(SearchBySelectVO search);
 
 }

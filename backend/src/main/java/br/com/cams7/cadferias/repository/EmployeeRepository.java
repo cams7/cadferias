@@ -4,6 +4,7 @@
 package br.com.cams7.cadferias.repository;
 
 import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS;
+import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_USER_STAFF;
 import static br.com.cams7.cadferias.model.EmployeeEntity.WITH_USER_STAFF_PHOTOS;
 
 import java.time.LocalDate;
@@ -21,6 +22,10 @@ import br.com.cams7.cadferias.repository.common.SoftDeleteCrudRepository;
  *
  */
 public interface EmployeeRepository extends EmployeeRepositoryCustom, SoftDeleteCrudRepository<EmployeeEntity, Long> {
+	
+	@EntityGraph(value = WITH_USER_STAFF)
+	@Query("SELECT e FROM EmployeeEntity e WHERE e.entityId = :id AND e.active = true")
+	Optional<EmployeeEntity> findByIdWithoutPhotos(@Param("id") Long id);
 
 	@Override
 	@EntityGraph(value = WITH_USER_STAFF_PHOTOS)
@@ -31,9 +36,6 @@ public interface EmployeeRepository extends EmployeeRepositoryCustom, SoftDelete
 	@EntityGraph(value = WITH_CREATEDBY_LASTMODIFIEDBY_USER_STAFF_PHOTOS)
 	@Query("SELECT e FROM EmployeeEntity e WHERE e.entityId = :id AND e.active = true")
 	Optional<EmployeeEntity> findWithAuditById(@Param("id") Long id);
-
-	@Query("SELECT e FROM EmployeeEntity e WHERE e.entityId = :id AND e.active = true")
-	Optional<EmployeeEntity> findOnlyEmployeeById(@Param("id") Long id);
 
 	@Query("SELECT (COUNT(e) > 0) FROM EmployeeEntity e WHERE e.user.entityId = :userId AND e.active = true")
 	boolean existsByUserId(@Param("userId") Long userId);

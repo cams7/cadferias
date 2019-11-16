@@ -13,6 +13,7 @@ import { SigninService } from './signin/signin.service';
 import { MessageType } from './shared/model/vo/message/message-vo';
 import { ErrorException } from './shared/model/vo/error/error-vo';
 import { QUERY_PARAMS } from './shared/common/base';
+import { RoleName } from './shared/model/role';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { QUERY_PARAMS } from './shared/common/base';
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {  
 
   readonly queryParams = QUERY_PARAMS;
+  readonly roles = RoleName;
 
   private _alerts: AlertMessageVO[] = [];
   private subscriptions: Subscription[] = [];
@@ -127,6 +129,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get isLoggedIn$() {
     return this.authService.loggedIn$;
+  }
+
+  get loggedUser$() {
+    return this.authService.loggedUser$;
   }
 
   get alerts() {

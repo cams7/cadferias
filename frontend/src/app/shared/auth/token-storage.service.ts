@@ -19,6 +19,6 @@ export class TokenStorageService {
   }
 
   get token() {
-    return sessionStorage.getItem(TOKEN_KEY);
+    return window.sessionStorage.getItem(TOKEN_KEY);
   }
 }

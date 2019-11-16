@@ -21,7 +21,9 @@
     </form>
     <div class="row">
         <div class="col-sm-12">
-            <a class="btn btn-sm btn-outline-primary mb-1 float-right" role="button" [routerLink]="['register']"><i class="fa fa-plus"></i>&nbsp;Cadastrar Férias</a>
+            <span>
+                <a class="btn btn-sm btn-outline-primary mb-1 float-right" role="button" [routerLink]="['register']" securityItem [roles]="[roles.ROLE_REGISTER_NEW_VACATION]"><span><i class="fa fa-plus"></i>&nbsp;Cadastrar Férias</span></a>
+            </span>
         </div>
     </div>
     <div class="row">
@@ -43,12 +45,26 @@
                             <td>{{ vacation.entityId }}</td>
                             <td>{{ vacation.startDate | date:'shortDate' }}</td>
                             <td>{{ vacation.endDate | date:'shortDate' }}</td>
-                            <td><a [routerLink]="['/employees', vacation.employee.entityId, 'details']"> {{ vacation.employee.name }}</a></td>
-                            <td><a [routerLink]="['/staffs', vacation.employee.staff.entityId, 'details']"> {{ vacation.employee.staff.name }}</a></td>
                             <td>
-                                <a class="btn btn-sm btn-outline-info mb-1" role="button" (click)="onDetails(vacation.entityId)" [tooltip]="getWithAuditByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-info-circle"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-secondary mb-1" role="button" (click)="onEdit(vacation.entityId)" [tooltip]="getByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-edit"></i></a>&nbsp;
-                                <a class="btn btn-sm btn-outline-danger mb-1" role="button" (click)="onDelete(vacation)" [tooltip]="deleteRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay"><i class="fa fa-trash"></i></a>
+                                <span>
+                                    <a [routerLink]="['/employees', vacation.employee.entityId, 'details']" securityItem [roles]="[roles.ROLE_VIEW_EMPLOYEE_DETAILS]"><span><i class="fa fa-id-badge"></i>&nbsp;{{ vacation.employee.name }}</span></a>
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    <a [routerLink]="['/staffs', vacation.employee.staff.entityId, 'details']" securityItem [roles]="[roles.ROLE_VIEW_STAFF_DETAILS]"><span><i class="fa fa-clipboard"></i>&nbsp;{{ vacation.employee.staff.name }}</span></a>
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                    <a class="btn btn-sm btn-outline-info" role="button" (click)="onDetails(vacation.entityId)" [tooltip]="getWithAuditByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_VIEW_VACATION_DETAILS]"><i class="fa fa-info-circle"></i></a>
+                                </span>
+                                <span>
+                                    <a class="btn btn-sm btn-outline-secondary ml-1" role="button" (click)="onEdit(vacation.entityId)" [tooltip]="getByIdRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_UPDATE_VACATION_DATA]"><i class="fa fa-edit"></i></a>
+                                </span>
+                                <span>
+                                    <a class="btn btn-sm btn-outline-danger ml-1" role="button" (click)="onDelete(vacation)" [tooltip]="deleteRel(vacation.links).title" placement="bottom" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_DELETE_VACATION]"><i class="fa fa-trash"></i></a>
+                                </span>
                             </td>
                         </tr>                                
                     </tbody>                

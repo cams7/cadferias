@@ -58,7 +58,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     this.form.get('employee.entityId').valueChanges.pipe(
       filter(employeeId => !!employeeId),
       distinctUntilChanged(),
-      switchMap(employeeId => this.employeesService.getById$(employeeId)),
+      switchMap(employeeId => this.employeesService.getByIdWithoutPhotos$(employeeId)),
       filter(employee => !!employee),
       takeUntil(super.end$)
     ).subscribe(employee => {
@@ -67,10 +67,8 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     })
 
     this._employees$ = merge(
-      of(this.entity.employee.entityId).pipe(
-        filter(entityId => !!entityId),
-        flatMap(entityId => this.employeesService.getOnlyEmployeeById$(entityId)),
-        filter(employee => !!employee),
+      of(this.entity.employee).pipe(
+        filter(employee => !!employee && !!employee.entityId),
         map(employee => [employee])
       ),
       this.employeeName$.pipe(

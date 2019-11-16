@@ -17,28 +17,60 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/home']"><i class="fa fa-home"></i>&nbsp;Home <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="isLinkActive('/staffs')" [routerLink]="['/staffs']" [queryParams]="queryParams" *ngIf="isLoggedIn$ | async"><i class="fa fa-clipboard"></i>&nbsp;Equipes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="isLinkActive('/employees')" [routerLink]="['/employees']" [queryParams]="queryParams" *ngIf="isLoggedIn$ | async"><i class="fa fa-id-badge"></i>&nbsp;Funcionários</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="isLinkActive('/vacations')" [routerLink]="['/vacations']" [queryParams]="queryParams" *ngIf="isLoggedIn$ | async"><i class="fa fa-plane"></i>&nbsp;Férias</a>
-        </li>
+        <security-item [roles]="[roles.ROLE_LIST_ALL_STAFFS]" [disabled]="!(isLoggedIn$ | async)">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="isLinkActive('/staffs')" [routerLink]="['/staffs']" [queryParams]="queryParams"><i class="fa fa-clipboard"></i>&nbsp;Equipes</a>
+          </li>
+        </security-item>
+        <security-item [roles]="[roles.ROLE_LIST_ALL_EMPLOYEES]" [disabled]="!(isLoggedIn$ | async)">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="isLinkActive('/employees')" [routerLink]="['/employees']" [queryParams]="queryParams"><i class="fa fa-id-badge"></i>&nbsp;Funcionários</a>
+          </li>
+        </security-item>
+        <security-item [roles]="[roles.ROLE_LIST_ALL_VACATIONS]" [disabled]="!(isLoggedIn$ | async)">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="isLinkActive('/vacations')" [routerLink]="['/vacations']" [queryParams]="queryParams"><i class="fa fa-plane"></i>&nbsp;Férias</a>
+          </li>
+        </security-item>
       </ul>
-      <ul class="nav navbar-nav ml-auto">
-        <!--li class="nav-item">
-          <a class="nav-link" href="#"><i class="fa fa-user-plus"></i>&nbsp;Sign Up</a>
-        </li-->
-        <li class="nav-item" *ngIf="isLoggedIn$ | async; else isLoggedOut">
-          <a class="nav-link" (click)="logout()"><i class="fa fa-lock"></i>&nbsp;Logout</a>
+      <ul class="nav navbar-nav ml-auto">        
+        <li *ngIf="isLoggedIn$ | async; else isLoggedOut" class="dropdown nav-item" dropdown>
+          <a dropdownToggle class="dropdown-toggle btn nav-link" aria-controls="dropdown-basic">
+            <i class="fa fa-user"></i>&nbsp;<strong>Usuário</strong>
+          </a>
+          <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="button-basic">
+              <li>
+                <div class="navbar-login">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="text-center">
+                          <span class="fa fa-user icon-size"></span>
+                      </p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="text-left"><strong>E-mail</strong></p>
+                      <p class="text-left small">{{(loggedUser$ | async)?.email}}</p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <div class="navbar-login navbar-login-session">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <a class="btn btn-danger btn-block" (click)="logout()"><i class="fa fa-lock"></i>&nbsp;Logout</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+          </ul>
         </li>
         <ng-template #isLoggedOut>
           <li class="nav-item">
-            <a class="nav-link" (click)="login()"><i class="fa fa-unlock"></i>&nbsp;Login</a>
+            <a class="nav-link" (click)="login()"><i class="fa fa-unlock"></i>&nbsp;<strong>Login</strong></a>
           </li>
-        </ng-template>        
+        </ng-template>       
       </ul>
     </div>
   </nav>
