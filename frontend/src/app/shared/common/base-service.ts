@@ -1,13 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 
-import { Base } from './base';
 import { PageVO } from '../model/vo/pagination/page-vo';
 import { BaseEntity, Link, RequestMethod } from '../model/base-entity';
 import { AuditableFilterVO } from '../model/vo/filter/auditable-filter-vo';
 import { SearchVO } from '../model/vo/search-vo';
 import { EMPTY, Observable } from 'rxjs';
 
-export abstract class BaseService<E extends BaseEntity, F extends AuditableFilterVO> extends Base {
+export abstract class BaseService<E extends BaseEntity, F extends AuditableFilterVO> {
 
     protected readonly searchSize = 7;
 
@@ -15,7 +14,6 @@ export abstract class BaseService<E extends BaseEntity, F extends AuditableFilte
         protected http: HttpClient,
         protected API_URL: string      
     ) { 
-        super();
     }
 
     getBySearch$(search: SearchVO<F>) {

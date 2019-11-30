@@ -1,20 +1,26 @@
-import { OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Base, QUERY_PARAMS } from './base';
+import { ComponentBase, QUERY_PARAMS } from './component-base';
 import { BaseEntity, Link } from '../model/base-entity';
+import { HistoryService } from '../history.service';
 
-export abstract class BaseDetails<E extends BaseEntity> extends Base implements OnInit {
+export abstract class BaseDetails<E extends BaseEntity> extends ComponentBase {
 
     private _entity: E;
 
+    private _isShowUpdateLink: boolean;
+
     constructor(
         protected route: ActivatedRoute,
-        protected router: Router
+        protected router: Router,
+        protected historyService: HistoryService
     ) {
-        super();
+        super(router);
     }
 
     ngOnInit() {
+        super.ngOnInit();
+        this._isShowUpdateLink = !this.historyService.hasPrevious(`${super.url.replace(/\/details$/g, '')}`, super.url);
+
         this._entity = this.route.snapshot.data['entity'];
     }
 
@@ -32,5 +38,9 @@ export abstract class BaseDetails<E extends BaseEntity> extends Base implements 
 
     get entity() {
         return this._entity;
+    }
+
+    get isShowUpdateLink() {
+        return this._isShowUpdateLink;
     }
 }

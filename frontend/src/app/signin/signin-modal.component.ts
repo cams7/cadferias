@@ -11,6 +11,7 @@ import { ConfirmModalService } from './../shared/confirm-modal/confirm-modal.ser
 import { AuthService } from '../shared/auth/auth.service';
 import { BaseForm } from './../shared/common/base-form';
 import { User } from '../shared/model/user';
+import { HistoryService } from '../shared/history.service';
 
 @Component({
   selector: 'app-signin-modal',
@@ -23,12 +24,13 @@ export class SigninModalComponent extends BaseForm<User> {
     private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected router: Router,
+    protected historyService: HistoryService,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private authService: AuthService
   ) { 
-    super(route, router, errorsService, confirmModalService);
+    super(route, router, historyService, errorsService, confirmModalService);
   }
 
   ngOnInit() {

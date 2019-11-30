@@ -77,9 +77,9 @@
 <div class="form-group row">
     <div class="col-sm-12">
         <span>
-            <button type="button" class="btn btn-primary float-left" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay">Listar funcionários</button>
+            <back-button [tooltipDelay]="tooltipDelay"></back-button>
         </span>
-        <span>
+        <span *ngIf="isShowUpdateLink">
             <button type="button" class="btn btn-secondary float-right" (click)="onEdit()" [tooltip]="getByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_UPDATE_EMPLOYEE_DATA]"><span><i class="fa fa-edit"></i>&nbsp;Alterar</span></button>
         </span>
     </div>        

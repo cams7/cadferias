@@ -13,6 +13,7 @@ import { VacationsService } from './../vacations.service';
 import { Employee } from './../../shared/model/employee';
 import { Vacation, VACATION_ENDPOINT_GET_BY_SEARCH_REL, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, VACATION_ENDPOINT_UPDATE_REL } from './../../shared/model/vacation';
 import { getRel } from 'src/app/shared/model/base-entity';
+import { HistoryService } from 'src/app/shared/history.service';
 
 @Component({
   selector: 'app-vacation-form',
@@ -28,13 +29,14 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected router: Router,
+    protected historyService: HistoryService,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private employeesService: EmployeesService,
     private vacationsService: VacationsService
   ) { 
-    super(route, router, errorsService, confirmModalService);
+    super(route, router, historyService, errorsService, confirmModalService);
   }
 
   ngOnInit() {

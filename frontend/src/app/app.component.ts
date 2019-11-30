@@ -12,8 +12,9 @@ import { HttpIndicatorService } from './shared/http-indicator.service';
 import { SigninService } from './signin/signin.service';
 import { MessageType } from './shared/model/vo/message/message-vo';
 import { ErrorException } from './shared/model/vo/error/error-vo';
-import { QUERY_PARAMS } from './shared/common/base';
+import { QUERY_PARAMS } from './shared/common/component-base';
 import { RoleName } from './shared/model/role';
+import { HistoryService } from './shared/history.service';
 
 @Component({
   selector: 'app-root',
@@ -40,10 +41,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private errorsService: ErrorsService,
     private authService: AuthService,
     private httpIndicatorService: HttpIndicatorService,
-    private signinService: SigninService
+    private signinService: SigninService,
+    private historyService: HistoryService
   ) { }
 
   ngOnInit() {
+    this.historyService.init();
+
     this.authService.loadTokenData();
     //FIXME Remove the line below when the app development phase is over
     this.eventsService.resetAllSearchs();
@@ -98,6 +102,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   logout() {
+    this.historyService.clearURLs();
     this.authService.signOut();
     this.router.navigate(['/home']);
   }

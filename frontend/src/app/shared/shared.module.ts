@@ -24,7 +24,7 @@ import { FieldErrorDisplayComponent } from './common/field-error-display/field-e
 import { AuditableComponent } from './common/auditable/auditable.component';
 import { SecurityItemComponent } from './security/security-item.component';
 import { SecurityItemDirective } from './security/security-item.directive';
-
+import { BackButtonComponent } from './common/back-button.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +36,8 @@ import { SecurityItemDirective } from './security/security-item.directive';
     FieldErrorDisplayComponent,    
     AuditableComponent, 
     SecurityItemComponent, 
-    SecurityItemDirective
+    SecurityItemDirective, 
+    BackButtonComponent
   ],
   imports: [
     CommonModule, 
@@ -73,7 +74,8 @@ import { SecurityItemDirective } from './security/security-item.directive';
     FieldErrorDisplayComponent,
     AuditableComponent,
     SecurityItemComponent, 
-    SecurityItemDirective    
+    SecurityItemDirective,
+    BackButtonComponent    
   ]
 })
 export class SharedModule {

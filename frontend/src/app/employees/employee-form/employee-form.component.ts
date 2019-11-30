@@ -16,6 +16,7 @@ import { EmployeesService } from '../employees.service';
 import { Employee, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL, EMPLOYEE_ENDPOINT_UPDATE_REL, getPhoto, EMPLOYEE_PHOTO } from './../../shared/model/employee';
 import { Staff } from './../../shared/model/staff';
 import { EmployeePhoto, ImageType } from './../../shared/model/employee-photo';
+import { HistoryService } from 'src/app/shared/history.service';
 
 @Component({
   selector: 'app-employee-form',
@@ -43,13 +44,14 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected router: Router,
+    protected historyService: HistoryService,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService,
     private employeesService: EmployeesService    
   ) { 
-    super(route, router, errorsService, confirmModalService);
+    super(route, router, historyService, errorsService, confirmModalService);
   }
 
   ngOnInit() {

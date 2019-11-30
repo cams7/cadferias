@@ -1,9 +1,10 @@
-import { OnDestroy } from '@angular/core';
+import { OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PageAndSortParamsVO } from '../model/vo/page-params-vo';
 import { Direction } from '../model/vo/pagination/sort-vo';
 import { RoleName } from '../model/role';
+import { Router } from '@angular/router';
 
 const YEAR_FORMAT = 'yyyy';
 const MONTH_FORMAT = 'MM';
@@ -23,10 +24,21 @@ export const QUERY_PARAMS = <PageAndSortParamsVO>{
     order: Direction.DESC
 };
 
-export abstract class Base implements OnDestroy {   
+export abstract class ComponentBase implements OnInit, OnDestroy {  
+    
+    private _url: string;
         
     private endSubject = new Subject<boolean>();
     readonly roles = RoleName;
+
+    constructor(
+        protected router: Router
+    ) {        
+    }
+
+    ngOnInit() {
+        this._url = this.router.url;
+    }
 
     ngOnDestroy() {
         this.endSubject.next(true);
@@ -222,5 +234,9 @@ export abstract class Base implements OnDestroy {
 
     get tooltipDelay() {
         return 1000;
+    }
+
+    get url() {
+        return this._url;
     }
 }

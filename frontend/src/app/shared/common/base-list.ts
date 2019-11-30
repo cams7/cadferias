@@ -1,4 +1,4 @@
-import { OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of, EMPTY, forkJoin, interval, combineLatest, timer, Observable, BehaviorSubject } from 'rxjs';
@@ -6,7 +6,7 @@ import { filter, delay, concatMap, flatMap, shareReplay, delayWhen, map, distinc
 
 import { EventsService } from '../events.service';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
-import { Base } from './base';
+import { ComponentBase } from './component-base';
 import { BaseService } from './base-service';
 import { PageVO } from '../model/vo/pagination/page-vo';
 import { SortVO, Direction } from '../model/vo/pagination/sort-vo';
@@ -22,7 +22,7 @@ const SORT_PARAM = 'sort';
 const ORDER_PARAM = 'order';
 const ITEMS_PER_PAGE_FIELD = 'itemsPerPage';
 const SEARCH_FIELD = 'search';
-export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO> extends Base implements OnInit {
+export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO> extends ComponentBase {
                           
     readonly previousText = '&lsaquo;';
     readonly nextText = '&rsaquo;'; 
@@ -63,10 +63,12 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         protected confirmModalService: ConfirmModalService,
         private service: BaseService<E, F>
     ) { 
-        super();
+        super(router);
     }
 
-    ngOnInit() {     
+    ngOnInit() {   
+        super.ngOnInit();    
+        
         this.initSortFields();       
         
         this.form = this.fb.group({

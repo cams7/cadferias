@@ -46,10 +46,10 @@
         <div class="form-group row">
             <div class="col-sm-12">
                 <span>
-                    <button type="button" class="btn btn-primary float-left mr-1" (click)="onList()" [tooltip]="getBySearchRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred">Listar férias</button>
+                    <back-button [tooltipDelay]="tooltipDelay"></back-button>
                 </span>
-                <span>
-                    <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" *ngIf="isRegistred" securityItem [roles]="[roles.ROLE_VIEW_VACATION_DETAILS]"><span><i class="fa fa-info-circle"></i>&nbsp;Detalhar</span></button>
+                <span *ngIf="isRegistred && isShowDetailsLink">
+                    <button type="button" class="btn btn-info float-left" (click)="onDetails()" [tooltip]="getWithAuditByIdRel.title" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_VIEW_VACATION_DETAILS]"><span><i class="fa fa-info-circle"></i>&nbsp;Detalhar</span></button>
                 </span>
                 <span>
                     <button *ngIf="isRegistred; else registerNew" type="submit" class="btn btn-warning btn-lg float-right" [tooltip]="submitTooltip" placement="top" [adaptivePosition]="false" [delay]="tooltipDelay" securityItem [roles]="[roles.ROLE_UPDATE_VACATION_DATA]"><span><i class="fa fa-edit"></i>&nbsp;Atualizar</span></button>                    

@@ -10,6 +10,7 @@ import { BaseForm } from './../../shared/common/base-form';
 import { StaffsService } from '../staffs.service';
 import { Staff, STAFF_ENDPOINT_GET_BY_SEARCH_REL, STAFF_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL, STAFF_ENDPOINT_UPDATE_REL } from './../../shared/model/staff';
 import { getRel } from 'src/app/shared/model/base-entity';
+import { HistoryService } from 'src/app/shared/history.service';
 
 @Component({
   selector: 'app-staff-form',
@@ -22,12 +23,13 @@ export class StaffFormComponent extends BaseForm<Staff> {
     private fb: FormBuilder,
     protected route: ActivatedRoute,
     protected router: Router,
+    protected historyService: HistoryService,
     private eventsService: EventsService,
     protected errorsService: ErrorsService,
     protected confirmModalService: ConfirmModalService,
     private staffsService: StaffsService
   ) { 
-    super(route, router, errorsService, confirmModalService);
+    super(route, router, historyService, errorsService, confirmModalService);
   }
 
   ngOnInit() {
