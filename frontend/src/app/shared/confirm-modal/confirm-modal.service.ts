@@ -45,7 +45,7 @@ export class ConfirmModalService extends BaseModalService {
       }),
       take(1),
       tap(_ => {
-        super.close();
+        this.close();
       })
     );
   }

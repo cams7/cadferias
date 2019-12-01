@@ -1,7 +1,6 @@
 export const environment = {
-  production: true,
-  heroku: false,
-  //API: '/',
+  production: false,
+  heroku: true,
   API: 'http://localhost:8080/',
   BASE_URL: ''
 };

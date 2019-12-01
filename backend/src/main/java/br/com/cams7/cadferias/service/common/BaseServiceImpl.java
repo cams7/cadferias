@@ -6,6 +6,7 @@ package br.com.cams7.cadferias.service.common;
 import static br.com.cams7.cadferias.common.Utils.CLASS_SEPARATOR;
 import static br.com.cams7.cadferias.common.Utils.SERVICE_SUFFIX;
 import static br.com.cams7.cadferias.common.Utils.getEntityName;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 
 		Validator validator = this.validatorFactory.getValidator();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Set<ConstraintViolation<E>> constraintViolations = validator
+		Set<ConstraintViolation<E>> constraintViolations = (Set<ConstraintViolation<E>>) (Set<?>) validator
 				.validateValue(getEntityType(), fieldName, fieldValue, validationType).stream()
 				.map(constraintViolation -> new ConstraintViolationWithPrefixVO(prefix, constraintViolation))
 				.collect(Collectors.toSet());
@@ -129,7 +130,7 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 	private String getPrefix() {
 		String prefix = Arrays.asList(Thread.currentThread().getStackTrace()).stream().filter(trace -> {
 			String className = trace.getClassName();
-			return className.startsWith(getClass().getPackageName() + CLASS_SEPARATOR)
+			return className.startsWith(getClass().getPackage().getName() + CLASS_SEPARATOR)
 					&& className.endsWith(SERVICE_SUFFIX)
 					&& !className.endsWith(CLASS_SEPARATOR + getClass().getSuperclass().getSimpleName());
 		}).map(trace -> trace.getClassName()).distinct()
@@ -144,7 +145,7 @@ public abstract class BaseServiceImpl<R extends SoftDeleteCrudRepository<E, ID>,
 				}).collect(ArrayList<String>::new, (l, e) -> l.add(0, e), (l1, l2) -> l1.addAll(0, l2)).stream()
 				.collect(Collectors.joining(CLASS_SEPARATOR));
 
-		if (!prefix.isBlank())
+		if (!isBlank(prefix))
 			prefix += CLASS_SEPARATOR;
 
 		return prefix;

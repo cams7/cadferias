@@ -21,7 +21,7 @@ export class SecurityItemComponent extends BaseSecurityItem implements AfterView
   }
 
   ngAfterViewInit() {
-    this.disableOrEnable(super.disabled);
+    this.disableOrEnable(this.disabled);
   }
 
   protected disableOrEnable(disabled: boolean) {

@@ -42,7 +42,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   ngOnInit() {
     super.ngOnInit();
 
-    super.form = this.fb.group({
+    this.form = this.fb.group({
       vacationDate: [this.vacationDate],
       employee: this.fb.group({
         entityId: [this.entity.employee.entityId],
@@ -62,7 +62,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
       distinctUntilChanged(),
       switchMap(employeeId => this.employeesService.getByIdWithoutPhotos$(employeeId)),
       filter(employee => !!employee),
-      takeUntil(super.end$)
+      takeUntil(this.end$)
     ).subscribe(employee => {
       this.entity.employee = employee;
       this.form.get('employee').patchValue(employee);
@@ -75,11 +75,11 @@ export class VacationFormComponent extends BaseForm<Vacation> {
       ),
       this.employeeName$.pipe(
           filter(name => !!name && name.trim().length > 0),          
-          debounceTime(super.debounceTime),
+          debounceTime(this.debounceTime),
           map(name => name.trim()),
           distinctUntilChanged(),
           switchMap(name => this.employeesService.getByName$(name)),
-          takeUntil(super.end$)
+          takeUntil(this.end$)
         )
     );
 
@@ -88,10 +88,10 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   private get vacationDate(): Date[] {
     const vacationDate: Date[] = [undefined, undefined];
     if (!!this.entity.startDate)
-      vacationDate[0]= <Date>super.getDate(<any>this.entity.startDate);
+      vacationDate[0]= <Date>this.getDate(<any>this.entity.startDate);
 
     if (!!this.entity.endDate)
-    vacationDate[1]= <Date>super.getDate(<any>this.entity.endDate);
+    vacationDate[1]= <Date>this.getDate(<any>this.entity.endDate);
 
     return vacationDate;
   }
@@ -119,7 +119,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     if(!vacationDate[0])
       return undefined;
 
-    return <any>super.getFormattedDate(vacationDate[0]);
+    return <any>this.getFormattedDate(vacationDate[0]);
   }
 
   get endDate(): Date {
@@ -127,7 +127,7 @@ export class VacationFormComponent extends BaseForm<Vacation> {
     if(!vacationDate[1])
       return undefined;
 
-    return <any>super.getFormattedDate(vacationDate[1]);
+    return <any>this.getFormattedDate(vacationDate[1]);
   }
 
   get employee() {
@@ -150,19 +150,19 @@ export class VacationFormComponent extends BaseForm<Vacation> {
   }
 
   get getBySearchRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getWithAuditByIdRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
   }
 
   get updateRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_UPDATE_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_UPDATE_REL);
   }
 
   get submitTooltip() {
-    if(!super.entity._links)
+    if(!this.entity._links)
       return "Salvar os dados das férias";
     return this.updateRel.title;
   }

@@ -11,7 +11,7 @@ import { TOKEN_PREFIX } from './auth.service';
 const TOKEN_HEADER_KEY = 'Authorization';
 
 @Injectable()
-class AuthInterceptor implements HttpInterceptor {
+export class AuthInterceptor implements HttpInterceptor {
 
     constructor(
         private tokenStorage: TokenStorageService,

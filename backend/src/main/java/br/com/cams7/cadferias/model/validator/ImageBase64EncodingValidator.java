@@ -3,6 +3,8 @@
  */
 package br.com.cams7.cadferias.model.validator;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -19,7 +21,7 @@ public class ImageBase64EncodingValidator implements ConstraintValidator<ImageBa
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (value == null || value.isBlank())
+		if (isBlank(value))
 			return true;
 
 		if (value.matches(REGEX_IMAGE_BASE64_ENCODING))

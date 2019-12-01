@@ -36,7 +36,7 @@ export class SigninModalComponent extends BaseForm<User> {
   ngOnInit() {
     super.ngOnInit();
 
-    super.form = this.fb.group({
+    this.form = this.fb.group({
       email: [undefined, [Validators.required, Validators.email]], 
       password: [undefined, Validators.required],
       rememberMe: [false, Validators.required]

@@ -53,7 +53,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 /**
  * @author ceanm
  *
@@ -63,7 +62,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String ORIGIN_URL = "http://localhost:4200";
+	private static final String ORIGIN_DEV_URL = "http://localhost:4200";
+	private static final String ORIGIN_HOM_URL = "http://localhost:8081";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -82,7 +82,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList(ORIGIN_URL));
+		configuration.setAllowedOrigins(Arrays.asList(ORIGIN_DEV_URL, ORIGIN_HOM_URL));
 		configuration.setAllowedMethods(
 				Arrays.asList(/* OPTIONS.name(), */ GET.name(), POST.name(), PUT.name(), DELETE.name()));
 		// configuration.setAllowCredentials(true);

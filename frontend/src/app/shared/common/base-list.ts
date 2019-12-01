@@ -89,7 +89,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             map(itemsPerPage => this.getNumber(itemsPerPage)),
             distinctUntilChanged(),
             filter(itemsPerPage => this._page.itemsPerPage && itemsPerPage != this._page.itemsPerPage),
-            takeUntil(super.end$)
+            takeUntil(this.end$)
         ).subscribe(itemsPerPage => {
             const pageAndSort = <PageAndSortParamsVO>{
                 page: this._page.page, 
@@ -104,7 +104,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
         this.form.get(SEARCH_FIELD).valueChanges.pipe(
             debounceTime(1000),
             distinctUntilChanged(),
-            takeUntil(super.end$)
+            takeUntil(this.end$)
         ).subscribe((search: string) => {
             const filter = this.getFilterBySearch(search);
             this.addFilter(filter);         
@@ -120,7 +120,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                     const sort = params[SORT_PARAM];
                     const order = params[ORDER_PARAM];
                             
-                    if(!super.isNumber(page) || !super.isNumberOrNull(itemsPerPage))
+                    if(!this.isNumber(page) || !this.isNumberOrNull(itemsPerPage))
                         return EMPTY;
                     
                     if(page < 1 || itemsPerPage < 1)
@@ -133,8 +133,8 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                         return EMPTY;
                     
                     return of(<PageAndSortParamsVO>{
-                        page: super.getNumber(page), 
-                        itemsPerPage: super.getNumber(itemsPerPage),
+                        page: this.getNumber(page), 
+                        itemsPerPage: this.getNumber(itemsPerPage),
                         sort: sort,
                         order: order
                     });
@@ -145,7 +145,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
             this.deletedEntitySubject.asObservable()
         ).pipe(
             switchMap(([filter, pageAndSort, itemId]) => forkJoin(of(pageAndSort), this.getItems$(
-                <number>super.getNumber(itemId), 
+                <number>this.getNumber(itemId), 
                 pageAndSort, 
                 filter
             ))),
@@ -161,7 +161,7 @@ export abstract class BaseList<E extends BaseEntity, F extends AuditableFilterVO
                 this.sortField = sortField;
                 return of(pagination);
             }),
-            takeUntil(super.end$),
+            takeUntil(this.end$),
             shareReplay()
         );
     }  

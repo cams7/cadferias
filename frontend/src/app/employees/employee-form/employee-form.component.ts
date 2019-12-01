@@ -57,25 +57,25 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   ngOnInit() {
     super.ngOnInit();
     
-    super.form = this.fb.group({
-      hiringDate: [super.getDate(<any>super.entity.hiringDate)], 
-      photo: [getPhoto(super.entity)],
-      employeeRegistration: [super.entity.employeeRegistration],
-      name: [super.entity.name],
-      birthDate: [super.getDate(<any>super.entity.birthDate)],
-      phoneNumber: [super.entity.phoneNumber],
+    this.form = this.fb.group({
+      hiringDate: [this.getDate(<any>this.entity.hiringDate)], 
+      photo: [getPhoto(this.entity)],
+      employeeRegistration: [this.entity.employeeRegistration],
+      name: [this.entity.name],
+      birthDate: [this.getDate(<any>this.entity.birthDate)],
+      phoneNumber: [this.entity.phoneNumber],
       address: this.fb.group({
-        street: [super.entity.address.street],
-        houseNumber: [super.entity.address.houseNumber],
-        neighborhood: [super.entity.address.neighborhood],
-        city: [super.entity.address.city],
-        state: [super.entity.address.state]
+        street: [this.entity.address.street],
+        houseNumber: [this.entity.address.houseNumber],
+        neighborhood: [this.entity.address.neighborhood],
+        city: [this.entity.address.city],
+        state: [this.entity.address.state]
       }),
       user: this.fb.group({
-        email: [super.entity.user.email]
+        email: [this.entity.user.email]
       }),
       staff: this.fb.group({
-        entityId: [super.entity.staff.entityId]
+        entityId: [this.entity.staff.entityId]
       })
     });
 
@@ -84,7 +84,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     );
 
     this._states$ = merge(
-      of(super.entity.address.state).pipe(
+      of(this.entity.address.state).pipe(
         filter(acronym => !!acronym),
         flatMap(acronym => states$.pipe<StateVO>(
           map(states => states.find(state => state.acronym == acronym))
@@ -94,13 +94,13 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
       ),
       this.stateName$.pipe(
         filter(name => !!name && name.trim().length > 0),
-        debounceTime(super.debounceTime),
+        debounceTime(this.debounceTime),
         map(name => name.trim().toLowerCase()),
         distinctUntilChanged(),
         switchMap(name => states$.pipe<StateVO[]>(
           map(states => states.filter(state => !!state && new RegExp(name, 'i').test(state.name.trim().toLowerCase())))
         )),
-        takeUntil(super.end$)
+        takeUntil(this.end$)
       )
     );
 
@@ -109,7 +109,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
     );
 
     this._cities$ = merge(
-      of(super.entity.address.city).pipe(
+      of(this.entity.address.city).pipe(
         filter(name => !!name && !!this.form.get('address.state').value),
         flatMap(name => forkJoin(
           of(name), 
@@ -124,7 +124,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
       ),
       this.cityName$.pipe(
         filter(name => !!name && name.trim().length > 0 && !!this.form.get('address.state').value),
-        debounceTime(super.debounceTime),
+        debounceTime(this.debounceTime),
         map(name => name.trim().toLowerCase()),
         distinctUntilChanged(),
         flatMap(name => forkJoin(
@@ -137,43 +137,43 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
         map(([name, state, cities]) => cities.filter(city => 
           !!city && city.stateId == state.id && new RegExp(name, 'i').test(city.name.trim().toLowerCase())          
         )),
-        takeUntil(super.end$)
+        takeUntil(this.end$)
       )
     );
     
     this._staffs$ = merge(
-      of(super.entity.staff).pipe(
+      of(this.entity.staff).pipe(
         filter(staff => !!staff && !!staff.entityId),
         map(staff => [staff])
       ),
       this.staffName$.pipe(
           filter(name => !!name && name.trim().length > 0),          
-          debounceTime(super.debounceTime),
+          debounceTime(this.debounceTime),
           map(name => name.trim()),
           distinctUntilChanged(),
           switchMap(name => this.staffsService.getByName$(name)),
-          takeUntil(super.end$)
+          takeUntil(this.end$)
         )
     );
   } 
 
   ngAfterViewInit() {
-    const photo = getPhoto(super.entity);
+    const photo = getPhoto(this.entity);
     this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${!!photo ? photo : EMPLOYEE_PHOTO})`);
   }
 
   submit$() {
     const employee = <Employee>this.form.value;
-    employee.entityId = super.entity.entityId;
-    employee.birthDate = <any>super.getFormattedDate(employee.birthDate);
-    employee.hiringDate = <any>super.getFormattedDate(employee.hiringDate);
-    employee.phoneNumber = super.getFormattedDatePhoneNumber(employee.phoneNumber);
+    employee.entityId = this.entity.entityId;
+    employee.birthDate = <any>this.getFormattedDate(employee.birthDate);
+    employee.hiringDate = <any>this.getFormattedDate(employee.hiringDate);
+    employee.phoneNumber = this.getFormattedDatePhoneNumber(employee.phoneNumber);
     employee.user.entityId = this.userId;
     employee.staff = this.staff;
     
     const photo: string = (<any>employee).photo;
     if(this.photoChanged && photo && photo.match(/^data\:image\/(png|jpg|jpeg)\;base64\,([A-Za-z0-9\/\+\=]+)$/g)) {
-      const photos = super.entity.photos;
+      const photos = this.entity.photos;
       const employeePhoto = photos && photos.length > 0 ? photos[0] : <EmployeePhoto>{};
       employeePhoto.imageType = <ImageType>photo.match(/(png|jpg|jpeg)/g)[0].toUpperCase();
       employeePhoto.photo = photo.match(/([A-Za-z0-9\/\+\=]+)$/g)[0];
@@ -216,7 +216,7 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   }
 
   get userId() {
-    return super.entity.user.entityId;
+    return this.entity.user.entityId;
   }
 
   get staff() {
@@ -244,19 +244,19 @@ export class EmployeeFormComponent extends BaseForm<Employee> implements AfterVi
   }
 
   get getBySearchRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getWithAuditByIdRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_WITH_AUDIT_BY_ID_REL);
   }
 
   get updateRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_UPDATE_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_UPDATE_REL);
   }
 
   get submitTooltip() {
-    if(!super.entity._links)
+    if(!this.entity._links)
       return "Salvar os dados do funcionário";
     return this.updateRel.title;
   }

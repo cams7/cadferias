@@ -42,7 +42,7 @@ export abstract class BaseForm<E extends BaseEntity> extends ComponentBase {
     ngOnInit() {        
         super.ngOnInit();
 
-        this._isShowDetailsLink = !this.historyService.hasPrevious(`${super.url}/details`, super.url);
+        this._isShowDetailsLink = !this.historyService.hasPrevious(`${this.url}/details`, this.url);
 
         this._entity = this.route.snapshot.data['entity']; 
         this.subscriptions.push( 

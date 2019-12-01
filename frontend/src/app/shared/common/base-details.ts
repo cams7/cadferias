@@ -19,7 +19,7 @@ export abstract class BaseDetails<E extends BaseEntity> extends ComponentBase {
 
     ngOnInit() {
         super.ngOnInit();
-        this._isShowUpdateLink = !this.historyService.hasPrevious(`${super.url.replace(/\/details$/g, '')}`, super.url);
+        this._isShowUpdateLink = !this.historyService.hasPrevious(`${this.url.replace(/\/details$/g, '')}`, this.url);
 
         this._entity = this.route.snapshot.data['entity'];
     }

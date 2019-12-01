@@ -123,7 +123,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 				and.addAll(conditionalWithFilter);
 		}
 
-		return and.toArray(Predicate[]::new);
+		return and.stream().toArray(Predicate[]::new);
 	}
 
 	protected abstract Join<?, ?>[] getJoin(Root<E> root, boolean isFetch);
@@ -170,7 +170,7 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 
 			ordersBy.add(getOrderBySort(sort, cb, path));
 		}
-		return ordersBy.toArray(Order[]::new);
+		return ordersBy.stream().toArray(Order[]::new);
 	}
 
 	protected abstract Path<?> getPathByProperty(Root<?> root, String property, Join<?, ?>... join);
@@ -204,10 +204,15 @@ public abstract class BaseRepositoryImpl<E extends Auditable<ID>, ID extends Ser
 		selectQuery.where(cb.and(and));
 
 		Path<?> path = root.get(fieldName);
-		Order order = switch (search.getSort().getDirection()) {
-		case DESC -> cb.desc(path);
-		default -> cb.asc(path);
-		};
+		Order order;
+		switch (search.getSort().getDirection()) {
+		case DESC:
+			order = cb.desc(path);
+			break;
+		default:
+			order = cb.asc(path);
+			break;
+		}
 		selectQuery.orderBy(order);
 
 		TypedQuery<E> typedQuery = em.createQuery(selectQuery);

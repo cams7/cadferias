@@ -24,20 +24,20 @@ export class EmployeeDetailsComponent extends BaseDetails<Employee> implements A
   }
 
   ngAfterViewInit() {
-    const photo = getPhoto(super.entity);
+    const photo = getPhoto(this.entity);
     this.renderer.setStyle(this.imagePreview.nativeElement, 'background-image', `url(${!!photo ? photo : EMPLOYEE_PHOTO})`);
   }
 
   get getBySearchRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getByIdRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_GET_BY_ID_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_GET_BY_ID_REL);
   }
   
   get deleteRel() {
-    return getRel(super.entity._links, EMPLOYEE_ENDPOINT_DELETE_REL);
+    return getRel(this.entity._links, EMPLOYEE_ENDPOINT_DELETE_REL);
   }
 
 }

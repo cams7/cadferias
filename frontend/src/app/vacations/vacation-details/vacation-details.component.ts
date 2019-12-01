@@ -21,15 +21,15 @@ export class VacationDetailsComponent extends BaseDetails<Vacation> {
   }
 
   get getBySearchRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_BY_SEARCH_REL);
   }
 
   get getByIdRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_GET_BY_ID_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_GET_BY_ID_REL);
   }
   
   get deleteRel() {
-    return getRel(super.entity._links, VACATION_ENDPOINT_DELETE_REL);
+    return getRel(this.entity._links, VACATION_ENDPOINT_DELETE_REL);
   }
 
 }
