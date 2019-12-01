@@ -163,6 +163,37 @@ git remote -v
 git pull origin master --allow-unrelated-histories
 git push origin master
 
+#https://devcenter.heroku.com/articles/deploying-spring-boot-apps-to-heroku
+heroku login
+
+cd "C:\My\Desenv\My\heroku-demo"
+mvn clean package -DskipTests
+java -jar target\heroku-demo-0.0.1-SNAPSHOT.jar
+git init
+git add .
+git commit -m "first commit"
+heroku create
+git push heroku master
+heroku open
+heroku logs --tail
+heroku addons:create heroku-postgresql
+heroku config
+heroku pg
+git add .
+git commit -m "foi criada o conexão do postgres"
+https://cadfoto.herokuapp.com/swagger-ui.html
+heroku ps
+heroku ps:stop run.4859
+heroku kill DYNO --app cadferias
+heroku apps:rename cadferias
+
+
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+npm install -g angular-cli-ghpages
+ng build --configuration="heroku" --base-href https://cams7.github.io/cadferias/ 
+ngh -no-silent
+
+
 
 
 

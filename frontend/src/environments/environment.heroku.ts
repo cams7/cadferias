@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   heroku: true,
-  API: 'http://localhost:8080/',
+  API: 'https://cadfoto.herokuapp.com/',
   BASE_URL: ''
 };
