@@ -1,0 +1,170 @@
+-------------------------------------------- 27/07/19 --------------------------------------------
+cd "C:\My\Desenv\CastGroup\cadferias"
+
+ng new cadferias --routing --style=scss -S
+
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+npm install bootstrap@latest --save
+npm install ngx-bootstrap@latest --save
+
+ng g m shared
+ng g s shared/events --skipTests
+ng g s shared/errors --skipTests
+ng g s shared/guards/auth --skipTests
+ng g s shared/guards/signout --skipTests
+ng g s shared/guards/form-deactivate --skipTests
+ng g class shared/common/base-component
+ng g class shared/common/base-service
+ng g class shared/common/base-form
+ng g class shared/common/base-details
+ng g class shared/common/base-list
+ng g c shared/common/field-error-display --skipTests
+ng g c shared/common/auditable --skipTests
+ng g c shared/common/back-button --flat --inline-template --inline-style --skipTests
+ng g interface shared/model/base-entity
+ng g interface shared/model/vo/pagination-vo
+//ng g c shared/template --skipTests
+ng g c shared/page-not-found --skipTests
+ng g c shared/invalid-access --skipTests
+ng g c shared/confirm-modal --skipTests
+ng g s shared/confirm-modal/confirm-modal --skipTests
+ng g s shared/auth/token-storage --skipTests
+ng g s shared/auth/auth --skipTests
+ng g s shared/auth/auth-interceptor --skipTests
+ng g directive shared/common/sort-table-field
+ng g directive shared/common/only-numbers
+ng g s shared/http-indicator --skipTests
+ng g s shared/history --skipTests
+ng g class shared/security/base-security-item
+ng g c shared/security/security-item --flat -it -is --skipTests
+ng g directive shared/security/security-item
+ng g c home --skipTests
+ng g m signin
+ng g c signin-modal --skipTests
+ng g s signin/signin --skipTests
+ng g s users/users --skipTests
+ng g interface shared/model/user
+ng g m employees --routing
+ng g c employees/employee-list --skipTests
+ng g c employees/employee-form --skipTests
+ng g c employees/employee-details --skipTests
+ng g s employees/employees --skipTests
+ng g s employees/guards/employee-resolver --skipTests
+ng g interface shared/model/employee
+ng g m staffs --routing
+ng g c staffs/staff-list --skipTests
+ng g c staffs/staff-form --skipTests
+ng g c staffs/staff-details --skipTests
+ng g s staffs/staffs --skipTests
+ng g s staffs/guards/staff-resolver --skipTests
+ng g interface shared/model/staff
+ng g m vacations --routing
+ng g c vacations/vacation-list --skipTests
+ng g c vacations/vacation-form --skipTests
+ng g c vacations/vacation-details --skipTests
+ng g s vacations/vacations --skipTests
+ng g s vacations/guards/vacation-resolver --skipTests
+ng g interface shared/model/vacation
+
+json-server --watch db.json
+-------------------------------------------- 03/08/19 --------------------------------------------
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+#ng add ngx-bootstrap  --component pagination
+-------------------------------------------- 14/08/19 --------------------------------------------
+#https://codepen.io/jtrumbull/pen/NGZxaz?editors=1000
+
+#https://www.npmjs.com/package/angular-font-awesome
+npm install --save font-awesome
+
+-------------------------------------------- 17/08/19 --------------------------------------------
+#https://github.com/mariohmol/ng-brazil
+npm install --save ng-brazil js-brasil
+npm i -S angular2-text-mask text-mask-addons
+
+#https://www.npmjs.com/package/ngx-mask
+
+-------------------------------------------- 24/08/19 --------------------------------------------
+npm install --save jquery
+npm install --save @types/jquery
+
+#https://projects.lukehaas.me/css-loaders/#load5
+
+#https://ng-select.github.io/ng-select#/search
+
+-------------------------------------------- 25/08/19 --------------------------------------------
+#https://github.com/ng-select/ng-select
+#https://stackblitz.com/edit/ng-select
+
+npm install --save @ng-select/ng-select
+
+-------------------------------------------- 31/08/19 --------------------------------------------
+http://localhost:8080/swagger-ui.html#/
+
+-------------------------------------------- 01/09/19 --------------------------------------------
+
+https://stackoverflow.com/questions/27501221/how-to-generate-random-string-with-no-duplicates-in-java
+RandomStringUtils.randomAlphanumeric(8).toUpperCase() // for alphanumeric
+RandomStringUtils.randomAlphabetic(8).toUpperCase() // for pure alphabets
+
+-------------------------------------------- 07/09/19 --------------------------------------------
+
+https://winterbe.com/posts/2018/08/29/migrate-maven-projects-to-java-11-jigsaw/
+cd "C:\My\Desenv\CastGroup\cadferias\backend"
+mvn versions:display-dependency-updates
+mvn clean test-compile compile
+java --list-modules
+
+
+-------------------------------------------- 15/09/19 --------------------------------------------
+cd "C:\My\Desenv\CastGroup\cadferias\backend"
+mvn clean verify -DskipTests
+java --enable-preview -jar target/cadferias-0.0.1-SNAPSHOT.jar
+
+https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
+https://medium.com/@alexandremjacques/entendendo-o-cors-parte-2-e4172d6da206
+
+-------------------------------------------- 28/09/19 --------------------------------------------
+
+@Api("Endpoint utilizado para criação, recuperação, atualização e exclusão de usuários.")
+@Validated
+@RestController
+@RequestMapping(path = "/users")
+public class UserEndpoint extends BaseEndpoint<UserService, UserEntity, Long, UserFilterVO> {
+
+	@ApiOperation("Verifica se o e-mail já foi cadastrado anteriormente.")
+	@ResponseStatus(value = OK)
+	@GetMapping(path = "validEmail")
+	public boolean isValidEmail(@ApiParam("E-mail verificado.") @RequestParam @NotBlank @Email String email,
+			@ApiParam("ID do usuário.") @RequestParam(required = false) Long userId) {
+		return service.isValidEmail(email, userId);
+	}
+
+}
+
+https://www.programcreek.com/java-api-examples/index.php?api=org.springframework.web.bind.MethodArgumentNotValidException
+
+-------------------------------------------- 30/11/19 --------------------------------------------
+cd "C:\My\Desenv\CastGroup\cadferias\backend"
+mvn clean package -DskipTests
+java -jar target/cadferias-0.0.1-SNAPSHOT.jar
+http://localhost:8080/swagger-ui.html#/
+
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+ng build --prod
+ng build --configuration="heroku"
+
+npm install http-server -g
+http-server dist/cadferias
+
+-------------------------------------------- 01/12/19 --------------------------------------------
+cd "C:\My\Desenv\CastGroup\cadferias"
+git remote add origin https://github.com/cams7/cadferias.git
+git remote -v
+git pull origin master --allow-unrelated-histories
+git push origin master
+
+
+
+
+
+
