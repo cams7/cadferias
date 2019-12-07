@@ -194,6 +194,7 @@ heroku apps:rename cadferias
 cd "C:\My\Desenv\CastGroup"
 git clone https://github.com/cams7/cadferias.git -b master
 cd "C:\My\Desenv\CastGroup\cadferias"
+git branch -D gh-pages
 git push origin --delete gh-pages
 #https://www.christianengvall.se/git-reset-origin-master-to-commit/
 git log --oneline -n 5
@@ -202,10 +203,12 @@ git push --force origin master
 npm install -g angular-cli-ghpages
 cd "C:\My\Desenv\CastGroup\cadferias\frontend"
 npm install
-ng build --configuration="heroku" --base-href https://cams7.github.io/cad-ferias/ 
+ng build --configuration="heroku" --base-href https://cams7.github.io/cadferias/
 cd "C:\My\Desenv\CastGroup\cadferias"
+git checkout -b gh-pages
+git push origin gh-pages
 ngh --dir=frontend/dist/cadferias
-
+git checkout master
 
 
 
