@@ -188,12 +188,23 @@ heroku kill DYNO --app cadferias
 heroku apps:rename cadferias
 
 
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+-------------------------------------------- 07/12/19 --------------------------------------------
+
+#https://medium.com/code-sketch/how-to-deploy-an-angular-7-app-to-github-pages-9427b609645f
+cd "C:\My\Desenv\CastGroup"
+git clone https://github.com/cams7/cadferias.git -b master
+cd "C:\My\Desenv\CastGroup\cadferias"
+git push origin --delete gh-pages
+#https://www.christianengvall.se/git-reset-origin-master-to-commit/
+git log --oneline -n 5
+git reset --hard HASH-CODE
+git push --force origin master
 npm install -g angular-cli-ghpages
-ng build --configuration="heroku" --base-href https://cams7.github.io/cadferias/ 
-ngh -no-silent
-
-
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+npm install
+ng build --configuration="heroku" --base-href https://cams7.github.io/cad-ferias/ 
+cd "C:\My\Desenv\CastGroup\cadferias"
+ngh --dir=frontend/dist/cadferias
 
 
 
