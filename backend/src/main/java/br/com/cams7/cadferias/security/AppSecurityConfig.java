@@ -64,6 +64,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String ORIGIN_DEV_URL = "http://localhost:4200";
 	private static final String ORIGIN_HOM_URL = "http://localhost:8081";
+	private static final String ORIGIN_GITHUB_URL = "https://cams7.github.io";
+	
 
 	@Autowired
 	private MessageSource messageSource;
@@ -82,7 +84,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList(ORIGIN_DEV_URL, ORIGIN_HOM_URL));
+		configuration.setAllowedOrigins(Arrays.asList(ORIGIN_DEV_URL, ORIGIN_HOM_URL, ORIGIN_GITHUB_URL));
 		configuration.setAllowedMethods(
 				Arrays.asList(/* OPTIONS.name(), */ GET.name(), POST.name(), PUT.name(), DELETE.name()));
 		// configuration.setAllowCredentials(true);
