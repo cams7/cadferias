@@ -215,7 +215,7 @@ git checkout master
 cd "C:\My\Desenv\CastGroup\cadferias"
 mvn clean package -DskipTests -f "./backend"
 java -jar backend\target\cadferias-0.0.1-SNAPSHOT.jar
-heroku create cadferias
+heroku create cadferias --buildpack heroku/java
 git push heroku master
 heroku open
 heroku logs --tail
