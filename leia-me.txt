@@ -213,7 +213,8 @@ git checkout master
 ---------------------------------------------------------------------------------------------------
 
 cd "C:\My\Desenv\CastGroup\cadferias"
-mvn clean package -DskipTests -f "./backend"
+git ls-tree --full-tree -r HEAD
+mvn clean package -DskipTests
 java -jar backend\target\cadferias-0.0.1-SNAPSHOT.jar
 heroku create cadferias --buildpack heroku/java
 git push heroku master
