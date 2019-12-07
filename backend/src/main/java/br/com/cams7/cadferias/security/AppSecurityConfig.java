@@ -35,6 +35,7 @@ import static org.springframework.http.HttpMethod.PUT;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,10 +63,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String ORIGIN_DEV_URL = "http://localhost:4200";
-	private static final String ORIGIN_HOM_URL = "http://localhost:8081";
-	private static final String ORIGIN_GITHUB_URL = "https://cams7.github.io";
-	
+	@Value("${app.origin.url}")
+	private String originUrl;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -84,7 +83,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList(ORIGIN_DEV_URL, ORIGIN_HOM_URL, ORIGIN_GITHUB_URL));
+		configuration.setAllowedOrigins(Arrays.asList(originUrl));
 		configuration.setAllowedMethods(
 				Arrays.asList(/* OPTIONS.name(), */ GET.name(), POST.name(), PUT.name(), DELETE.name()));
 		// configuration.setAllowCredentials(true);

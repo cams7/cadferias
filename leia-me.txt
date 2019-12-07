@@ -221,16 +221,19 @@ heroku create cadferias --buildpack heroku/java
 git push heroku master
 heroku open
 heroku logs --tail
-heroku addons:create heroku-postgresql cadferias
-heroku config
-heroku pg
-git add .
-git commit -m "foi criada o conexão do postgres"
-https://cadfoto.herokuapp.com/swagger-ui.html
-heroku ps
-heroku ps:stop run.4859
-heroku kill DYNO --app cadferias
-heroku apps:rename cadferias
+heroku addons:create heroku-postgresql
+heroku run psql -h ${HEROKU_DATABASE_HOST} -p 5432 -U ${HEROKU_DATABASE_USER} -d ${HEROKU_DATABASE_NAME}
+${HEROKU_DATABASE_PASSWORD}
+
+https://cadferias.herokuapp.com/swagger-ui.html
+
+---------------------------------------------------------------------------------------------------
+
+mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+mvn clean package -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+
+java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
 
 
