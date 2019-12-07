@@ -215,12 +215,13 @@ git checkout master
 cd "C:\My\Desenv\CastGroup\cadferias"
 git ls-tree --full-tree -r HEAD
 mvn clean package -DskipTests
+mvn -DskipTests clean dependency:list install
 java -jar backend\target\cadferias-0.0.1-SNAPSHOT.jar
 heroku create cadferias --buildpack heroku/java
 git push heroku master
 heroku open
 heroku logs --tail
-heroku addons:create heroku-postgresql
+heroku addons:create heroku-postgresql cadferias
 heroku config
 heroku pg
 git add .
