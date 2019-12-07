@@ -235,5 +235,9 @@ mvn clean package -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
 
 java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
+mvn -Pdev flyway:migrate -Dflyway.configFile=C:\My\Desenv\CastGroup\cadferias\backend\dev.flyway.properties
+mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
+
 
 
