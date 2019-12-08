@@ -235,9 +235,18 @@ mvn clean package -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
 
 java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
-mvn -Pdev flyway:migrate -Dflyway.configFile=C:\My\Desenv\CastGroup\cadferias\backend\dev.flyway.properties
+cd "C:\My\Desenv\CastGroup\cadferias\backend"
+mvn -Pdev flyway:migrate -Dflyway.configFile=dev.flyway.properties
 mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
 java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
+cd "C:\My\Desenv\CastGroup\cadferias\backend"
+mvn -Ptest flyway:migrate -Dflyway.configFile=test.flyway.properties
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
+
+cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+ng build --prod
+http-server dist/cadferias -p 8081
 
 
