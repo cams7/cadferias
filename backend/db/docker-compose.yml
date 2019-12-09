@@ -1,0 +1,28 @@
+version: '3'
+services:
+  psql191208:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_PASSWORD: "abc@12345"
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/vagrant/psql-data191208:/var/lib/postgresql/data 
+    networks:
+      - psql-network191208
+      
+  pgadmin191208:
+    image: dpage/pgadmin4:4.15
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "abc@12345"
+    ports:
+      - "90:80"
+    depends_on:
+      - psql191208
+    networks:
+      - psql-network191208
+
+networks: 
+  psql-network191208:
+    driver: bridge

@@ -1,13 +1,41 @@
-alter table tb_equipe add constraint fk_tb_equ_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
-alter table tb_ferias add constraint fk_tb_fer_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
-alter table tb_ferias add constraint fk_tb_fer_id_usu_alt foreign key (id_usuario_alteracao) references tb_usuario;
-alter table tb_ferias add constraint fk_tb_fer_id_func foreign key (id_funcionario) references tb_funcionario;
-alter table tb_foto_funcionario add constraint fk_tb_fo_func_id_func foreign key (id_funcionario) references tb_funcionario;
-alter table tb_funcionario add constraint fk_tb_func_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
-alter table tb_funcionario add constraint fk_tb_func_id_usu_alt foreign key (id_usuario_alteracao) references tb_usuario;
-alter table tb_funcionario add constraint fk_tb_func_id_equ foreign key (id_equipe) references tb_equipe;
-alter table tb_funcionario add constraint fk_tb_func_id_usu foreign key (id_usuario) references tb_usuario;
-alter table tb_usuario add constraint fk_tb_usu_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
-alter table tb_usuario add constraint fk_tb_usu_id_usu_alt foreign key (id_usuario_alteracao) references tb_usuario;
-alter table tb_usuario_funcionalidade add constraint fk_tb_tb_usu_func_id_func foreign key (id_funcionalidade) references tb_funcionalidade;
-alter table tb_usuario_funcionalidade add constraint fk_tb_tb_usu_func_id_usu foreign key (id_usuario) references tb_usuario;
+alter table if exists TB_EQUIPE drop constraint if exists FK_TB_EQU_ID_USU_CRI;
+alter table if exists TB_EQUIPE add constraint FK_TB_EQU_ID_USU_CRI foreign key (ID_USUARIO_CRIACAO) references TB_USUARIO;
+
+alter table if exists TB_EQUIPE drop constraint if exists FK_TB_EQU_ID_USU_ALT;
+alter table if exists TB_EQUIPE add constraint FK_TB_EQU_ID_USU_ALT foreign key (ID_USUARIO_ALTERACAO) references TB_USUARIO;
+
+alter table if exists TB_FERIAS drop constraint if exists FK_TB_FER_ID_USU_CRI;
+alter table if exists TB_FERIAS add constraint FK_TB_FER_ID_USU_CRI foreign key (ID_USUARIO_CRIACAO) references TB_USUARIO;
+
+alter table if exists TB_FERIAS drop constraint if exists FK_TB_FER_ID_USU_ALT;
+alter table if exists TB_FERIAS add constraint FK_TB_FER_ID_USU_ALT foreign key (ID_USUARIO_ALTERACAO) references TB_USUARIO;
+
+alter table if exists TB_FERIAS drop constraint if exists FK_TB_FER_ID_FUNC;
+alter table if exists TB_FERIAS add constraint FK_TB_FER_ID_FUNC  foreign key (ID_FUNCIONARIO) references TB_FUNCIONARIO;
+
+alter table if exists TB_FOTO_FUNCIONARIO drop constraint if exists FK_TB_FO_FUNC_ID_FUNC;
+alter table if exists TB_FOTO_FUNCIONARIO add constraint FK_TB_FO_FUNC_ID_FUNC foreign key (ID_FUNCIONARIO) references TB_FUNCIONARIO;
+
+alter table if exists TB_FUNCIONARIO drop constraint if exists FK_TB_FUNC_ID_USU_CRI;
+alter table if exists TB_FUNCIONARIO add constraint FK_TB_FUNC_ID_USU_CRI foreign key (ID_USUARIO_CRIACAO) references TB_USUARIO;
+
+alter table if exists TB_FUNCIONARIO drop constraint if exists FK_TB_FUNC_ID_USU_ALT;
+alter table if exists TB_FUNCIONARIO add constraint FK_TB_FUNC_ID_USU_ALT foreign key (ID_USUARIO_ALTERACAO) references TB_USUARIO;
+
+alter table if exists TB_FUNCIONARIO drop constraint if exists FK_TB_FUNC_ID_EQU;
+alter table if exists TB_FUNCIONARIO add constraint FK_TB_FUNC_ID_EQU foreign key (ID_EQUIPE) references TB_EQUIPE;
+
+alter table if exists TB_FUNCIONARIO drop constraint if exists FK_TB_FUNC_ID_USU;
+alter table if exists TB_FUNCIONARIO add constraint FK_TB_FUNC_ID_USU foreign key (ID_USUARIO) references TB_USUARIO;
+
+alter table if exists TB_USUARIO drop constraint if exists FK_TB_USU_ID_USU_CRI;
+alter table if exists TB_USUARIO add constraint FK_TB_USU_ID_USU_CRI foreign key (ID_USUARIO_CRIACAO) references TB_USUARIO;
+
+alter table if exists TB_USUARIO drop constraint if exists FK_TB_USU_ID_USU_ALT;
+alter table if exists TB_USUARIO add constraint FK_TB_USU_ID_USU_ALT foreign key (ID_USUARIO_ALTERACAO) references TB_USUARIO;
+
+alter table if exists TB_USUARIO_FUNCIONALIDADE drop constraint if exists FK_TB_TB_USU_FUNC_ID_FUNC;
+alter table if exists TB_USUARIO_FUNCIONALIDADE add constraint FK_TB_TB_USU_FUNC_ID_FUNC foreign key (ID_FUNCIONALIDADE) references tb_funcionalidade;
+
+alter table if exists TB_USUARIO_FUNCIONALIDADE drop constraint if exists FK_TB_TB_USU_FUNC_ID_USU;
+alter table if exists TB_USUARIO_FUNCIONALIDADE add constraint FK_TB_TB_USU_FUNC_ID_USU foreign key (ID_USUARIO) references TB_USUARIO;

@@ -25,11 +25,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
 
-		<!--java.version>12</java.version -->
 		<java.version>1.8</java.version>
 		<swagger2.version>2.9.2</swagger2.version>
-		<!--spring.h2.console.enabled>true</spring.h2.console.enabled-->
-		<!--spring.jpa.hibernate.ddl-auto>create-drop</spring.jpa.hibernate.ddl-auto-->
 		<spring.jpa.hibernate.ddl-auto>none</spring.jpa.hibernate.ddl-auto>
 		<spring.jpa.properties.hibernate.show_sql>true</spring.jpa.properties.hibernate.show_sql>
 		<spring.jpa.properties.hibernate.format_sql>true</spring.jpa.properties.hibernate.format_sql>
@@ -149,7 +146,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<!--release>${java.version}</release> <compilerArgs>/-/-enable-preview</compilerArgs -->
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
@@ -208,8 +204,6 @@
 				<spring.datasource.username>${JDBC_DATABASE_USERNAME}</spring.datasource.username>
 				<spring.datasource.password>${JDBC_DATABASE_PASSWORD}</spring.datasource.password>
 				<spring.datasource.driver-class-name>org.postgresql.Driver</spring.datasource.driver-class-name>
-				<spring.h2.console.enabled>false</spring.h2.console.enabled>
-				<spring.jpa.hibernate.ddl-auto>update</spring.jpa.hibernate.ddl-auto>
 				<spring.jpa.properties.hibernate.show_sql>false</spring.jpa.properties.hibernate.show_sql>
 				<spring.jpa.properties.hibernate.format_sql>false</spring.jpa.properties.hibernate.format_sql>
 				<app.origin.url>https://cams7.github.io</app.origin.url>
@@ -233,16 +227,16 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>test</spring.profiles.active>
-				<spring.datasource.url>jdbc:h2:file:c:/My/Desenv/CastGroup/h2/test-cadferias</spring.datasource.url>
-				<spring.datasource.username>sa</spring.datasource.username>
-				<spring.datasource.password></spring.datasource.password>
-				<spring.datasource.driver-class-name>org.h2.Driver</spring.datasource.driver-class-name>
+				<spring.datasource.url>jdbc:postgresql://localhost:5432/cadferias</spring.datasource.url>
+				<spring.datasource.username>postgres</spring.datasource.username>
+				<spring.datasource.password>abc@12345</spring.datasource.password>
+				<spring.datasource.driver-class-name>org.postgresql.Driver</spring.datasource.driver-class-name>
 				<app.origin.url>http://localhost:8081</app.origin.url>
 			</properties>
 			<dependencies>
 				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -258,7 +252,7 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
-				<spring.datasource.url>jdbc:h2:file:c:/My/Desenv/CastGroup/h2/dev-cadferias</spring.datasource.url>
+				<spring.datasource.url>jdbc:h2:file:c:/My/Desenv/My/CadFerias/h2/cadferias</spring.datasource.url>
 				<spring.datasource.username>sa</spring.datasource.username>
 				<spring.datasource.password></spring.datasource.password>
 				<spring.datasource.driver-class-name>org.h2.Driver</spring.datasource.driver-class-name>

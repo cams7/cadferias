@@ -1,4 +1,5 @@
 alter table tb_equipe add constraint fk_tb_equ_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
+alter table tb_equipe add constraint fk_tb_equ_id_usu_alt foreign key (id_usuario_alteracao) references tb_usuario;
 alter table tb_ferias add constraint fk_tb_fer_id_usu_cri foreign key (id_usuario_criacao) references tb_usuario;
 alter table tb_ferias add constraint fk_tb_fer_id_usu_alt foreign key (id_usuario_alteracao) references tb_usuario;
 alter table tb_ferias add constraint fk_tb_fer_id_func foreign key (id_funcionario) references tb_funcionario;

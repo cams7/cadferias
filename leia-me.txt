@@ -1,9 +1,9 @@
 -------------------------------------------- 27/07/19 --------------------------------------------
-cd "C:\My\Desenv\CastGroup\cadferias"
+cd "C:\My\Desenv\My\CadFerias\cadferias"
 
 ng new cadferias --routing --style=scss -S
 
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
 npm install bootstrap@latest --save
 npm install ngx-bootstrap@latest --save
 
@@ -68,7 +68,7 @@ ng g interface shared/model/vacation
 
 json-server --watch db.json
 -------------------------------------------- 03/08/19 --------------------------------------------
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
 #ng add ngx-bootstrap  --component pagination
 -------------------------------------------- 14/08/19 --------------------------------------------
 #https://codepen.io/jtrumbull/pen/NGZxaz?editors=1000
@@ -109,14 +109,14 @@ RandomStringUtils.randomAlphabetic(8).toUpperCase() // for pure alphabets
 -------------------------------------------- 07/09/19 --------------------------------------------
 
 https://winterbe.com/posts/2018/08/29/migrate-maven-projects-to-java-11-jigsaw/
-cd "C:\My\Desenv\CastGroup\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn versions:display-dependency-updates
 mvn clean test-compile compile
 java --list-modules
 
 
 -------------------------------------------- 15/09/19 --------------------------------------------
-cd "C:\My\Desenv\CastGroup\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn clean verify -DskipTests
 java --enable-preview -jar target/cadferias-0.0.1-SNAPSHOT.jar
 
@@ -144,12 +144,12 @@ public class UserEndpoint extends BaseEndpoint<UserService, UserEntity, Long, Us
 https://www.programcreek.com/java-api-examples/index.php?api=org.springframework.web.bind.MethodArgumentNotValidException
 
 -------------------------------------------- 30/11/19 --------------------------------------------
-cd "C:\My\Desenv\CastGroup\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn clean package -DskipTests
 java -jar target/cadferias-0.0.1-SNAPSHOT.jar
 http://localhost:8080/swagger-ui.html#/
 
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
 ng build --prod
 ng build --configuration="heroku"
 
@@ -157,7 +157,7 @@ npm install http-server -g
 http-server dist/cadferias -p 8081
 
 -------------------------------------------- 01/12/19 --------------------------------------------
-cd "C:\My\Desenv\CastGroup\cadferias"
+cd "C:\My\Desenv\My\CadFerias\cadferias"
 git remote add origin https://github.com/cams7/cadferias.git
 git remote -v
 git pull origin master --allow-unrelated-histories
@@ -191,9 +191,9 @@ heroku apps:rename cadferias
 -------------------------------------------- 07/12/19 --------------------------------------------
 
 #https://medium.com/code-sketch/how-to-deploy-an-angular-7-app-to-github-pages-9427b609645f
-cd "C:\My\Desenv\CastGroup"
+cd "C:\My\Desenv\My\CadFerias"
 git clone https://github.com/cams7/cadferias.git -b master
-cd "C:\My\Desenv\CastGroup\cadferias"
+cd "C:\My\Desenv\My\CadFerias\cadferias"
 git branch -D gh-pages
 git push origin --delete gh-pages
 #https://www.christianengvall.se/git-reset-origin-master-to-commit/
@@ -201,10 +201,10 @@ git log --oneline -n 5
 git reset --hard HASH-CODE
 git push --force origin master
 npm install -g angular-cli-ghpages
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
 npm install
 ng build --configuration="heroku" --base-href https://cams7.github.io/cadferias/
-cd "C:\My\Desenv\CastGroup\cadferias"
+cd "C:\My\Desenv\My\CadFerias\cadferias"
 git checkout -b gh-pages
 git push origin gh-pages
 ngh --dir=frontend/dist/cadferias
@@ -212,7 +212,7 @@ git checkout master
 
 ---------------------------------------------------------------------------------------------------
 
-cd "C:\My\Desenv\CastGroup\cadferias"
+cd "C:\My\Desenv\My\CadFerias\cadferias"
 git ls-tree --full-tree -r HEAD
 mvn clean package -DskipTests
 mvn -DskipTests clean dependency:list install
@@ -229,24 +229,138 @@ https://cadferias.herokuapp.com/swagger-ui.html
 
 ---------------------------------------------------------------------------------------------------
 
-mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
-mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
-mvn clean package -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
+mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias"
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias"
+mvn clean package -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias"
 
-java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
+java -jar C:\My\Desenv\My\CadFerias\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
-cd "C:\My\Desenv\CastGroup\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn -Pdev flyway:migrate -Dflyway.configFile=dev.flyway.properties
-mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
-java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
+mvn clean package -Pdev -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias"
+java -jar C:\My\Desenv\My\CadFerias\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
-cd "C:\My\Desenv\CastGroup\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn -Ptest flyway:migrate -Dflyway.configFile=test.flyway.properties
-mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\CastGroup\cadferias"
-java -jar C:\My\Desenv\CastGroup\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias"
+java -jar C:\My\Desenv\My\CadFerias\cadferias\backend\target\cadferias-0.0.1-SNAPSHOT.jar
 
-cd "C:\My\Desenv\CastGroup\cadferias\frontend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
 ng build --prod
 http-server dist/cadferias -p 8081
+
+-------------------------------------------- 08/12/19 --------------------------------------------
+
+cd C:\Program Files\Oracle\VirtualBox
+VBoxManage -v
+
+vagrant --version
+
+cd "C:\My\Desenv\My\CadFerias\Vagrant"
+vagrant init
+vagrant plugin install vagrant-vbguest
+vagrant up --provider virtualbox
+vagrant ssh
+vagrant status
+vagrant halt
+
+#On centos/8
+#https://github.com/NaturalHistoryMuseum/scratchpads2/wiki/Install-Docker-and-Docker-Compose-(Centos-7)
+#Install Docker
+#sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+#sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#sudo yum install docker-ce
+#sudo usermod -aG docker $(whoami)
+#sudo systemctl enable docker.service
+#sudo systemctl start docker.service
+#https://linoxide.com/linux-how-to/how-to-install-docker-on-centos/
+sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf repolist -v
+dnf list docker-ce --showduplicates | sort -r
+sudo dnf -y  install docker-ce --nobest
+sudo systemctl enable --now docker
+systemctl status  docker
+sudo usermod -aG docker $USER
+id $USER
+newgrp docker
+docker version
+docker pull alpine
+docker images
+docker run -it --rm alpine /bin/sh
+apk update
+exit
+sudo systemctl disable firewalld
+docker run -it --rm alpine /bin/sh
+apk update
+exit
+docker ps -a
+docker --version
+
+#Install Docker Compose
+sudo yum install -y epel-release
+#sudo yum --enablerepo=extras install epel-release
+#sudo yum info python*-pip
+#sudo yum install -y python-pip
+#https://linuxconfig.org/how-to-install-pip-in-redhat-8
+#sudo dnf install -y python2-pip
+#pip2 --version
+sudo dnf install -y python3-pip
+pip3 --version
+pip3 search docker-compose
+sudo pip3 install docker-compose
+sudo dnf upgrade --nobest
+#sudo yum upgrade python*
+docker-compose version
+
+---------------------------------------------------------------------------------------------------
+
+#https://docs.docker.com/compose/gettingstarted/
+cd ~/teste/composetest
+docker-compose up
+#http://127.0.0.1:5000
+docker image ls
+
+docker-compose up -d
+docker-compose ps
+docker-compose run web env
+docker-compose stop
+docker volume ls
+docker-compose down --volumes
+
+---------------------------------------------------------------------------------------------------
+#https://medium.com/@renato.groffe/postgresql-docker-executando-uma-inst%C3%A2ncia-e-o-pgadmin-4-a-partir-de-containers-ad783e85b1a4
+#https://medium.com/@renato.groffe/postgresql-pgadmin-4-docker-compose-montando-rapidamente-um-ambiente-para-uso-55a2ab230b89
+cd /opt/cadferias/backend/db
+docker-compose up -d
+docker-compose ps
+docker network ls
+docker-compose run psql191208 env
+docker-compose run pgadmin191208 env
+#http://localhost:90
+
+docker ps
+docker logs db_psql191208_1
+docker exec -ti db_psql191208_1 /bin/sh
+su - postgres
+psql
+CREATE DATABASE cadferias;
+select current_database();
+\q
+exit
+pg_dump -U postgres -t tb_foto_funcionario --blobs -f dump_tb_foto_funcionario191208 cadferias
+exit
+docker cp db_psql191208_1:/dump_tb_foto_funcionario191208 /home/vagrant/teste/
+
+#url:      jdbc:postgresql://localhost:5432/cadferias
+#username: postgres
+#password: abc@12345
+
+cd /opt/cadferias/backend/db
+docker-compose stop
+
+
+
+
+
 
 
