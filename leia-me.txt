@@ -358,6 +358,83 @@ docker cp db_psql191208_1:/dump_tb_foto_funcionario191208 /home/vagrant/teste/
 cd /opt/cadferias/backend/db
 docker-compose stop
 
+-------------------------------------------- 14/12/19 --------------------------------------------
+
+#https://spring.io/guides/gs/spring-boot-docker/
+#On Windows 10
+cd "C:\My\Desenv\My\CadFerias\teste"
+git clone https://github.com/spring-guides/gs-spring-boot-docker.git
+cd "C:\My\Desenv\My\CadFerias\teste\gs-spring-boot-docker\initial"
+./mvnw package && java -jar target/gs-spring-boot-docker-0.1.0.jar
+cd "C:\My\Desenv\My\CadFerias\teste\gs-spring-boot-docker\complete"
+./mvnw package
+mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+#On Centos/8
+cd "C:\My\Desenv\My\CadFerias\Vagrant"
+vagrant up
+vagrant ssh
+cd /home/vagrant/teste/gs-spring-boot-docker/initial
+docker build -t springio/gs-spring-boot-docker .
+docker images
+docker run -p 8080:8080 -t springio/gs-spring-boot-docker
+docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 8080:8080 -t springio/gs-spring-boot-docker
+docker run -e "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n" -p 8080:8080 -p 5005:5005 -t springio/gs-spring-boot-docker
+#http://localhost:9080/
+cd /home/vagrant/teste/gs-spring-boot-docker/complete
+docker build -t springio/gs-spring-boot-docker2 .
+docker run -d -p 8080:8080 -t springio/gs-spring-boot-docker2
+docker ps
+docker logs amazing_curie
+docker exec -ti amazing_curie /bin/sh
+docker stop amazing_curie
+docker rm amazing_curie
+docker images
+docker rmi springio/gs-spring-boot-docker2
+docker rmi springio/gs-spring-boot-docker
+
+---------------------------------------------------------------------------------------------------
+#On Windows 10
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+./mvnw clean package -Ptest -DskipTests 
+#On Centos/8
+cd /opt/cadferias/backend
+docker build --build-arg JAR_FILE=target/cadferias-0.0.1-SNAPSHOT.jar -t br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT .
+docker run --name=cadferias-backend191214 -d -p 8080:8080 --network cadferias_network191214 -e "JAVA_OPTS=-Ddebug -Xmx128m" -e "SPRING_PROFILES_ACTIVE=test" -e "JDBC_DATABASE_URL=jdbc:postgresql://psql191208:5432/cadferias" -e "JDBC_DATABASE_USERNAME=postgres" -e "JDBC_DATABASE_PASSWORD=abc@12345"  br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT
+docker logs -f cadferias-backend191214
+docker exec -ti cadferias-backend191214 /bin/sh
+docker stop cadferias-backend191214 && docker rm cadferias-backend191214 && docker rmi br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT
+docker ps -a
+docker images
+
+cd /opt/cadferias/frontend
+docker build -t br.com.cams7/http-server ./docker/http-server
+docker build -t br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT .
+docker run --name=cadferias-frontend191214 -d -p 3000:3000 --network cadferias_network191214 br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
+docker logs -f cadferias-frontend191214
+docker exec -ti cadferias-frontend191214 /bin/sh
+docker stop cadferias-frontend191214 && docker rm cadferias-frontend191214 && docker rmi br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
+---------------------------------------------------------------------------------------------------
+#On Windows 10
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+./mvnw clean package -Ptest -DskipTests
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
+ng build --prod
+#On Centos/8
+cd /opt/cadferias
+docker-compose up -d
+docker-compose up --build -d
+docker-compose ps
+docker network ls
+docker logs -f cadferias_backend191214_1
+docker exec -ti cadferias_backend191214_1 /bin/sh
+docker logs -f cadferias_frontend191214_1
+docker exec -ti cadferias_frontend191214_1 /bin/sh
+cat /etc/os-release
+curl -X POST "http://backend191214:8080/api/auth/signin" -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8" -d "{\"email\": \"jorge78@teste.com\", \"password\": \"abc12345\"}"
+docker-compose stop && docker-compose rm -f
+
+http://localhost:9080/swagger-ui.html
 
 
 

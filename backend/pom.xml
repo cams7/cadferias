@@ -76,7 +76,12 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
-		</dependency>		
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -95,7 +100,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -180,8 +185,8 @@
 				</configuration>
 			</plugin>
 			<plugin>
-    			<groupId>org.flywaydb</groupId>
-    			<artifactId>flyway-maven-plugin</artifactId>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -227,11 +232,11 @@
 			</activation>
 			<properties>
 				<spring.profiles.active>test</spring.profiles.active>
-				<spring.datasource.url>jdbc:postgresql://localhost:5432/cadferias</spring.datasource.url>
-				<spring.datasource.username>postgres</spring.datasource.username>
-				<spring.datasource.password>abc@12345</spring.datasource.password>
+				<spring.datasource.url>${JDBC_DATABASE_URL}</spring.datasource.url>
+				<spring.datasource.username>${JDBC_DATABASE_USERNAME}</spring.datasource.username>
+				<spring.datasource.password>${JDBC_DATABASE_PASSWORD}</spring.datasource.password>
 				<spring.datasource.driver-class-name>org.postgresql.Driver</spring.datasource.driver-class-name>
-				<app.origin.url>http://localhost:8081</app.origin.url>
+				<app.origin.url>${ORIGIN_URL}</app.origin.url>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -258,12 +263,6 @@
 				<spring.datasource.driver-class-name>org.h2.Driver</spring.datasource.driver-class-name>
 				<app.origin.url>http://localhost:4200</app.origin.url>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</dependency>
-			</dependencies>
 		</profile>
 	</profiles>
 </project>

@@ -1,0 +1,62 @@
+version: '3'
+services:
+  psql191208:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_PASSWORD: "abc@12345"
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/vagrant/psql-data191208:/var/lib/postgresql/data 
+    networks:
+      - network191214
+      
+  pgadmin191208:
+    image: dpage/pgadmin4:4.15
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "abc@12345"
+    ports:
+      - "90:80"
+    depends_on:
+      - psql191208
+    networks:
+      - network191214
+      
+  backend191214:
+    build: 
+      context: ./backend
+      args:
+        JAR_FILE: target/cadferias-0.0.1-SNAPSHOT.jar
+    image: br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n"
+      SPRING_PROFILES_ACTIVE: "test"
+      JDBC_DATABASE_URL: "jdbc:postgresql://psql191208:5432/cadferias"
+      JDBC_DATABASE_USERNAME: "postgres"
+      JDBC_DATABASE_PASSWORD: "abc@12345"
+      ORIGIN_URL: "http://localhost:3000"
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      - psql191208
+    networks:
+      - network191214 
+      
+  frontend191214:
+    build: 
+      context: ./frontend
+      args:
+        DIST_FILE: dist/cadferias
+    image: br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend191214
+    networks:
+      - network191214
+
+networks: 
+  network191214:
+    driver: bridge
