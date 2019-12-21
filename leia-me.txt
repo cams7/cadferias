@@ -300,7 +300,7 @@ docker --version
 sudo yum install -y epel-release
 #sudo yum --enablerepo=extras install epel-release
 #sudo yum info python*-pip
-#sudo yum install -y python-pip
+##sudo yum install -y python-pip
 #https://linuxconfig.org/how-to-install-pip-in-redhat-8
 #sudo dnf install -y python2-pip
 #pip2 --version
@@ -426,16 +426,79 @@ docker-compose up -d
 docker-compose up --build -d
 docker-compose ps
 docker network ls
-docker logs -f cadferias_backend191214_1
-docker exec -ti cadferias_backend191214_1 /bin/sh
-docker logs -f cadferias_frontend191214_1
-docker exec -ti cadferias_frontend191214_1 /bin/sh
+docker logs -f cadferias_build-backend_1
+docker logs -f cadferias_app-backend_1
+docker exec -ti cadferias_app-backend_1 /bin/sh
+docker logs -f cadferias_app-frontend_1
+docker exec -ti cadferias_app-frontend_1 /bin/sh
 cat /etc/os-release
-curl -X POST "http://backend191214:8080/api/auth/signin" -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8" -d "{\"email\": \"jorge78@teste.com\", \"password\": \"abc12345\"}"
+curl -X POST "http://app-backend:8080/api/auth/signin" -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8" -d "{\"email\": \"jorge78@teste.com\", \"password\": \"abc12345\"}"
 docker-compose stop && docker-compose rm -f
 
 http://localhost:9080/swagger-ui.html
 
+-------------------------------------------- 15/12/19 --------------------------------------------
+docker run -it --rm --name cadferias-backend191215 -v /home/vagrant/.m2/repository:/root/.m2/repository -v /opt/cadferias/backend:/opt/cadferias -w /opt/cadferias maven:3.6.3-jdk-8-slim mvn clean package -Ptest -DskipTests
+docker exec -ti cadferias-backend191215 /bin/sh
+
+-------------------------------------------- 21/12/19 --------------------------------------------
+
+cd "C:\My\Desenv\My\CadFerias\teste\justmeandopensource"
+git clone https://github.com/justmeandopensource/kubernetes.git
+
+#On Windows 10
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias\backend"
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
+ng build --prod
+
+#Tempo gasto para inicialização 15min e 20seg
+cd "C:\My\Desenv\My\CadFerias\cadferias\centos8"
+vagrant up
+vagrant ssh
+
+#On Centos/8
+ip addr show
+cd /opt/cadferias/frontend
+docker build -t br.com.cams7/http-server ./docker/http-server
+cd /opt/cadferias
+docker-compose up -d
+docker-compose ps
+docker network ls
+docker logs -f cadferias_app-backend_1
+docker logs -f cadferias_app-frontend_1
+#docker-compose stop && docker-compose rm -f
+
+docker ps
+docker logs cadferias_app-database_1
+docker exec -ti cadferias_app-database_1 /bin/sh
+su - postgres
+psql
+CREATE DATABASE cadferias;
+select current_database();
+\q
+exit
+
+#On Windows 10
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+mvn -Ptest flyway:migrate -Dflyway.configFile=test.flyway.properties
+
+#On Centos/8
+cd "C:\My\Desenv\My\CadFerias\cadferias\centos8"
+vagrant ssh
+docker exec -ti cadferias_app-backend_1 /bin/sh
+docker exec -ti cadferias_app-frontend_1 /bin/sh
+cat /etc/os-release
+curl -X POST "http://app-backend:8080/api/auth/signin" -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8" -d "{\"email\": \"jorge78@teste.com\", \"password\": \"abc12345\"}"
+
+
+#On Windows 10
+http://172.42.42.200:18080/swagger-ui.html
+http://172.42.42.200:18080/h2
+http://172.42.42.200:13000
+http://172.42.42.200:180
+
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+mvn -Pdev flyway:migrate -Dflyway.configFile=dev.flyway.properties
 
 
 

@@ -1,29 +1,29 @@
 version: '3'
 services:
-  psql191208:
+  app-database:
     image: postgres:12.1-alpine
     environment:
       POSTGRES_PASSWORD: "abc@12345"
     ports:
-      - "5432:5432"
+      - "15432:5432"
     volumes:
-      - /home/vagrant/psql-data191208:/var/lib/postgresql/data 
+      - /home/vagrant/cadferias-database:/var/lib/postgresql/data 
     networks:
-      - network191214
+      - app-network
       
-  pgadmin191208:
+  pgadmin:
     image: dpage/pgadmin4:4.15
     environment:
       PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "abc@12345"
     ports:
-      - "90:80"
+      - "180:80"
     depends_on:
-      - psql191208
+      - app-database
     networks:
-      - network191214
+      - app-network
       
-  backend191214:
+  app-backend:
     build: 
       context: ./backend
       args:
@@ -32,31 +32,31 @@ services:
     environment:
       JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n"
       SPRING_PROFILES_ACTIVE: "test"
-      JDBC_DATABASE_URL: "jdbc:postgresql://psql191208:5432/cadferias"
+      JDBC_DATABASE_URL: "jdbc:postgresql://app-database:5432/cadferias"
       JDBC_DATABASE_USERNAME: "postgres"
       JDBC_DATABASE_PASSWORD: "abc@12345"
-      ORIGIN_URL: "http://localhost:3000"
+      ORIGIN_URL: "http://172.42.42.200:13000"
     ports:
-      - "8080:8080"
-      - "5005:5005"
+      - "18080:8080"
+      - "15005:5005"
     depends_on:
-      - psql191208
+      - app-database
     networks:
-      - network191214 
+      - app-network 
       
-  frontend191214:
+  app-frontend:
     build: 
       context: ./frontend
       args:
         DIST_FILE: dist/cadferias
     image: br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
     ports:
-      - "3000:3000"
+      - "13000:3000"
     depends_on:
-      - backend191214
+      - app-backend
     networks:
-      - network191214
+      - app-network
 
 networks: 
-  network191214:
+  app-network:
     driver: bridge
