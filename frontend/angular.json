@@ -76,11 +76,11 @@
                 }
               ]
             },
-            "heroku": {
+            "test": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.heroku.ts"
+                  "with": "src/environments/environment.test.ts"
                 }
               ],
               "optimization": true,
@@ -111,8 +111,8 @@
             "production": {
               "browserTarget": "cadferias:build:production"
             },
-            "heroku": {
-              "browserTarget": "cadferias:build:heroku"
+            "test": {
+              "browserTarget": "cadferias:build:test"
             }
           }
         },
@@ -162,8 +162,8 @@
             "production": {
               "devServerTarget": "cadferias:serve:production"
             },
-            "heroku": {
-              "devServerTarget": "cadferias:serve:heroku"
+            "test": {
+              "devServerTarget": "cadferias:serve:test"
             }
           }
         }

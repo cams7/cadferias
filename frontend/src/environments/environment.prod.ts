@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  heroku: false,
-  API: 'http://172.42.42.200:18080/',
+  test: false,
+  API: 'https://cadferias.herokuapp.com/',
   BASE_URL: ''
 };

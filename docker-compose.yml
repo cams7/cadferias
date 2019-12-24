@@ -1,4 +1,4 @@
-version: '3.7'
+﻿version: '3.7'
 services:
   app-database:
     image: 172.42.42.200:18082/postgres:12.1-alpine
@@ -12,12 +12,15 @@ services:
       - app-network
       
   pgadmin:
-    image: 172.42.42.200:18082/dpage/pgadmin4:4.15
+    image: 172.42.42.200:18082/dpage/pgadmin4:4.16
     environment:
       PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "abc@12345"
     ports:
       - "190:80"
+    restart: always
+    volumes:
+      - /home/vagrant/cadferias-pgadmin:/var/lib/pgadmin
     depends_on:
       - app-database
     networks:
@@ -39,7 +42,7 @@ services:
       - "18080:8080"
       - "15005:5005"
     restart: always
-    depends_on:
+    links:
       - app-database
     networks:
       - app-network 

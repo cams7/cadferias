@@ -1,4 +1,4 @@
--------------------------------------------- 27/07/19 --------------------------------------------
+﻿-------------------------------------------- 27/07/19 --------------------------------------------
 cd "C:\My\Desenv\My\CadFerias\cadferias"
 
 ng new cadferias --routing --style=scss -S
@@ -647,11 +647,21 @@ mvn deploy -DskipTests
 
 ---------------------------------------------------------------------------------------------------
 
+#9min 22seg
+
 cd /opt/cadferias
 docker-compose up -d
 
+#http://172.42.42.200:18080/swagger-ui.html
+#http://172.42.42.200:18080/h2
+#http://172.42.42.200:180/
+#http://172.42.42.200:190/
+
 docker logs -f cadferias_app-backend_1
+docker exec -ti cadferias_app-backend_1 /bin/sh
 docker logs -f cadferias_app-frontend_1
+docker exec -ti cadferias_app-frontend_1 /bin/sh
+
 docker-compose stop && docker-compose rm -f
 
 docker push 172.42.42.200:18083/cadferias-frontend:1.0.0
@@ -671,4 +681,30 @@ npm publish --loglevel verbose
 cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn clean package -DskipTests
 mvn deploy -DskipTests
+
+-------------------------------------------- 24/12/19 --------------------------------------------
+
+#On Windows 10
+
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+mvn clean package -Pdev -DskipTests
+mvn -Pdev flyway:migrate -Dflyway.configFile=dev.flyway.properties
+java -jar target/cadferias-0.0.1-SNAPSHOT.jar
+
+mvn deploy -DskipTests
+
+#https://nodejs.org/download/release/
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
+npm install @angular/cli -g --loglevel verbose
+npm install http-server -g --loglevel verbose
+npm install --loglevel verbose
+
+ng build
+http-server dist/cadferias -p 4200
+
+npm publish --loglevel verbose
+
+#http://localhost:8080/swagger-ui.html
+#http://localhost:8080/h2
+#http://localhost:4200/
 

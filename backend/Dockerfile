@@ -1,4 +1,4 @@
-#### Stage 1: Build the application
+﻿#### Stage 1: Build the application
 FROM 172.42.42.200:18082/maven:3.6.3-jdk-8-slim as build
 
 LABEL César Magalhães <ceanma@gmail.com>
@@ -19,12 +19,7 @@ RUN mvn dependency:go-offline -B
 # Copy the project source
 COPY src src
 
-# Arguments
-ARG ORIGIN_URL
-ENV ORIGIN_URL=${ORIGIN_URL}
-
-ARG SPRING_PROFILES_ACTIVE
-ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+ARG SPRING_PROFILES_ACTIVE=test
 
 # Package the application
 RUN mvn package -P${SPRING_PROFILES_ACTIVE} -DskipTests
@@ -34,6 +29,12 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 FROM 172.42.42.200:18082/openjdk:8-jre-alpine
 
 LABEL César Magalhães <ceanma@gmail.com>
+
+# Arguments
+ARG SPRING_PROFILES_ACTIVE=test
+ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+ARG ORIGIN_URL
+ENV ORIGIN_URL=${ORIGIN_URL}
 
 EXPOSE 5005
 ARG DEPENDENCY=/app/target/dependency
