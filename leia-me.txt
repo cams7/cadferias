@@ -446,6 +446,8 @@ docker exec -ti cadferias-backend191215 /bin/sh
 cd "C:\My\Desenv\My\CadFerias\teste\justmeandopensource"
 git clone https://github.com/justmeandopensource/kubernetes.git
 
+---------------------------------------------------------------------------------------------------
+
 #On Windows 10
 mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias\backend"
 cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
@@ -490,17 +492,183 @@ docker exec -ti cadferias_app-frontend_1 /bin/sh
 cat /etc/os-release
 curl -X POST "http://app-backend:8080/api/auth/signin" -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8" -d "{\"email\": \"jorge78@teste.com\", \"password\": \"abc12345\"}"
 
-
 #On Windows 10
 http://172.42.42.200:18080/swagger-ui.html
 http://172.42.42.200:18080/h2
 http://172.42.42.200:13000
 http://172.42.42.200:180
 
+---------------------------------------------------------------------------------------------------
+
 cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
 mvn -Pdev flyway:migrate -Dflyway.configFile=dev.flyway.properties
 
+---------------------------------------------------------------------------------------------------
 
+#https://blog.sonatype.com/using-nexus-3-as-your-repository-part-1-maven-artifacts
+#https://stackoverflow.com/questions/36155159/difference-between-http-repo-apache-maven-org-maven2-vs-http-repo1-maven-or
+#On Centos/8
+docker run -d -v /opt/nexus-data:/nexus-data -p 18081:8081 -p 18082:8082 -p 18083:8083 --name nexus191221 sonatype/nexus3:3.20.1
+docker logs -f nexus191221
+#docker stop nexus191221 && docker rm nexus191221
+docker start nexus191221
 
+#On Windows 10
+#http://172.42.42.200:18081/
+mvn clean package -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias\backend"
+mvn deploy -Ptest -DskipTests -f "C:\My\Desenv\My\CadFerias\cadferias\backend"
 
+-------------------------------------------- 22/12/19 --------------------------------------------
+
+#On Windows 10
+#https://blog.sonatype.com/using-nexus-3-as-your-repository-part-2-npm-packages
+#https://stackoverflow.com/questions/46020018/error-eperm-operation-not-permitted-unlink-d-sources-node-modules-fseven
+#https://stackoverflow.com/questions/57279087/authentication-error-on-publishing-to-private-npm-repository-on-nexus
+
+cd "C:\My\Desenv\My\CadFerias\teste"
+mkdir npm-helloworld
+cd "C:\My\Desenv\My\CadFerias\teste\npm-helloworld"
+vi .npmrc
+registry=http://172.42.42.200:18081/repository/npm-group/
+_auth=YWRtaW46YWRtaW4xMjM=
+npm init
+npm login
+npm publish
+
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
+vi .npmrc
+registry=http://172.42.42.200:18081/repository/npm-group/
+_auth=YWRtaW46YWRtaW4xMjM=
+
+npm install --loglevel verbose
+npm publish --loglevel verbose
+
+npm --registry http://172.42.42.200:18081/repository/npm-group/ install @angular/cli -g --loglevel verbose
+npm --registry http://172.42.42.200:18081/repository/npm-group/ install http-server -g --loglevel verbose
+
+#On Centos/8
+echo -n 'admin:admin123' | openssl base64
+
+---------------------------------------------------------------------------------------------------
+
+#On Centos/8
+#https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
+sudo vi /etc/docker/daemon.json
+{
+  "insecure-registries": [
+	"http://172.42.42.200:18082",
+	"http://172.42.42.200:18083"
+  ],
+  "disable-legacy-registry": true
+}
+sudo systemctl restart docker
+
+docker login -u admin -p admin123 http://172.42.42.200:18082
+docker login -u admin -p admin123 http://172.42.42.200:18083
+
+vi ~/.docker/config.json
+docker pull 172.42.42.200:18082/httpd:2.4-alpine
+docker rmi 172.42.42.200:18082/httpd:2.4-alpine
+
+docker tag br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+docker push 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+
+docker rmi 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT && docker rmi br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT
+
+docker pull 172.42.42.200:18082/cadferias-backend:0.0.1-SNAPSHOT
+
+-------------------------------------------------
+
+docker tag br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT 172.42.42.200:18083/cadferias-frontend:0.0.1-SNAPSHOT
+docker push 172.42.42.200:18083/cadferias-frontend:0.0.1-SNAPSHOT
+
+docker rmi 172.42.42.200:18083/cadferias-frontend:0.0.1-SNAPSHOT && docker rmi br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
+
+docker pull 172.42.42.200:18083/cadferias-frontend:0.0.1-SNAPSHOT
+
+-------------------------------------------- 23/12/19 --------------------------------------------
+
+#On Windows 10
+#https://www.callicoder.com/spring-boot-mysql-react-docker-compose-example/
+
+cd "C:\My\Desenv\My\CadFerias\teste\callicoder"
+git clone https://github.com/callicoder/spring-security-react-ant-design-polls-app.git
+
+cd "C:\My\Desenv\My\CadFerias\teste\callicoder\spring-security-react-ant-design-polls-app\polling-app-server"
+./mvnw clean package -Ptest -DskipTests
+
+#On Centos/8
+docker pull 172.42.42.200:18082/mysql:5.7.28
+docker rmi 172.42.42.200:18082/mysql:5.7.28
+
+-------------------------------------------------
+
+docker run -it --rm --name polling-app-server191223 -v /home/vagrant/.m2:/root/.m2 -v /home/vagrant/teste/callicoder/spring-security-react-ant-design-polls-app/polling-app-server:/opt/app -w /opt/app 172.42.42.200:18082/maven:3.6.3-jdk-8-slim /bin/sh
+docker run -it --rm --name polling-app-server191223 -v /home/vagrant/.m2:/root/.m2 -v /home/vagrant/teste/callicoder/spring-security-react-ant-design-polls-app/polling-app-server:/opt/app -w /opt/app 172.42.42.200:18082/openjdk:8-jdk-alpine /bin/sh
+
+cd /home/vagrant/teste/callicoder/spring-security-react-ant-design-polls-app/polling-app-server
+docker build -t polling-app-server .
+docker run -it --rm --name polling-app-server191223 polling-app-server:latest /bin/sh
+
+-------------------------------------------------
+
+cd /home/vagrant/teste/callicoder/spring-security-react-ant-design-polls-app
+docker-compose up -d
+
+docker logs -f spring-security-react-ant-design-polls-app_db_1
+docker logs -f spring-security-react-ant-design-polls-app_app-client_1
+docker exec -ti spring-security-react-ant-design-polls-app_app-client_1 /bin/sh
+docker logs -f spring-security-react-ant-design-polls-app_app-server_1
+docker exec -ti spring-security-react-ant-design-polls-app_app-server_1 /bin/sh
+
+#http://172.42.42.200:280
+
+docker run -it --rm 47e14e127de0 /bin/sh
+
+docker-compose stop && docker-compose rm -f
+
+docker push 172.42.42.200:18083/polling-app-client:0.1.0
+docker push 172.42.42.200:18083/polling-app-server:0.0.1-SNAPSHOT
+
+docker rmi 172.42.42.200:18083/polling-app-client:0.1.0
+docker rmi 172.42.42.200:18083/polling-app-server:0.0.1-SNAPSHOT
+
+docker pull 172.42.42.200:18083/polling-app-client:0.1.0
+docker pull 172.42.42.200:18083/polling-app-server:0.0.1-SNAPSHOT
+
+#On Windows 10
+cd "C:\My\Desenv\My\CadFerias\teste\callicoder\spring-security-react-ant-design-polls-app\polling-app-client"
+npm install --loglevel verbose
+npm publish --loglevel verbose
+
+cd "C:\My\Desenv\My\CadFerias\teste\callicoder\spring-security-react-ant-design-polls-app\polling-app-server"
+mvn clean package -DskipTests
+mvn deploy -DskipTests
+
+---------------------------------------------------------------------------------------------------
+
+cd /opt/cadferias
+docker-compose up -d
+
+docker logs -f cadferias_app-backend_1
+docker logs -f cadferias_app-frontend_1
+docker-compose stop && docker-compose rm -f
+
+docker push 172.42.42.200:18083/cadferias-frontend:1.0.0
+docker push 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+
+docker rmi 172.42.42.200:18083/cadferias-frontend:1.0.0
+docker rmi 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+
+docker pull 172.42.42.200:18083/cadferias-frontend:1.0.0
+docker pull 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+
+#On Windows 10
+cd "C:\My\Desenv\My\CadFerias\cadferias\frontend"
+npm install --loglevel verbose
+npm publish --loglevel verbose
+
+cd "C:\My\Desenv\My\CadFerias\cadferias\backend"
+mvn clean package -DskipTests
+mvn deploy -DskipTests
 

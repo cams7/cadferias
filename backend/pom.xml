@@ -244,6 +244,12 @@
 					<artifactId>postgresql</artifactId>
 				</dependency>
 			</dependencies>
+			<repositories>
+				<repository>
+					<id>maven-group</id>
+					<url>http://172.42.42.200:18081/repository/maven-group/</url>
+				</repository>
+			</repositories>
 		</profile>
 		<profile>
 			<id>dev</id>
@@ -264,5 +270,16 @@
 				<app.origin.url>http://localhost:4200</app.origin.url>
 			</properties>
 		</profile>
-	</profiles>
+	</profiles>	
+	
+	<distributionManagement>
+		<snapshotRepository>
+		  <id>nexus-snapshots</id>
+		  <url>http://172.42.42.200:18081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+		  <id>nexus-releases</id>
+		  <url>http://172.42.42.200:18081/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
 </project>

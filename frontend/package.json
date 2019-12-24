@@ -1,15 +1,15 @@
 {
   "name": "cadferias",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod --verbose=true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/animations": "~8.1.0",
     "@angular/common": "~8.1.0",
@@ -53,5 +53,8 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.4.3"
+  },
+  "publishConfig": {
+    "registry": "http://172.42.42.200:18081/repository/npm-private/"
   }
 }

@@ -1,7 +1,7 @@
-version: '3'
+version: '3.7'
 services:
   app-database:
-    image: postgres:12.1-alpine
+    image: 172.42.42.200:18082/postgres:12.1-alpine
     environment:
       POSTGRES_PASSWORD: "abc@12345"
     ports:
@@ -12,46 +12,48 @@ services:
       - app-network
       
   pgadmin:
-    image: dpage/pgadmin4:4.15
+    image: 172.42.42.200:18082/dpage/pgadmin4:4.15
     environment:
       PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "abc@12345"
     ports:
-      - "180:80"
+      - "190:80"
     depends_on:
       - app-database
     networks:
       - app-network
       
   app-backend:
-    build: 
-      context: ./backend
+    build:
+      context: backend # Use an image built from the specified dockerfile in the `backend` directory.
+      dockerfile: Dockerfile
       args:
-        JAR_FILE: target/cadferias-0.0.1-SNAPSHOT.jar
-    image: br.com.cams7/cadferias-backend:0.0.1-SNAPSHOT
-    environment:
-      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n"
-      SPRING_PROFILES_ACTIVE: "test"
+        ORIGIN_URL: http://172.42.42.200:180
+        SPRING_PROFILES_ACTIVE: test
+    image: 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
+    environment:      
       JDBC_DATABASE_URL: "jdbc:postgresql://app-database:5432/cadferias"
       JDBC_DATABASE_USERNAME: "postgres"
       JDBC_DATABASE_PASSWORD: "abc@12345"
-      ORIGIN_URL: "http://172.42.42.200:13000"
     ports:
       - "18080:8080"
       - "15005:5005"
+    restart: always
     depends_on:
       - app-database
     networks:
       - app-network 
       
   app-frontend:
-    build: 
-      context: ./frontend
+    build:
+      context: frontend # Use an image built from the specified dockerfile in the `frontend` directory.
+      dockerfile: Dockerfile
       args:
-        DIST_FILE: dist/cadferias
-    image: br.com.cams7/cadferias-frontend:0.0.1-SNAPSHOT
+        API: http://172.42.42.200:18080/
+    image: 172.42.42.200:18083/cadferias-frontend:1.0.0    
     ports:
-      - "13000:3000"
+      - "180:80"
+    restart: always
     depends_on:
       - app-backend
     networks:
