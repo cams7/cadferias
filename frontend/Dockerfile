@@ -17,6 +17,11 @@ RUN npm install --loglevel verbose
 # Copy the main application
 COPY . ./
 
+# Arguments
+ARG API
+ARG PROFILE=test
+RUN sed -i "s+API_URL+${API}+g" src/environments/environment.${PROFILE}.ts
+
 # Build the application
 RUN npm run build
 

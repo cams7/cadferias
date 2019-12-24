@@ -647,8 +647,8 @@ mvn deploy -DskipTests
 
 ---------------------------------------------------------------------------------------------------
 
-#9min 22seg
-
+#9min 22seg with another containers
+#8min 20seg
 cd /opt/cadferias
 docker-compose up -d
 
