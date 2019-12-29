@@ -708,3 +708,134 @@ npm publish --loglevel verbose
 #http://localhost:8080/h2
 #http://localhost:4200/
 
+---------------------------------------------------------------------------------------------------
+
+#https://medium.com/swlh/quickstart-ci-with-jenkins-and-docker-in-docker-c3f7174ee9ff
+#https://jenkins.io/blog/2018/12/10/the-official-Docker-image/
+#https://hub.docker.com/r/jenkins/jenkins
+
+#On Centos/8
+docker run -d -v /opt/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -p 38080:8080 -p 50000:50000 --name jenkins191224 --restart unless-stopped 172.42.42.200:18082/jenkins/jenkins:lts-alpine
+docker logs -f jenkins191224
+
+#On Windows 10
+#http://172.42.42.200:38080
+
+cd "C:\My\Desenv\My\CadFerias\teste\getintodevops"
+git clone https://github.com/getintodevops/hellonode.git
+cd "C:\My\Desenv\My\CadFerias\teste\getintodevops\hellonode"
+git remote rm origin
+git remote add origin https://github.com/cams7/hellonode.git
+git config master.remote origin
+git config master.merge refs/heads/master
+git remote -v
+git pull origin master
+
+
+-------------------------------------------- 25/12/19 --------------------------------------------
+#On Windows 10
+#http://172.42.42.200:18081
+#http://172.42.42.200:38080
+
+#On Centos/8
+docker run -d -v /opt/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -p 38080:8080 -p 50000:50000 --name jenkins191224 172.42.42.200:18082/jenkins/jenkins:lts-alpine
+#Add Plugin "CloudBees Docker Build and Publish"
+docker exec -ti jenkins191224 /bin/sh
+
+
+cd /home/vagrant/teste/getintodevops/hellonode
+docker build -t getintodevops-hellonode:1.0.0 .
+
+docker run -it -p 38000:8000  --name hellonode191225 --rm getintodevops-hellonode:1.0.0
+docker rmi getintodevops-hellonode:1.0.0
+
+docker build -t 172.42.42.200:18083/getintodevops-hellonode:1.0.0 .
+
+docker run -it -p 38000:8000  --name hellonode191225 --rm 172.42.42.200:18083/getintodevops-hellonode:1.0.0
+
+docker exec -ti hellonode191225 /bin/sh
+curl -f http://127.0.0.1:8000
+ps -aux
+top
+ss -tupln
+kill -9 pid
+
+docker rmi 172.42.42.200:18083/getintodevops-hellonode:1.0.0
+
+#On Windows 10
+#http://172.42.42.200:38000/
+
+---------------------------------------------------------------------------------------------------
+#On Windows 10
+
+cd "C:\My\Desenv\My\CadFerias\teste\pipeline-dockerfile-sample"
+echo "# pipeline-dockerfile-sample" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/cams7/pipeline-dockerfile-sample.git
+git push -u origin master
+
+-------------------------------------------- 28/12/19 --------------------------------------------
+#On Centos/8
+cd /opt/cadferias/devops/jenkins/
+docker build -t cams7/jenkins-docker .
+
+sudo chmod 666 /var/run/docker.sock
+docker run -d -p 38080:8080 -p 50000:50000 -v /opt/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --name jenkins-docker191228 --restart unless-stopped cams7/jenkins-docker:latest
+docker exec -ti jenkins-docker191228 sh
+docker login -u admin -p admin123 http://172.42.42.200:18082
+docker login -u admin -p admin123 http://172.42.42.200:18083
+docker logs -f jenkins-docker191228
+docker exec -ti --user root jenkins-docker191228 /bin/sh
+
+cat /etc/docker/daemon.json
+cat ~/.docker/config.json
+
+docker stop jenkins-docker191228 && docker rm jenkins-docker191228
+
+---------------------------------------------------------------------------------------------------
+
+cd /opt/cadferias/devops
+docker-compose up -d
+docker-compose ps
+
+sudo chmod 666 /var/run/docker.sock
+docker exec -ti `docker ps | grep "cams7/jenkins-docker" | awk '{ print $1 }'` docker login -u admin -p admin123 http://172.42.42.200:18082
+docker exec -ti `docker ps | grep "cams7/jenkins-docker" | awk '{ print $1 }'` docker login -u admin -p admin123 http://172.42.42.200:18083
+
+#http://172.42.42.200:18081
+#http://172.42.42.200:18080
+#http://172.42.42.200:180/
+
+docker-compose stop && docker-compose rm -f
+
+cd /opt/cadferias/backend/db
+docker build --build-arg PGHOST=172.42.42.200 --build-arg PGPORT=15432 --build-arg PGUSER=admin --build-arg PGPASSWORD=admin123 --build-arg PGDB=cadferias -t cams7/psql .
+
+docker run -it --rm cams7/psql /bin/sh
+#psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "REVOKE CONNECT ON DATABASE cadferias FROM admin" >/dev/null 2>&1
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "REVOKE ALL PRIVILEGES ON DATABASE cadferias FROM admin" >/dev/null 2>&1
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "DROP USER IF EXISTS admin" >/dev/null 2>&1
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "DROP DATABASE IF EXISTS cadferias" >/dev/null 2>&1
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "CREATE DATABASE cadferias"
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "CREATE USER admin WITH ENCRYPTED PASSWORD 'admin123'"
+psql "postgresql://postgres:admin123@172.42.42.200:15432/postgres" -c "GRANT ALL PRIVILEGES ON DATABASE cadferias TO admin"
+psql "postgresql://admin:admin123@172.42.42.200:15432/cadferias" -c "SELECT CURRENT_DATABASE()"
+
+---------------------------------------------------------------------------------------------------
+
+cd /opt/cadferias
+docker-compose up -d
+
+#http://172.42.42.200:28080/swagger-ui.html
+#http://172.42.42.200:28080/h2
+#http://172.42.42.200:280/
+#http://172.42.42.200:290/
+
+docker logs -f cadferias_app-backend_1
+docker exec -ti cadferias_app-backend_1 /bin/sh
+docker logs -f cadferias_app-frontend_1
+docker exec -ti cadferias_app-frontend_1 /bin/sh
+
+docker-compose stop && docker-compose rm -f

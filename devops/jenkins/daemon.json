@@ -1,0 +1,7 @@
+{
+  "insecure-registries": [
+	"http://172.42.42.200:18082",
+	"http://172.42.42.200:18083"
+  ],
+  "disable-legacy-registry": true
+}

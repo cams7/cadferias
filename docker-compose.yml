@@ -1,62 +1,48 @@
 ﻿version: '3.7'
-services:
+services:  
   app-database:
-    image: 172.42.42.200:18082/postgres:12.1-alpine
-    environment:
-      POSTGRES_PASSWORD: "abc@12345"
-    ports:
-      - "15432:5432"
-    volumes:
-      - /home/vagrant/cadferias-database:/var/lib/postgresql/data 
-    networks:
-      - app-network
-      
-  pgadmin:
-    image: 172.42.42.200:18082/dpage/pgadmin4:4.16
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "ceanma@gmail.com"
-      PGADMIN_DEFAULT_PASSWORD: "abc@12345"
-    ports:
-      - "190:80"
-    restart: always
-    volumes:
-      - /home/vagrant/cadferias-pgadmin:/var/lib/pgadmin
-    depends_on:
-      - app-database
-    networks:
-      - app-network
+    build:
+      context: backend/db
+      dockerfile: Dockerfile
+      args:
+        PGHOST: 172.42.42.200
+        PGPORT: 15432
+        PGUSER: admin
+        PGPASSWORD: admin123
+        PGDB: cadferias
+    image: 172.42.42.200:18083/cadferias-database 
       
   app-backend:
     build:
-      context: backend # Use an image built from the specified dockerfile in the `backend` directory.
+      context: backend
       dockerfile: Dockerfile
       args:
-        ORIGIN_URL: http://172.42.42.200:180
+        ORIGIN_URL: http://172.42.42.200:280
         SPRING_PROFILES_ACTIVE: test
     image: 172.42.42.200:18083/cadferias-backend:0.0.1-SNAPSHOT
     environment:      
-      JDBC_DATABASE_URL: "jdbc:postgresql://app-database:5432/cadferias"
-      JDBC_DATABASE_USERNAME: "postgres"
-      JDBC_DATABASE_PASSWORD: "abc@12345"
+      JDBC_DATABASE_URL: "jdbc:postgresql://172.42.42.200:15432/cadferias"
+      JDBC_DATABASE_USERNAME: "admin"
+      JDBC_DATABASE_PASSWORD: "admin123"
     ports:
-      - "18080:8080"
-      - "15005:5005"
+      - "28080:8080"
+      - "25005:5005"
     restart: always
-    links:
+    depends_on:
       - app-database
     networks:
       - app-network 
       
   app-frontend:
     build:
-      context: frontend # Use an image built from the specified dockerfile in the `frontend` directory.
+      context: frontend
       dockerfile: Dockerfile
       args:
-        API: http://172.42.42.200:18080/
+        API: http://172.42.42.200:28080/
         PROFILE: test
     image: 172.42.42.200:18083/cadferias-frontend:1.0.0    
     ports:
-      - "180:80"
+      - "280:80"
     restart: always
     depends_on:
       - app-backend

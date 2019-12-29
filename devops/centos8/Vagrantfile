@@ -34,6 +34,10 @@ Vagrant.configure(2) do |config|
 		# Share an additional folder to the guest VM. The first argument is the path on the host to the actual folder. The second argument is the path on the guest to mount the folder. And the optional third argument is a set of non-required options.
 		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/cadferias", "/opt/cadferias"
 		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/nexus-data", "/opt/nexus-data"
+		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/jenkins_home", "/opt/jenkins_home"
+		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/nexus-data", "/opt/nexus-data"
+		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/postgres-data", "/opt/postgres-data"
+		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/pgadmin", "/opt/pgadmin"
 		cams7.vm.synced_folder "/My/Desenv/My/CadFerias/teste", "/home/vagrant/teste"
 
 		# Provider-specific configuration so you can fine-tune various backing providers for Vagrant. These expose provider-specific options.

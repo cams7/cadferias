@@ -1,0 +1,50 @@
+﻿version: '3.7'
+services:
+  postgres:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_PASSWORD: "admin123"
+    ports:
+      - "15432:5432"
+    restart: always
+    volumes:
+      - /home/vagrant/postgres-data:/var/lib/postgresql/data
+      
+  pgadmin:
+    image: dpage/pgadmin4:4.16
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@test"
+      PGADMIN_DEFAULT_PASSWORD: "admin123"
+    ports:
+      - "180:80"
+    restart: always
+    volumes:
+      - /opt/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+  nexus:
+    image: sonatype/nexus3:3.20.1
+    ports:
+      - "18081:8081"
+      - "18082:8082"
+      - "18083:8083"
+    restart: always
+    volumes:
+      - /opt/nexus-data:/nexus-data
+      
+  jenkins:
+    build:
+      context: jenkins
+      dockerfile: Dockerfile
+    image: cams7/jenkins-docker
+    ports:
+      - "18080:8080"
+      - "50000:50000"
+    restart: always
+    volumes:
+      - /opt/jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - nexus
+

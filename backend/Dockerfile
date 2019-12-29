@@ -25,6 +25,11 @@ ARG SPRING_PROFILES_ACTIVE=test
 RUN mvn package -P${SPRING_PROFILES_ACTIVE} -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
+RUN mkdir -p db/migration/${SPRING_PROFILES_ACTIVE}
+COPY ${SPRING_PROFILES_ACTIVE}.flyway.properties .
+COPY db/migration/${SPRING_PROFILES_ACTIVE}/* ./db/migration/${SPRING_PROFILES_ACTIVE}/
+RUN mvn -P${SPRING_PROFILES_ACTIVE} -DskipTests flyway:migrate -Dflyway.configFile=${SPRING_PROFILES_ACTIVE}.flyway.properties
+
 #### Stage 2: A minimal docker image with command to run the app 
 FROM 172.42.42.200:18082/openjdk:8-jre-alpine
 
